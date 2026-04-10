@@ -123,6 +123,78 @@
   margin-top: 0.75rem;
 }
 
+.timeline-widget {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.timeline-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-weight: 600;
+}
+
+.mic-inactive {
+  font-size: 0.8rem;
+  font-weight: 400;
+  color: #94a3b8;
+}
+
+.timeline-scroll {
+  height: 320px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.timeline-empty {
+  color: #94a3b8;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.timeline-event {
+  display: flex;
+  gap: 0.5rem;
+  align-items: baseline;
+  font-size: 0.85rem;
+}
+
+.timeline-ts {
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.75rem;
+  color: #94a3b8;
+  flex-shrink: 0;
+}
+
+.timeline-speech {
+  color: var(--text);
+}
+
+.timeline-diff {
+  margin: 0;
+  font-family: "Consolas", "Courier New", monospace;
+  font-size: 0.78rem;
+  white-space: pre-wrap;
+  color: #166534;
+  background: #f0fdf4;
+  border-radius: 4px;
+  padding: 0.2rem 0.4rem;
+}
+
+.timeline-diff:has(> [data-removed]) {
+  color: #991b1b;
+  background: #fef2f2;
+}
+
+.timeline-interim {
+  opacity: 0.45;
+  font-style: italic;
+}
+
 .run-output {
   margin-top: 0.75rem;
   border: 1px solid var(--border);

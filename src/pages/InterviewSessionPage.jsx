@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { diffLines } from "diff";
 import CodeEditor from "../components/CodeEditor";
 import QuestionPanel from "../components/QuestionPanel";
 import Timer from "../components/Timer";
@@ -13,12 +14,35 @@ function InterviewSessionPage() {
   const [code, setCode] = useState("");
   const [runOutput, setRunOutput] = useState("");
   const [runError, setRunError] = useState("");
-  const [transcript, setTranscript] = useState("");
+  const [timeline, setTimeline] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState("");
+
   const recognitionRef = useRef(null);
   const interimRef = useRef("");
   const restartingRef = useRef(false);
+  const timelineRef = useRef([]);
+  const prevCodeRef = useRef("");
+  const codeDebounceRef = useRef(null);
+  const startTimeRef = useRef(Date.now());
+  const timelineEndRef = useRef(null);
+
+  function getTimestamp() {
+    const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
+    const m = String(Math.floor(elapsed / 60)).padStart(2, "0");
+    const s = String(elapsed % 60).padStart(2, "0");
+    return `${m}:${s}`;
+  }
+
+  function pushEvent(event) {
+    const updated = [...timelineRef.current, event];
+    timelineRef.current = updated;
+    setTimeline(updated);
+  }
+
+  useEffect(() => {
+    timelineEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [timeline]);
 
   useEffect(() => {
     const SpeechRecognition =
@@ -43,34 +67,29 @@ function InterviewSessionPage() {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i];
         if (result.isFinal) {
-          setTranscript((prev) => prev + result[0].transcript + " ");
+          const text = result[0].transcript.trim();
           interimRef.current = "";
+          pushEvent({ type: "speech", content: text, timestamp: getTimestamp() });
         } else {
           interim += result[0].transcript;
         }
       }
       interimRef.current = interim;
-
-      // Trigger re-render to show interim text
       setIsRecording((v) => v);
     };
 
-    // no speech and aborted require restart
     recognition.onerror = (event) => {
       if (event.error === "no-speech" || event.error === "aborted") return;
       setError("Mic error: " + event.error);
       setIsRecording(false);
     };
 
-    // The browser stops recognition after a period of silence
     recognition.onend = () => {
       if (restartingRef.current) return;
       restartingRef.current = true;
       try {
         recognition.start();
-      } catch (err) {
-        // Already started, ignore
-      }
+      } catch (err) {}
     };
 
     recognitionRef.current = recognition;
@@ -89,6 +108,34 @@ function InterviewSessionPage() {
       } catch (err) {}
     };
   }, []);
+
+  function handleCodeChange(newCode) {
+    setCode(newCode);
+
+    clearTimeout(codeDebounceRef.current);
+    codeDebounceRef.current = setTimeout(() => {
+      const prev = prevCodeRef.current;
+      if (newCode === prev) return;
+
+      const hunks = diffLines(prev, newCode);
+      const diffText = hunks
+        .filter((h) => h.added || h.removed)
+        .map((h) =>
+          h.value
+            .trimEnd()
+            .split("\n")
+            .map((line) => (h.added ? `+ ${line}` : `- ${line}`))
+            .join("\n")
+        )
+        .join("\n");
+
+      if (diffText) {
+        pushEvent({ type: "code", content: diffText, timestamp: getTimestamp() });
+      }
+
+      prevCodeRef.current = newCode;
+    }, 1500);
+  }
 
   const handleRunCode = async () => {
     setRunOutput("");
@@ -112,7 +159,6 @@ function InterviewSessionPage() {
   };
 
   const handleFinish = () => {
-    // Stop recording before navigating
     restartingRef.current = true;
     if (recognitionRef.current) {
       recognitionRef.current.onend = null;
@@ -124,6 +170,7 @@ function InterviewSessionPage() {
       state: {
         questionsAttempted: questionIndex + 1,
         codeLength: code.length,
+        timeline: timelineRef.current,
       },
     });
   };
@@ -138,7 +185,7 @@ function InterviewSessionPage() {
         />
         <CodeEditor
           value={code}
-          onChange={setCode}
+          onChange={handleCodeChange}
           onRun={handleRunCode}
           output={runOutput}
           error={runError}
@@ -157,27 +204,38 @@ function InterviewSessionPage() {
           Finish Interview
         </button>
 
-        {/* Voice Transcript */}
-        <div className="voice-input">
-          <div className="mic-status">
+        <div className="card timeline-widget">
+          <div className="timeline-header">
+            <span>Timeline</span>
             {isRecording ? (
-              <span className="recording-indicator"> Live </span>
+              <span className="recording-indicator">Live</span>
             ) : (
-              <span>Microphone inactive</span>
+              <span className="mic-inactive">Mic inactive</span>
             )}
           </div>
           {error && <p className="mic-error">{error}</p>}
-          <textarea
-            readOnly
-            className="transcript-box"
-            placeholder="Transcription will appear here as you speak..."
-            value={transcript + interimRef.current}
-          />
-          {transcript && (
-            <button type="button" onClick={() => setTranscript("")}>
-              Clear
-            </button>
-          )}
+          <div className="timeline-scroll">
+            {timeline.length === 0 && (
+              <p className="timeline-empty">Events will appear here as you speak and type...</p>
+            )}
+            {timeline.map((event, i) => (
+              <div key={i} className={`timeline-event timeline-${event.type}`}>
+                <span className="timeline-ts">{event.timestamp}</span>
+                {event.type === "speech" ? (
+                  <span className="timeline-speech">{event.content}</span>
+                ) : (
+                  <pre className="timeline-diff">{event.content}</pre>
+                )}
+              </div>
+            ))}
+            {interimRef.current && (
+              <div className="timeline-event timeline-interim">
+                <span className="timeline-ts">...</span>
+                <span>{interimRef.current}</span>
+              </div>
+            )}
+            <div ref={timelineEndRef} />
+          </div>
         </div>
       </div>
     </section>
