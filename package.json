@@ -14,8 +14,13 @@
     "@replit/codemirror-vim": "^6.3.0",
     "@uiw/react-codemirror": "^4.25.9",
     "concurrently": "^9.2.1",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
     "diff": "^8.0.4",
+    "dotenv": "^17.4.1",
     "express": "^5.2.1",
+    "google-auth-library": "^10.6.2",
+    "jsonwebtoken": "^9.0.3",
     "react": "^19.2.4",
     "react-dom": "^19.2.4",
     "react-router-dom": "^7.14.0"
