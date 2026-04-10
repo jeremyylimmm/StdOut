@@ -2,24 +2,24 @@ import { useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
 import { vim } from "@replit/codemirror-vim";
+import { useAppState } from "../lib/AppStateContext";
 
-function CodeEditor({ value, onChange, onRun, output, error }) {
+function CodeEditor({ value, onChange }) {
   const [vimEnabled, setVimEnabled] = useState(false);
+  const { theme } = useAppState();
 
   return (
-    <div className="card">
+    <div className="card code-editor-card">
       <h3>Code Editor</h3>
       <CodeMirror
         value={value}
         onChange={onChange}
         extensions={vimEnabled ? [vim(), python()] : [python()]}
         basicSetup={{ lineNumbers: true }}
-
+        theme={theme === "dark" ? "dark" : "light"}
+        height="100%"
       />
       <div className="editor-actions">
-        <button type="button" onClick={onRun}>
-          Run Code
-        </button>
         <label style={{ marginLeft: "1rem", cursor: "pointer" }}>
           <input
             type="checkbox"
@@ -30,11 +30,6 @@ function CodeEditor({ value, onChange, onRun, output, error }) {
           Vim
         </label>
       </div>
-      {(output || error) && (
-        <pre className={`run-output ${error ? "error" : ""}`}>
-          {error || output}
-        </pre>
-      )}
     </div>
   );
 }

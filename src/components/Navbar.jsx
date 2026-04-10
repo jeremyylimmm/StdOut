@@ -3,7 +3,7 @@ import { useAppState } from "../lib/AppStateContext";
 
 function Navbar() {
   const navigate = useNavigate();
-  const { user, logout } = useAppState();
+  const { user, logout, theme, toggleTheme } = useAppState();
 
   const handleLogout = () => {
     logout();
@@ -18,6 +18,9 @@ function Navbar() {
         <Link to="/interviews/old">Previous Interviews</Link>
       </nav>
       <div className="nav-user">
+        <button type="button" className="ghost-btn" onClick={toggleTheme}>
+          {theme === "light" ? "Dark Mode" : "Light Mode"}
+        </button>
         {user ? <span>{user.name}</span> : <span>Guest</span>}
         {user && (
           <button type="button" onClick={handleLogout} className="ghost-btn">

@@ -5,21 +5,55 @@
   --border: #e2e8f0;
   --brand: #0f766e;
   --brand-dark: #115e59;
+  --muted-surface: #f0f4f8;
+  --error-bg: #fef2f2;
+  --error-text: #b91c1c;
+  --danger-border: #ef4444;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0b1220;
+  --text: #e6edf7;
+  --surface: #141d2f;
+  --border: #2c3b57;
+  --brand: #14b8a6;
+  --brand-dark: #0d9488;
+  --muted-surface: #111a2c;
+  --error-bg: #3a1f26;
+  --error-text: #fecaca;
+  --danger-border: #f87171;
 }
 
 #root {
-  min-height: 100vh;
+  height: 100vh;
 }
 
 .app-shell {
-  min-height: 100vh;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   color: var(--text);
+  background: var(--bg);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease;
 }
 
 .app-main {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
   max-width: 1100px;
+  width: 100%;
   margin: 0 auto;
   padding: 1.25rem;
+}
+
+.app-main--session {
+  max-width: none;
+  padding: 0.75rem;
+  overflow: hidden;
 }
 
 .navbar {
@@ -81,6 +115,97 @@
   align-items: start;
 }
 
+.leetcode-layout {
+  grid-template-columns: minmax(320px, 1fr) minmax(420px, 1.3fr);
+  gap: 1rem;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  align-items: stretch;
+}
+
+.question-panel-wrap {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto auto;
+  gap: 0.8rem;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.question-panel-wrap .card {
+  min-height: 0;
+}
+
+.question-card {
+  height: 100%;
+  overflow: auto;
+}
+
+.editor-panel-wrap {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.8rem;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.terminal-card {
+  display: grid;
+  gap: 0.75rem;
+  min-height: 0;
+}
+
+.terminal-output {
+  margin-top: 0;
+  min-height: 110px;
+  max-height: 220px;
+  overflow: auto;
+}
+
+.session-actions {
+  display: flex;
+  gap: 0.6rem;
+  justify-content: flex-end;
+}
+
+.voice-input {
+  display: grid;
+  gap: 0.6rem;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1rem;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.mic-status {
+  font-weight: 600;
+}
+
+.recording-indicator {
+  color: var(--brand);
+}
+
+.mic-error {
+  margin: 0;
+  color: var(--error-text);
+}
+
+.transcript-box {
+  width: 100%;
+  min-height: 0;
+  height: 120px;
+  resize: vertical;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 0.75rem;
+  background: var(--muted-surface);
+  color: var(--text);
+  overflow: auto;
+}
+
 .card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -95,13 +220,22 @@
 }
 
 .cm-editor {
-  height: 360px;
+  height: clamp(340px, 52vh, 760px);
   border: 1px solid var(--border);
   border-radius: 10px;
   overflow: hidden;
 }
 
+.code-editor-card {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
 .cm-editor .cm-scroller {
+  height: 100%;
   overflow: auto;
 }
 
@@ -199,7 +333,7 @@
   margin-top: 0.75rem;
   border: 1px solid var(--border);
   border-radius: 10px;
-  background: #f0f4f8;
+  background: var(--muted-surface);
   padding: 0.75rem;
   min-height: 64px;
   white-space: pre-wrap;
@@ -207,9 +341,9 @@
 }
 
 .run-output.error {
-  border-color: #ef4444;
-  background: #fef2f2;
-  color: #b91c1c;
+  border-color: var(--danger-border);
+  background: var(--error-bg);
+  color: var(--error-text);
 }
 
 input,
@@ -257,6 +391,26 @@ button:disabled {
 @media (max-width: 880px) {
   .session-layout {
     grid-template-columns: 1fr;
+  }
+
+  .leetcode-layout {
+    height: 100%;
+  }
+
+  .code-editor-card {
+    min-height: 0;
+  }
+
+  .cm-editor {
+    height: 320px;
+  }
+
+  .session-actions {
+    justify-content: stretch;
+  }
+
+  .session-actions button {
+    flex: 1;
   }
 
   .navbar {

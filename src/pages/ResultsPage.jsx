@@ -12,7 +12,7 @@ function ResultsPage() {
 
   const handleTryAgain = () => {
     resetInterview();
-    navigate("/dashboard");
+    navigate("/interview/setup");
   };
 
   return (
@@ -24,7 +24,7 @@ function ResultsPage() {
         codeLength={codeLength}
       />
       <button type="button" onClick={handleTryAgain}>
-        Back to Dashboard
+        Start New Interview
       </button>
     </section>
   );

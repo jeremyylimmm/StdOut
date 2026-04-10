@@ -8,8 +8,7 @@ import { useAppState } from "../lib/AppStateContext";
 
 function InterviewSessionPage() {
   const navigate = useNavigate();
-  const { currentQuestion, questionIndex, questions, nextQuestion, settings } =
-    useAppState();
+  const { currentQuestion, settings } = useAppState();
 
   const [code, setCode] = useState("");
   const [runOutput, setRunOutput] = useState("");
@@ -168,7 +167,7 @@ function InterviewSessionPage() {
     }
     navigate("/results", {
       state: {
-        questionsAttempted: questionIndex + 1,
+        questionsAttempted: 1,
         codeLength: code.length,
         timeline: timelineRef.current,
       },
@@ -243,3 +242,4 @@ function InterviewSessionPage() {
 }
 
 export default InterviewSessionPage;
+
