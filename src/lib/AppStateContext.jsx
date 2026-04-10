@@ -4,7 +4,8 @@ import { dummyQuestions } from "./mockData";
 const AppStateContext = createContext(null);
 
 const defaultSettings = {
-  role: "Frontend Engineer",
+  interviewName: "Frontend Interview",
+  company: "Google",
   difficulty: "Medium",
   durationMinutes: 15,
 };
