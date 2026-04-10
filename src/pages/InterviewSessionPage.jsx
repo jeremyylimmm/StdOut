@@ -11,6 +11,8 @@ function InterviewSessionPage() {
     useAppState();
 
   const [code, setCode] = useState("");
+  const [runOutput, setRunOutput] = useState("");
+  const [runError, setRunError] = useState("");
   const [transcript, setTranscript] = useState("");
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState("");
@@ -87,6 +89,27 @@ function InterviewSessionPage() {
       } catch (err) {}
     };
   }, []);
+
+  const handleRunCode = async () => {
+    setRunOutput("");
+    setRunError("");
+
+    try {
+      const res = await fetch("/api/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+      if (data.stderr) {
+        setRunError(data.stderr);
+      } else {
+        setRunOutput(data.stdout || "Code ran successfully.");
+      }
+    } catch (err) {
+      setRunError("Failed to reach the server.");
+    }
+  };
 
   const handleFinish = () => {
     // Stop recording before navigating
