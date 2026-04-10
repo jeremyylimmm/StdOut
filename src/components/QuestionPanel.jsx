@@ -1,15 +1,12 @@
-function QuestionPanel({ question, currentIndex, total }) {
+function QuestionPanel({ question }) {
   return (
-    <div className="card">
-      <h3>Question {currentIndex + 1}</h3>
+    <div className="card question-card">
+      <h3>Question</h3>
       <h4>{question?.title || "No question loaded"}</h4>
       <p>
         {question?.description ||
           "Please start an interview to view a question."}
       </p>
-      <small>
-        {currentIndex + 1} / {total}
-      </small>
     </div>
   );
 }

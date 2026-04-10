@@ -7,8 +7,7 @@ import { useAppState } from "../lib/AppStateContext";
 
 function InterviewSessionPage() {
   const navigate = useNavigate();
-  const { currentQuestion, questionIndex, questions, nextQuestion, settings } =
-    useAppState();
+  const { currentQuestion, settings } = useAppState();
 
   const [code, setCode] = useState("");
   const [runOutput, setRunOutput] = useState("");
@@ -122,42 +121,17 @@ function InterviewSessionPage() {
     }
     navigate("/results", {
       state: {
-        questionsAttempted: questionIndex + 1,
+        questionsAttempted: 1,
         codeLength: code.length,
       },
     });
   };
 
   return (
-    <section className="page session-layout">
-      <div className="stack">
-        <QuestionPanel
-          question={currentQuestion}
-          currentIndex={questionIndex}
-          total={questions.length}
-        />
-        <CodeEditor
-          value={code}
-          onChange={setCode}
-          onRun={handleRunCode}
-          output={runOutput}
-          error={runError}
-        />
-      </div>
-      <div className="stack">
-        <Timer initialSeconds={settings.durationMinutes * 60} />
-        <button
-          type="button"
-          onClick={nextQuestion}
-          disabled={questionIndex === questions.length - 1}
-        >
-          Next Question
-        </button>
-        <button type="button" onClick={handleFinish}>
-          Finish Interview
-        </button>
+    <section className="page session-layout leetcode-layout">
+      <div className="question-panel-wrap">
+        <QuestionPanel question={currentQuestion} />
 
-        {/* Voice Transcript */}
         <div className="voice-input">
           <div className="mic-status">
             {isRecording ? (
@@ -178,6 +152,29 @@ function InterviewSessionPage() {
               Clear
             </button>
           )}
+        </div>
+
+        <Timer initialSeconds={settings.durationMinutes * 60} />
+      </div>
+
+      <div className="editor-panel-wrap">
+        <CodeEditor value={code} onChange={setCode} />
+
+        <div className="card terminal-card">
+          <h3>Terminal</h3>
+          <pre
+            className={`run-output terminal-output ${runError ? "error" : ""}`}
+          >
+            {runError || runOutput || "Run your code to see output here."}
+          </pre>
+          <div className="session-actions">
+            <button type="button" onClick={handleRunCode}>
+              Run
+            </button>
+            <button type="button" onClick={handleFinish}>
+              Submit
+            </button>
+          </div>
         </div>
       </div>
     </section>

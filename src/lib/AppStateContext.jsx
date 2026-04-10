@@ -1,4 +1,4 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { dummyQuestions } from "./mockData";
 
 const AppStateContext = createContext(null);
@@ -9,10 +9,28 @@ const defaultSettings = {
   durationMinutes: 15,
 };
 
+function getInitialTheme() {
+  const savedTheme = window.localStorage.getItem("theme");
+
+  if (savedTheme === "light" || savedTheme === "dark") {
+    return savedTheme;
+  }
+
+  return window.matchMedia("(prefers-color-scheme: dark)").matches
+    ? "dark"
+    : "light";
+}
+
 export function AppStateProvider({ children }) {
   const [user, setUser] = useState(null);
   const [settings, setSettings] = useState(defaultSettings);
   const [questionIndex, setQuestionIndex] = useState(0);
+  const [theme, setTheme] = useState(getInitialTheme);
+
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", theme);
+    window.localStorage.setItem("theme", theme);
+  }, [theme]);
 
   const login = (username) => {
     const name = username?.trim() || "Candidate";
@@ -45,21 +63,27 @@ export function AppStateProvider({ children }) {
     setQuestionIndex(0);
   };
 
+  const toggleTheme = () => {
+    setTheme((prev) => (prev === "light" ? "dark" : "light"));
+  };
+
   const value = useMemo(
     () => ({
       user,
+      theme,
       settings,
       questions: dummyQuestions,
       questionIndex,
       currentQuestion: dummyQuestions[questionIndex],
       login,
       logout,
+      toggleTheme,
       saveSettings,
       startInterview,
       nextQuestion,
       resetInterview,
     }),
-    [user, settings, questionIndex],
+    [user, theme, settings, questionIndex],
   );
 
   return (
