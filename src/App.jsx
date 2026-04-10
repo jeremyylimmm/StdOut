@@ -1,19 +1,22 @@
-import { useEffect, useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useLocation } from "react-router-dom";
+import Navbar from "./components/Navbar";
+import { useAppState } from "./lib/AppStateContext";
+import AppRoutes from "./routes/AppRoutes";
+import "./App.css";
 
 function App() {
-  const [message, setMessage] = useState('')
+  const location = useLocation();
+  const { user } = useAppState();
+  const hideNavbar = location.pathname === "/login" && !user;
 
-  useEffect(() => {
-    fetch('/api/hello')
-      .then(res => res.json())
-      .then(data => setMessage(data.message));
-  }, []);
-
-  return <h1>{message}</h1>;
+  return (
+    <div className="app-shell">
+      {!hideNavbar && <Navbar />}
+      <main className="app-main">
+        <AppRoutes />
+      </main>
+    </div>
+  );
 }
 
-export default App
+export default App;
