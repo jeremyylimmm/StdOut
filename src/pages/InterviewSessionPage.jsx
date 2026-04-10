@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { diffLines } from "diff";
 import CodeEditor from "../components/CodeEditor";
 import QuestionPanel from "../components/QuestionPanel";
 import Timer from "../components/Timer";
@@ -7,16 +8,40 @@ import { useAppState } from "../lib/AppStateContext";
 
 function InterviewSessionPage() {
   const navigate = useNavigate();
-  const { currentQuestion, questionIndex, questions, nextQuestion, settings } =
-    useAppState();
+  const { currentQuestion, settings } = useAppState();
 
   const [code, setCode] = useState("");
-  const [transcript, setTranscript] = useState("");
+  const [runOutput, setRunOutput] = useState("");
+  const [runError, setRunError] = useState("");
+  const [timeline, setTimeline] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState("");
+
   const recognitionRef = useRef(null);
   const interimRef = useRef("");
   const restartingRef = useRef(false);
+  const timelineRef = useRef([]);
+  const prevCodeRef = useRef("");
+  const codeDebounceRef = useRef(null);
+  const startTimeRef = useRef(Date.now());
+  const timelineEndRef = useRef(null);
+
+  function getTimestamp() {
+    const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
+    const m = String(Math.floor(elapsed / 60)).padStart(2, "0");
+    const s = String(elapsed % 60).padStart(2, "0");
+    return `${m}:${s}`;
+  }
+
+  function pushEvent(event) {
+    const updated = [...timelineRef.current, event];
+    timelineRef.current = updated;
+    setTimeline(updated);
+  }
+
+  useEffect(() => {
+    timelineEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [timeline]);
 
   useEffect(() => {
     const SpeechRecognition =
@@ -41,34 +66,29 @@ function InterviewSessionPage() {
       for (let i = event.resultIndex; i < event.results.length; i++) {
         const result = event.results[i];
         if (result.isFinal) {
-          setTranscript((prev) => prev + result[0].transcript + " ");
+          const text = result[0].transcript.trim();
           interimRef.current = "";
+          pushEvent({ type: "speech", content: text, timestamp: getTimestamp() });
         } else {
           interim += result[0].transcript;
         }
       }
       interimRef.current = interim;
-
-      // Trigger re-render to show interim text
       setIsRecording((v) => v);
     };
 
-    // no speech and aborted require restart
     recognition.onerror = (event) => {
       if (event.error === "no-speech" || event.error === "aborted") return;
       setError("Mic error: " + event.error);
       setIsRecording(false);
     };
 
-    // The browser stops recognition after a period of silence
     recognition.onend = () => {
       if (restartingRef.current) return;
       restartingRef.current = true;
       try {
         recognition.start();
-      } catch (err) {
-        // Already started, ignore
-      }
+      } catch (err) {}
     };
 
     recognitionRef.current = recognition;
@@ -88,8 +108,59 @@ function InterviewSessionPage() {
     };
   }, []);
 
+  function handleCodeChange(newCode) {
+    setCode(newCode);
+
+    clearTimeout(codeDebounceRef.current);
+    codeDebounceRef.current = setTimeout(() => {
+      const prev = prevCodeRef.current;
+      if (newCode === prev) return;
+
+      const hunks = diffLines(prev, newCode);
+      const diffText = hunks
+        .filter((h) => h.added || h.removed)
+        .map((h) =>
+          h.value
+            .trimEnd()
+            .split("\n")
+            .map((line) => (h.added ? `+ ${line}` : `- ${line}`))
+            .join("\n")
+        )
+        .join("\n");
+
+      if (diffText) {
+        pushEvent({ type: "code", content: diffText, timestamp: getTimestamp() });
+      }
+
+      prevCodeRef.current = newCode;
+    }, 1500);
+  }
+
+  const handleRunCode = async () => {
+    setRunOutput("");
+    setRunError("");
+
+    try {
+      const res = await fetch("/api/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+      if (data.stderr) {
+        setRunError(data.stderr);
+        pushEvent({ type: "output", content: data.stderr, error: true, timestamp: getTimestamp() });
+      } else {
+        const output = data.stdout || "Code ran successfully.";
+        setRunOutput(output);
+        pushEvent({ type: "output", content: output, error: false, timestamp: getTimestamp() });
+      }
+    } catch (err) {
+      setRunError("Failed to reach the server.");
+    }
+  };
+
   const handleFinish = () => {
-    // Stop recording before navigating
     restartingRef.current = true;
     if (recognitionRef.current) {
       recognitionRef.current.onend = null;
@@ -99,62 +170,77 @@ function InterviewSessionPage() {
     }
     navigate("/results", {
       state: {
-        questionsAttempted: questionIndex + 1,
+        questionsAttempted: 1,
         codeLength: code.length,
+        timeline: timelineRef.current,
       },
     });
   };
 
   return (
-    <section className="page session-layout">
-      <div className="stack">
-        <QuestionPanel
-          question={currentQuestion}
-          currentIndex={questionIndex}
-          total={questions.length}
-        />
-        <CodeEditor
-          value={code}
-          onChange={setCode}
-          onRun={handleRunCode}
-          output={runOutput}
-          error={runError}
-        />
-      </div>
-      <div className="stack">
-        <Timer initialSeconds={settings.durationMinutes * 60} />
-        <button
-          type="button"
-          onClick={nextQuestion}
-          disabled={questionIndex === questions.length - 1}
-        >
-          Next Question
-        </button>
-        <button type="button" onClick={handleFinish}>
-          Finish Interview
-        </button>
-
-        {/* Voice Transcript */}
-        <div className="voice-input">
-          <div className="mic-status">
+    <section className="page leetcode-layout">
+      {/* Left: question + timeline + timer + finish */}
+      <div className="question-panel-wrap">
+        <QuestionPanel question={currentQuestion} />
+        <div className="card timeline-widget">
+          <div className="timeline-header">
+            <span>Timeline</span>
             {isRecording ? (
-              <span className="recording-indicator"> Live </span>
+              <span className="recording-indicator">Live</span>
             ) : (
-              <span>Microphone inactive</span>
+              <span className="mic-inactive">Mic inactive</span>
             )}
           </div>
           {error && <p className="mic-error">{error}</p>}
-          <textarea
-            readOnly
-            className="transcript-box"
-            placeholder="Transcription will appear here as you speak..."
-            value={transcript + interimRef.current}
-          />
-          {transcript && (
-            <button type="button" onClick={() => setTranscript("")}>
-              Clear
-            </button>
-          )}
+          <div className="timeline-scroll">
+            {timeline.length === 0 && (
+              <p className="timeline-empty">Events will appear here as you speak and type...</p>
+            )}
+            {timeline.map((event, i) => (
+              <div key={i} className={`timeline-event timeline-${event.type}`}>
+                <span className="timeline-ts">{event.timestamp}</span>
+                {event.type === "speech" ? (
+                  <span className="timeline-speech">{event.content}</span>
+                ) : event.type === "output" ? (
+                  <div>
+                    <div className="timeline-label">{event.error ? "error" : "output"}</div>
+                    <pre className={`timeline-diff ${event.error ? "timeline-output-error" : "timeline-output-ok"}`}>{event.content}</pre>
+                  </div>
+                ) : (
+                  <div>
+                    <div className="timeline-label">code</div>
+                    <pre className="timeline-diff">{event.content}</pre>
+                  </div>
+                )}
+              </div>
+            ))}
+            {interimRef.current && (
+              <div className="timeline-event timeline-interim">
+                <span className="timeline-ts">...</span>
+                <span>{interimRef.current}</span>
+              </div>
+            )}
+            <div ref={timelineEndRef} />
+          </div>
+        </div>
+        <Timer initialSeconds={settings.durationMinutes * 60} />
+        <div className="session-actions">
+          <button type="button" onClick={handleFinish}>
+            Finish Interview
+          </button>
+        </div>
+      </div>
+
+      {/* Right: editor + terminal */}
+      <div className="editor-panel-wrap">
+        <CodeEditor value={code} onChange={handleCodeChange} />
+        <div className="card terminal-card">
+          <button type="button" onClick={handleRunCode}>
+            Run Code
+          </button>
+          <pre className={`run-output terminal-output ${runError ? "error" : ""}`}>
+            {runError || runOutput || "Run your code to see output here..."}
+          </pre>
         </div>
       </div>
     </section>
@@ -162,3 +248,4 @@ function InterviewSessionPage() {
 }
 
 export default InterviewSessionPage;
+

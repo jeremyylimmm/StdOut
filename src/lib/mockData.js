@@ -18,3 +18,30 @@ export const dummyQuestions = [
       "Return the first character in a string that appears only once, or null if every character repeats.",
   },
 ];
+
+export const previousInterviews = [
+  {
+    id: "int-001",
+    date: "2026-03-28",
+    role: "Frontend Engineer",
+    score: 86,
+    feedback:
+      "Strong problem framing and communication. Improve edge case handling around empty and null inputs.",
+  },
+  {
+    id: "int-002",
+    date: "2026-04-02",
+    role: "Full Stack Developer",
+    score: 74,
+    feedback:
+      "Good API design choices. Spend more time discussing time complexity trade-offs during solution walkthrough.",
+  },
+  {
+    id: "int-003",
+    date: "2026-04-08",
+    role: "Software Engineer",
+    score: 91,
+    feedback:
+      "Excellent implementation speed and clean code structure. Keep validating assumptions aloud under time pressure.",
+  },
+];
