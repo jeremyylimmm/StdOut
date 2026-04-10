@@ -13,30 +13,24 @@ function InterviewSessionPage() {
   const [runOutput, setRunOutput] = useState("");
   const [runError, setRunError] = useState("");
 
-  const handleRunCode = () => {
+  const handleRunCode = async () => {
     setRunOutput("");
     setRunError("");
 
-    const logs = [];
-    const mockConsole = {
-      log: (...args) => {
-        logs.push(args.map((arg) => String(arg)).join(" "));
-      },
-    };
-
     try {
-      const run = new Function("console", `"use strict";\n${code}`);
-      const result = run(mockConsole);
-
-      if (result !== undefined) {
-        logs.push(`Return: ${String(result)}`);
+      const res = await fetch("/api/run", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      const data = await res.json();
+      if (data.stderr) {
+        setRunError(data.stderr);
+      } else {
+        setRunOutput(data.stdout || "Code ran successfully.");
       }
-
-      setRunOutput(
-        logs.length > 0 ? logs.join("\n") : "Code ran successfully.",
-      );
     } catch (error) {
-      setRunError(error instanceof Error ? error.message : "Execution failed.");
+      setRunError("Failed to reach the server.");
     }
   };
 
