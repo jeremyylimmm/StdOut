@@ -10,6 +10,35 @@ function InterviewSessionPage() {
   const { currentQuestion, questionIndex, questions, nextQuestion, settings } =
     useAppState();
   const [code, setCode] = useState("");
+  const [runOutput, setRunOutput] = useState("");
+  const [runError, setRunError] = useState("");
+
+  const handleRunCode = () => {
+    setRunOutput("");
+    setRunError("");
+
+    const logs = [];
+    const mockConsole = {
+      log: (...args) => {
+        logs.push(args.map((arg) => String(arg)).join(" "));
+      },
+    };
+
+    try {
+      const run = new Function("console", `"use strict";\n${code}`);
+      const result = run(mockConsole);
+
+      if (result !== undefined) {
+        logs.push(`Return: ${String(result)}`);
+      }
+
+      setRunOutput(
+        logs.length > 0 ? logs.join("\n") : "Code ran successfully.",
+      );
+    } catch (error) {
+      setRunError(error instanceof Error ? error.message : "Execution failed.");
+    }
+  };
 
   const handleFinish = () => {
     navigate("/results", {
@@ -28,7 +57,13 @@ function InterviewSessionPage() {
           currentIndex={questionIndex}
           total={questions.length}
         />
-        <CodeEditor value={code} onChange={setCode} />
+        <CodeEditor
+          value={code}
+          onChange={setCode}
+          onRun={handleRunCode}
+          output={runOutput}
+          error={runError}
+        />
       </div>
       <div className="stack">
         <Timer initialSeconds={settings.durationMinutes * 60} />
