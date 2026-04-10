@@ -4,7 +4,7 @@ const app = express();
 app.use(express.json()); // parses JSON request bodies
 
 app.get('/hello', (req, res) => {
-  res.send('Hello World');
+  res.json({ message: 'Hello World' });
 });
 
 app.listen(3001, () => {
