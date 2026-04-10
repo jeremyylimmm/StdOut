@@ -2,6 +2,9 @@ const express = require('express');
 const { execFile } = require('child_process');
 const app = express();
 
+const connectDB = require('./db');
+connectDB();
+
 app.use(express.json()); // parses JSON request bodies
 
 app.get('/hello', (req, res) => {
