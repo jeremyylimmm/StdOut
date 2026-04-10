@@ -327,6 +327,25 @@
   background: #fef2f2;
 }
 
+.timeline-label {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #94a3b8;
+  margin-bottom: 0.15rem;
+}
+
+.timeline-output-ok {
+  color: #1e40af;
+  background: #eff6ff;
+}
+
+.timeline-output-error {
+  color: #991b1b;
+  background: #fef2f2;
+}
+
 .timeline-interim {
   opacity: 0.45;
   font-style: italic;

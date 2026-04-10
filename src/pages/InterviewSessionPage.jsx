@@ -149,8 +149,11 @@ function InterviewSessionPage() {
       const data = await res.json();
       if (data.stderr) {
         setRunError(data.stderr);
+        pushEvent({ type: "output", content: data.stderr, error: true, timestamp: getTimestamp() });
       } else {
-        setRunOutput(data.stdout || "Code ran successfully.");
+        const output = data.stdout || "Code ran successfully.";
+        setRunOutput(output);
+        pushEvent({ type: "output", content: output, error: false, timestamp: getTimestamp() });
       }
     } catch (err) {
       setRunError("Failed to reach the server.");
@@ -198,8 +201,16 @@ function InterviewSessionPage() {
                 <span className="timeline-ts">{event.timestamp}</span>
                 {event.type === "speech" ? (
                   <span className="timeline-speech">{event.content}</span>
+                ) : event.type === "output" ? (
+                  <div>
+                    <div className="timeline-label">{event.error ? "error" : "output"}</div>
+                    <pre className={`timeline-diff ${event.error ? "timeline-output-error" : "timeline-output-ok"}`}>{event.content}</pre>
+                  </div>
                 ) : (
-                  <pre className="timeline-diff">{event.content}</pre>
+                  <div>
+                    <div className="timeline-label">code</div>
+                    <pre className="timeline-diff">{event.content}</pre>
+                  </div>
                 )}
               </div>
             ))}
