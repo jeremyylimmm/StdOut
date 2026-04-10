@@ -98,6 +98,27 @@
   font-family: "Consolas", "Courier New", monospace;
 }
 
+.editor-actions {
+  margin-top: 0.75rem;
+}
+
+.run-output {
+  margin-top: 0.75rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #f0f4f8;
+  padding: 0.75rem;
+  min-height: 64px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.run-output.error {
+  border-color: #ef4444;
+  background: #fef2f2;
+  color: #b91c1c;
+}
+
 input,
 select,
 button,

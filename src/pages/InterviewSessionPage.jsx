@@ -113,7 +113,13 @@ function InterviewSessionPage() {
           currentIndex={questionIndex}
           total={questions.length}
         />
-        <CodeEditor value={code} onChange={setCode} />
+        <CodeEditor
+          value={code}
+          onChange={setCode}
+          onRun={handleRunCode}
+          output={runOutput}
+          error={runError}
+        />
       </div>
       <div className="stack">
         <Timer initialSeconds={settings.durationMinutes * 60} />
