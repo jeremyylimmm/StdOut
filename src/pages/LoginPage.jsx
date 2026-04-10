@@ -10,7 +10,7 @@ function LoginPage() {
   const handleSubmit = (event) => {
     event.preventDefault();
     login(name);
-    navigate("/dashboard");
+    navigate("/interview/setup");
   };
 
   return (

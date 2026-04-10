@@ -3,6 +3,7 @@ import DashboardPage from "../pages/DashboardPage";
 import InterviewSessionPage from "../pages/InterviewSessionPage";
 import InterviewSetupPage from "../pages/InterviewSetupPage";
 import LoginPage from "../pages/LoginPage";
+import OldInterviewsPage from "../pages/OldInterviewsPage";
 import ResultsPage from "../pages/ResultsPage";
 import { useAppState } from "../lib/AppStateContext";
 
@@ -23,7 +24,7 @@ function AppRoutes() {
     <Routes>
       <Route
         path="/"
-        element={<Navigate to={user ? "/dashboard" : "/login"} replace />}
+        element={<Navigate to={user ? "/interview/setup" : "/login"} replace />}
       />
       <Route path="/login" element={<LoginPage />} />
       <Route
@@ -55,6 +56,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <ResultsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/interviews/old"
+        element={
+          <ProtectedRoute>
+            <OldInterviewsPage />
           </ProtectedRoute>
         }
       />

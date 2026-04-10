@@ -14,10 +14,8 @@ function Navbar() {
     <header className="navbar">
       <div className="brand">AI Interview Sim</div>
       <nav className="nav-links">
-        <Link to="/dashboard">Dashboard</Link>
-        <Link to="/interview/setup">Setup</Link>
-        <Link to="/interview/session">Session</Link>
-        <Link to="/results">Results</Link>
+        <Link to="/interview/setup">New Interview</Link>
+        <Link to="/interviews/old">Previous Interviews</Link>
       </nav>
       <div className="nav-user">
         {user ? <span>{user.name}</span> : <span>Guest</span>}
