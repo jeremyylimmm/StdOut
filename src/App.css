@@ -94,6 +94,21 @@
   margin: 0;
 }
 
+.cm-editor {
+  height: 360px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.cm-editor .cm-scroller {
+  overflow: auto;
+}
+
+.cm-editor .cm-content {
+  min-height: 100%;
+}
+
 .code-editor {
   width: 100%;
   min-height: 240px;
