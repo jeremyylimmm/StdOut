@@ -7,6 +7,6 @@
 - [ ] Code executor
 - [ ] Voice Transcriber
 - [ ] Code diff tracker
-- [ ] Real conversation AI
 - [ ] Data processor
 - [ ] Leet-code problems
+- [ ] Real-time conversation AI
