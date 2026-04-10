@@ -15,15 +15,20 @@ function OldInterviewsPage() {
   return (
     <section className="page">
       <div className="card">
-        <h1>Old Interviews</h1>
-        <p>Review your previous interview attempts, scores, and feedback.</p>
+        <h1>Previous Interviews</h1>
+        <p>Review past interview setups, scores, and feedback.</p>
       </div>
 
       <div className="stack">
         {previousInterviews.map((interview) => (
           <article className="card" key={interview.id}>
             <p>
-              <strong>{interview.role}</strong> on {formatDate(interview.date)}
+              <strong>{interview.interviewName}</strong> on{" "}
+              {formatDate(interview.date)}
+            </p>
+            <p>
+              {interview.company} · {interview.difficulty} ·{" "}
+              {interview.durationMinutes} minutes
             </p>
             <p className="score">Score: {interview.score}/100</p>
             <p>{interview.feedback}</p>
@@ -35,9 +40,9 @@ function OldInterviewsPage() {
         <button
           type="button"
           className="ghost-btn"
-          onClick={() => navigate("/dashboard")}
+          onClick={() => navigate("/interview/setup")}
         >
-          Back to Dashboard
+          Back to New Interview
         </button>
       </div>
     </section>

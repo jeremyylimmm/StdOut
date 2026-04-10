@@ -5,7 +5,8 @@ function ResultsCard({ user, settings, questionsAttempted, codeLength }) {
     <div className="card">
       <h2>Interview Summary</h2>
       <p>Candidate: {user?.name || "Unknown"}</p>
-      <p>Role: {settings.role}</p>
+      <p>Interview Name: {settings.interviewName}</p>
+      <p>Company: {settings.company}</p>
       <p>Difficulty: {settings.difficulty}</p>
       <p>Duration: {settings.durationMinutes} minutes</p>
       <p>Questions Attempted: {questionsAttempted}</p>

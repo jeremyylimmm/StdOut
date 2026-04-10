@@ -23,7 +23,10 @@ export const previousInterviews = [
   {
     id: "int-001",
     date: "2026-03-28",
-    role: "Frontend Engineer",
+    interviewName: "Frontend System Design Drill",
+    company: "Google",
+    difficulty: "Medium",
+    durationMinutes: 15,
     score: 86,
     feedback:
       "Strong problem framing and communication. Improve edge case handling around empty and null inputs.",
@@ -31,7 +34,10 @@ export const previousInterviews = [
   {
     id: "int-002",
     date: "2026-04-02",
-    role: "Full Stack Developer",
+    interviewName: "Backend Coding Sprint",
+    company: "Amazon",
+    difficulty: "Hard",
+    durationMinutes: 20,
     score: 74,
     feedback:
       "Good API design choices. Spend more time discussing time complexity trade-offs during solution walkthrough.",
@@ -39,7 +45,10 @@ export const previousInterviews = [
   {
     id: "int-003",
     date: "2026-04-08",
-    role: "Software Engineer",
+    interviewName: "DSA Warmup",
+    company: "Meta",
+    difficulty: "Easy",
+    durationMinutes: 10,
     score: 91,
     feedback:
       "Excellent implementation speed and clean code structure. Keep validating assumptions aloud under time pressure.",

@@ -2,6 +2,19 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
 
+const popularCompanies = [
+  "Google",
+  "Amazon",
+  "Microsoft",
+  "Meta",
+  "Apple",
+  "Netflix",
+  "OpenAI",
+  "Stripe",
+  "Uber",
+  "Salesforce",
+];
+
 function InterviewSetupPage() {
   const navigate = useNavigate();
   const { settings, saveSettings, startInterview } = useAppState();
@@ -27,12 +40,28 @@ function InterviewSetupPage() {
       <div className="card">
         <h1>Interview Setup</h1>
         <form onSubmit={handleStart} className="stack">
-          <label htmlFor="role">Role</label>
+          <label htmlFor="interviewName">Name of interview</label>
           <input
-            id="role"
-            value={form.role}
-            onChange={(event) => updateForm("role", event.target.value)}
+            id="interviewName"
+            value={form.interviewName}
+            onChange={(event) =>
+              updateForm("interviewName", event.target.value)
+            }
+            placeholder="Frontend Interview Prep"
           />
+
+          <label htmlFor="company">Company</label>
+          <select
+            id="company"
+            value={form.company}
+            onChange={(event) => updateForm("company", event.target.value)}
+          >
+            {popularCompanies.map((company) => (
+              <option key={company} value={company}>
+                {company}
+              </option>
+            ))}
+          </select>
 
           <label htmlFor="difficulty">Difficulty</label>
           <select
@@ -45,7 +74,7 @@ function InterviewSetupPage() {
             <option>Hard</option>
           </select>
 
-          <label htmlFor="duration">Duration (minutes)</label>
+          <label htmlFor="duration">Time limit (minutes)</label>
           <select
             id="duration"
             value={form.durationMinutes}
