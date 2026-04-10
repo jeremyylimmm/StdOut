@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import DashboardPage from "../pages/DashboardPage";
 import InterviewSessionPage from "../pages/InterviewSessionPage";
 import InterviewSetupPage from "../pages/InterviewSetupPage";
 import LoginPage from "../pages/LoginPage";
@@ -7,17 +8,7 @@ import ResultsPage from "../pages/ResultsPage";
 import { useAppState } from "../lib/AppStateContext";
 
 function ProtectedRoute({ children }) {
-  const { user, authLoading } = useAppState();
-
-  if (authLoading) {
-    return (
-      <section className="page narrow">
-        <div className="card">
-          <p>Checking your session...</p>
-        </div>
-      </section>
-    );
-  }
+  const { user } = useAppState();
 
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -27,17 +18,7 @@ function ProtectedRoute({ children }) {
 }
 
 function AppRoutes() {
-  const { user, authLoading } = useAppState();
-
-  if (authLoading) {
-    return (
-      <section className="page narrow">
-        <div className="card">
-          <p>Loading...</p>
-        </div>
-      </section>
-    );
-  }
+  const { user } = useAppState();
 
   return (
     <Routes>
@@ -46,6 +27,14 @@ function AppRoutes() {
         element={<Navigate to={user ? "/interview/setup" : "/login"} replace />}
       />
       <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <DashboardPage />
+          </ProtectedRoute>
+        }
+      />
       <Route
         path="/interview/setup"
         element={

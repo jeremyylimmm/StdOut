@@ -1,6 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
 import { dummyQuestions } from "./mockData";
-import { apiFetch } from "./api";
 
 const AppStateContext = createContext(null);
 
@@ -24,7 +23,6 @@ function getInitialTheme() {
 
 export function AppStateProvider({ children }) {
   const [user, setUser] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
   const [settings, setSettings] = useState(defaultSettings);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [theme, setTheme] = useState(getInitialTheme);
@@ -34,38 +32,16 @@ export function AppStateProvider({ children }) {
     window.localStorage.setItem("theme", theme);
   }, [theme]);
 
-  useEffect(() => {
-    async function bootstrapSession() {
-      try {
-        const result = await apiFetch("/auth/me", { method: "GET" });
-        setUser(result.user);
-      } catch (error) {
-        setUser(null);
-      } finally {
-        setAuthLoading(false);
-      }
-    }
-
-    bootstrapSession();
-  }, []);
-
-  const loginWithGoogleToken = async (idToken) => {
-    const result = await apiFetch("/auth/google", {
-      method: "POST",
-      body: JSON.stringify({ idToken }),
+  const login = (username) => {
+    const name = username?.trim() || "Candidate";
+    setUser({
+      id: "mock-user-1",
+      name,
+      email: `${name.toLowerCase().replace(/\s+/g, ".")}@example.com`,
     });
-
-    setUser(result.user);
-    return result.user;
   };
 
-  const logout = async () => {
-    try {
-      await apiFetch("/auth/logout", { method: "POST" });
-    } catch (error) {
-      // Ignore network/logout race and still clear local state.
-    }
-
+  const logout = () => {
     setUser(null);
     setQuestionIndex(0);
     setSettings(defaultSettings);
@@ -94,13 +70,12 @@ export function AppStateProvider({ children }) {
   const value = useMemo(
     () => ({
       user,
-      authLoading,
       theme,
       settings,
       questions: dummyQuestions,
       questionIndex,
       currentQuestion: dummyQuestions[questionIndex],
-      loginWithGoogleToken,
+      login,
       logout,
       toggleTheme,
       saveSettings,
@@ -108,7 +83,7 @@ export function AppStateProvider({ children }) {
       nextQuestion,
       resetInterview,
     }),
-    [user, authLoading, theme, settings, questionIndex],
+    [user, theme, settings, questionIndex],
   );
 
   return (

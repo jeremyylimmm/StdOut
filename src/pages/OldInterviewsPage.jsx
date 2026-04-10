@@ -35,9 +35,9 @@ function OldInterviewsPage() {
         <button
           type="button"
           className="ghost-btn"
-          onClick={() => navigate("/interview/setup")}
+          onClick={() => navigate("/dashboard")}
         >
-          Back to New Interview
+          Back to Dashboard
         </button>
       </div>
     </section>
