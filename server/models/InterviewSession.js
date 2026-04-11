@@ -30,6 +30,10 @@ const interviewSessionSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
+    review: {
+      type: String,
+      default: "",
+    },
     code: {
       type: String,
       default: "",
