@@ -28,6 +28,10 @@ function InterviewSessionPage() {
   const startTimeRef = useRef(Date.now());
   const timelineEndRef = useRef(null);
   const timerRef = useRef(null);
+  const pcRef = useRef(null);
+  const streamRef = useRef(null);
+  const channelRef = useRef(null);
+  const codeRef = useRef("");
 
   function getTimestamp() {
     const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
@@ -58,24 +62,89 @@ function InterviewSessionPage() {
     setTimeline(updated);
   }
 
+  function buildSessionInstructions(currentCode) {
+    return `You are a senior software engineer conducting a mock technical interview.
+
+The candidate is solving this problem:
+Title: ${currentQuestion?.title ?? "Unknown"}
+Description: ${currentQuestion?.description ?? "No description provided"}
+Difficulty: ${currentQuestion?.difficulty ?? "Unknown"}
+
+The candidate's CURRENT code is:
+\`\`\`
+${currentCode || "(no code written yet)"}
+\`\`\`
+
+Your rules:
+- Only discuss the question above. Refuse to discuss anything else.
+- Only ask one clarifying question at a time about their reasoning or logic.
+- Be slightly strict but fair.
+- Remember you are not trying to help the user but gauge their understanding.
+- NEVER reveal anything about the answer such as time complexity or optimal approach even if the user asks.
+- Keep all responses under 20 seconds of speech.
+- Silence is key, only respond if they ask questions or their approach is confusing.
+- If what is said is not related to the question or approach at all DONT RESPOND.
+- Never give away the answer.
+- If they are stuck and ask for help, give only vague hints.
+- Do not solve the problem for them.
+- When asked to review the code, refer to the current code shown above.`;
+  }
+
   useEffect(() => {
-    // Initialize code editor with the question's initial code
     if (currentQuestion?.initialCode) {
       setCode(currentQuestion.initialCode);
       prevCodeRef.current = currentQuestion.initialCode;
+      codeRef.current = currentQuestion.initialCode;
     }
+  }, [currentQuestion]);
+
+  useEffect(() => {
+    if (!currentQuestion) return;
+
+    if (pcRef.current) {
+      pcRef.current.close();
+      pcRef.current = null;
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+
+    startRealtime();
+
+    return () => {
+      if (pcRef.current) {
+        pcRef.current.close();
+        pcRef.current = null;
+      }
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current = null;
+      }
+    };
   }, [currentQuestion]);
 
   useEffect(() => {
     let stopped = false;
 
     async function startRecording() {
+      let attempts = 0;
+      while (!streamRef.current && attempts < 20) {
+        await new Promise(r => setTimeout(r, 100));
+        attempts++;
+      }
+
       let stream;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      } catch (err) {
-        setError("Mic error: " + err.message);
-        return;
+      if (streamRef.current) {
+        stream = streamRef.current;
+      } else {
+        try {
+          stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          streamRef.current = stream;
+        } catch (err) {
+          setError("Mic error: " + err.message);
+          return;
+        }
       }
 
       setIsRecording(true);
@@ -146,7 +215,6 @@ function InterviewSessionPage() {
         const MAX_DURATION = 10000;
         const SPEECH_THRESHOLD = 0.03;
         const SILENCE_DURATION = 700;
-        const MIN_SPEECH_MS = 400; // must have this much speech to send
         let silenceStart = null;
         let speechMs = 0;
         let lastTick = Date.now();
@@ -181,9 +249,7 @@ function InterviewSessionPage() {
           }
         }, 50);
 
-        // store speechMs ref so onstop can read it
         recorder._speechMs = () => speechMs;
-
         chunkIntervalRef.current = vadInterval;
       }
 
@@ -209,8 +275,76 @@ function InterviewSessionPage() {
     };
   }, []);
 
+  async function startRealtime() {
+    try {
+      const tokenResponse = await fetch("http://localhost:3001/api/realTime/session");
+      const sessionData = await tokenResponse.json();
+
+      const pc = new RTCPeerConnection();
+      pcRef.current = pc;
+
+      const channel = pc.createDataChannel("oai-events");
+      channelRef.current = channel;
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      streamRef.current = stream;
+
+      channel.onopen = () => {
+        channel.send(JSON.stringify({
+          type: "session.update",
+          session: {
+            instructions: buildSessionInstructions(codeRef.current),
+          },
+        }));
+
+        channel.send(JSON.stringify({
+          type: "response.create",
+          response: {
+            modalities: ["audio", "text"],
+            instructions: `Greet the candidate with exactly: "Hi, welcome to the technical interview, start when you are ready." Say nothing else.`,
+          },
+        }));
+      };
+
+      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+
+      const audio = document.createElement("audio");
+      audio.autoplay = true;
+
+      pc.ontrack = (event) => {
+        audio.srcObject = event.streams[0];
+      };
+
+      const offer = await pc.createOffer();
+      await pc.setLocalDescription(offer);
+
+      const response = await fetch(
+        "https://api.openai.com/v1/realtime?model=gpt-4o-realtime-preview",
+        {
+          method: "POST",
+          body: offer.sdp,
+          headers: {
+            Authorization: `Bearer ${sessionData.client_secret.value}`,
+            "Content-Type": "application/sdp",
+          },
+        }
+      );
+
+      const answer = {
+        type: "answer",
+        sdp: await response.text(),
+      };
+
+      await pc.setRemoteDescription(answer);
+    } catch (err) {
+      console.error("Realtime setup failed:", err);
+      setError("Realtime AI setup failed: " + err.message);
+    }
+  }
+
   function handleCodeChange(newCode) {
     setCode(newCode);
+    codeRef.current = newCode;
 
     clearTimeout(codeDebounceRef.current);
     codeDebounceRef.current = setTimeout(() => {
@@ -238,6 +372,16 @@ function InterviewSessionPage() {
       }
 
       prevCodeRef.current = newCode;
+
+      // Push updated code context to the realtime AI
+      if (channelRef.current?.readyState === "open") {
+        channelRef.current.send(JSON.stringify({
+          type: "session.update",
+          session: {
+            instructions: buildSessionInstructions(newCode),
+          },
+        }));
+      }
     }, 1500);
   }
 
@@ -287,14 +431,24 @@ function InterviewSessionPage() {
     }
     setIsRecording(false);
 
+    if (pcRef.current) {
+      pcRef.current.close();
+      pcRef.current = null;
+    }
+    if (streamRef.current) {
+      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current = null;
+    }
+
     const transcript = timelineRef.current
       .map((event) => `[${event.timestamp}] ${event.type}: ${event.content}`)
       .join("\n");
 
+
     const timeLeft = timerRef.current?.getTimeLeft() || 0;
 
-    let testResults = null;
 
+    let testResults = null;
     if (currentQuestion?._id) {
       setSubmitStep("Running test cases...");
       try {
@@ -307,6 +461,7 @@ function InterviewSessionPage() {
           },
         );
         if (response.ok) {
+          testResults = await response.json();
           testResults = await response.json();
         } else {
           console.error("Submit response not ok:", response.status);
@@ -354,7 +509,6 @@ function InterviewSessionPage() {
 
   return (
     <section className="page leetcode-layout">
-      {/* Left: question + timeline + timer + finish */}
       <div className="question-panel-wrap">
         <QuestionPanel
           question={currentQuestion}
@@ -387,9 +541,7 @@ function InterviewSessionPage() {
                     <div className="timeline-label">
                       {event.error ? "error" : "output"}
                     </div>
-                    <pre
-                      className={`timeline-diff ${event.error ? "timeline-output-error" : "timeline-output-ok"}`}
-                    >
+                    <pre className={`timeline-diff ${event.error ? "timeline-output-error" : "timeline-output-ok"}`}>
                       {event.content}
                     </pre>
                   </div>
@@ -406,7 +558,6 @@ function InterviewSessionPage() {
         </div>
       </div>
 
-      {/* Right: editor + terminal */}
       <div className="editor-panel-wrap">
         <CodeEditor
           value={code}

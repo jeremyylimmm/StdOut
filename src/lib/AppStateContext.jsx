@@ -135,6 +135,7 @@ export function AppStateProvider({ children }) {
               company: settings.company,
               difficulty: settings.difficulty,
               durationMinutes: settings.durationMinutes,
+              questionId: questions[questionIndex]?.id,
             },
             transcript,
             review,

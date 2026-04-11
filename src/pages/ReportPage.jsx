@@ -71,6 +71,14 @@ function CodeHighlighter({ code }) {
   const colorMap = { keyword: "#569cd6", string: "#ce9178", comment: "#6a9955", builtin: "#4fc1ff", number: "#b5cea8" };
   const lines = code.split("\n");
 
+  // Build line position map: [lineNum] -> startCharPos in original code
+  const linePositions = [];
+  let charPos = 0;
+  for (let i = 0; i < lines.length; i++) {
+    linePositions[i] = charPos;
+    charPos += lines[i].length + 1; // +1 for newline
+  }
+
   return (
     <div style={{ display: "flex", lineHeight: "1.6" }}>
       <div style={{ color: "#858585", paddingRight: "1.5rem", textAlign: "right", userSelect: "none", minWidth: "fit-content" }}>
@@ -80,12 +88,16 @@ function CodeHighlighter({ code }) {
         {lines.map((line, lineNum) => (
           <div key={lineNum}>
             {line.split("").map((char, charIdx) => {
+              const absolutePos = linePositions[lineNum] + charIdx;
               let displayColor = "#d4d4d4";
+
               for (const match of matches) {
-                const lineStart = code.substring(0, code.lastIndexOf("\n", code.indexOf(line))).split("\n").reduce((a, b) => a + b.length + 1, 0);
-                const charPos = lineStart + charIdx;
-                if (charPos >= match.start && charPos < match.end) { displayColor = colorMap[match.type]; break; }
+                if (absolutePos >= match.start && absolutePos < match.end) {
+                  displayColor = colorMap[match.type];
+                  break;
+                }
               }
+
               return <span key={charIdx} style={{ color: displayColor }}>{char}</span>;
             })}
           </div>
@@ -170,6 +182,8 @@ function ReportPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedTestCase, setSelectedTestCase] = useState(null);
+  const [solution, setSolution] = useState(null);
+  const [solutionLoading, setSolutionLoading] = useState(false);
 
   const sessionData = location.state?.sessionData;
   const sessionId = location.state?.sessionId;
@@ -196,6 +210,36 @@ function ReportPage() {
     };
     loadInterview();
   }, [sessionData, sessionId]);
+
+  // Fetch solution when interview is loaded
+  useEffect(() => {
+    const loadSolution = async () => {
+      console.log("Interview data:", interview);
+      console.log("Question ID:", interview?.interview?.questionId);
+
+      if (!interview?.interview?.questionId) {
+        console.log("No questionId found");
+        return;
+      }
+      try {
+        setSolutionLoading(true);
+        const response = await fetch(`http://localhost:3001/api/questions/${interview.interview.questionId}`);
+        console.log("Solution fetch response:", response.ok, response.status);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Question data:", data);
+          console.log("Solution:", data.solution);
+          setSolution(data.solution);
+        }
+      } catch (err) {
+        console.error("Failed to load solution:", err);
+      } finally {
+        setSolutionLoading(false);
+      }
+    };
+    loadSolution();
+  }, [interview?.interview?.questionId]);
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this interview?")) return;
@@ -333,6 +377,38 @@ function ReportPage() {
         <Collapsible title="Code">
           <div className="rp-codebox">
             <CodeHighlighter code={interview.code} />
+          </div>
+        </Collapsible>
+      )}
+
+      {/* Solution */}
+      {solution && (
+        <Collapsible title="Solution">
+          <div className="rp-solution">
+            <div className="rp-solution-section">
+              <h3>Code</h3>
+              <div className="rp-codebox">
+                <CodeHighlighter code={solution.code} />
+              </div>
+            </div>
+            {solution.explanation && (
+              <div className="rp-solution-section">
+                <h3>Explanation</h3>
+                <p>{solution.explanation}</p>
+              </div>
+            )}
+            {solution.timeComplexity && (
+              <div className="rp-solution-section">
+                <h3>Time Complexity</h3>
+                <p><strong>{solution.timeComplexity}</strong></p>
+              </div>
+            )}
+            {solution.spaceComplexity && (
+              <div className="rp-solution-section">
+                <h3>Space Complexity</h3>
+                <p><strong>{solution.spaceComplexity}</strong></p>
+              </div>
+            )}
           </div>
         </Collapsible>
       )}
