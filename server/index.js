@@ -3,18 +3,37 @@ require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { execFile } = require("child_process");
+const fs = require("fs");
+const path = require("path");
 const app = express();
 
 const connectDB = require("./db");
 const authRoutes = require("./routes/auth");
 const interviewRoutes = require("./routes/interviews");
 const questionsRoutes = require("./routes/questions");
+const InterviewQuestion = require("./models/InterviewQuestion");
 const transcribeRoutes = require('./routes/transcribe');
 
 // Connect to DB and start server
 const startServer = async () => {
   try {
     await connectDB();
+
+    // Auto-seed questions if database is empty
+    const existingCount = await InterviewQuestion.countDocuments();
+    if (existingCount === 0) {
+      console.log("\n📝 No questions found. Auto-seeding from questions.json...");
+      try {
+        const questionsPath = path.join(__dirname, "data", "questions.json");
+        const questionData = JSON.parse(fs.readFileSync(questionsPath, "utf-8"));
+        const questionsToInsert = Array.isArray(questionData) ? questionData : [questionData];
+
+        await InterviewQuestion.insertMany(questionsToInsert);
+        console.log(`✅ Successfully seeded ${questionsToInsert.length} question(s)!\n`);
+      } catch (seedError) {
+        console.warn("⚠️  Could not auto-seed questions:", seedError.message);
+      }
+    }
 
     // Enable CORS for frontend (allow multiple ports)
     app.use(
