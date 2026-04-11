@@ -12,7 +12,7 @@ function Navbar() {
 
   return (
     <header className="navbar">
-      <div className="brand">AI Interview Sim</div>
+      <div className="brand">StdOut Interview Simulator</div>
       <nav className="nav-links">
         <Link to="/interview/setup">New Interview</Link>
         <Link to="/interviews/old">Previous Interviews</Link>
