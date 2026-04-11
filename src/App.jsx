@@ -31,11 +31,11 @@ function App() {
   return (
     <div className="app-shell">
       {!hideNavbar && <Navbar />}
-      <div
-        className={`app-scroll ${isInterviewSession ? "app-scroll--session" : ""} ${isLogin ? "app-scroll--login" : ""}`}
-      >
-        <div className={`app-body ${showSidebar ? "app-body--with-sidebar" : ""}`}>
-          {showSidebar && <Sidebar />}
+      <div className={`app-body ${showSidebar ? "app-body--with-sidebar" : ""}`}>
+        {showSidebar && <Sidebar />}
+        <div
+          className={`app-scroll ${isInterviewSession ? "app-scroll--session" : ""} ${isLogin ? "app-scroll--login" : ""}`}
+        >
           <main className={`app-main ${isInterviewSession ? "app-main--session" : ""} ${isLogin ? "app-main--login" : ""}`}>
             <AppRoutes />
           </main>

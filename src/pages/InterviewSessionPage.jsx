@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { diffLines } from "diff";
 import CodeEditor from "../components/CodeEditor";
@@ -15,6 +16,8 @@ function InterviewSessionPage() {
   const [timeline, setTimeline] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStep, setSubmitStep] = useState("");
 
   const mediaRecorderRef = useRef(null);
   const chunkIntervalRef = useRef(null);
@@ -410,6 +413,10 @@ ABSOLUTE RULES - NEVER BREAK THESE:
   };
 
   const handleFinish = async () => {
+    setSubmitting(true);
+    setSubmitStep("Stopping recording...");
+    await new Promise((resolve) => setTimeout(resolve, 0));
+
     clearTimeout(chunkIntervalRef.current);
     if (mediaRecorderRef.current?.state === "recording") {
       mediaRecorderRef.current.onstop = null;
@@ -434,6 +441,7 @@ ABSOLUTE RULES - NEVER BREAK THESE:
 
     let testResults = null;
     if (currentQuestion?._id) {
+      setSubmitStep("Running test cases...");
       try {
         const response = await fetch(
           `http://localhost:3001/api/questions/${currentQuestion._id}/submit`,
@@ -453,6 +461,7 @@ ABSOLUTE RULES - NEVER BREAK THESE:
       }
     }
 
+    setSubmitStep("Generating AI review...");
     let review = null;
     try {
       const res = await fetch("http://localhost:3001/api/review", {
@@ -466,19 +475,11 @@ ABSOLUTE RULES - NEVER BREAK THESE:
       console.error("Review failed:", err);
     }
 
-    await saveInterview(transcript, code, timeLeft, testResults, review);
+    setSubmitStep("Saving session...");
+    const sessionId = await saveInterview(transcript, code, timeLeft, testResults, review);
 
-    const initialTimeSeconds = settings.durationMinutes * 60;
-    const timeSpentSeconds = initialTimeSeconds - timeLeft;
-
-    navigate("/results", {
-      state: {
-        timeSpentSeconds,
-        codeLength: code.length,
-        timeline: timelineRef.current,
-        testResults,
-        review,
-      },
+    navigate("/report", {
+      state: { sessionId },
     });
   };
 
@@ -542,6 +543,15 @@ ABSOLUTE RULES - NEVER BREAK THESE:
           </pre>
         </div>
       </div>
+      {submitting && createPortal(
+        <div className="submit-overlay">
+          <div className="submit-overlay-box">
+            <div className="submit-spinner" />
+            <p className="submit-overlay-step">{submitStep}</p>
+          </div>
+        </div>,
+        document.body,
+      )}
     </section>
   );
 }
