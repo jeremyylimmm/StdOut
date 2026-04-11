@@ -6,10 +6,10 @@ const connectDB = async () => {
     const mongoUri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/stdout";
     console.log("Attempting to connect to MongoDB at:", mongoUri);
     await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 5000 });
-    console.log("✓ MongoDB connected successfully");
+    console.log("MongoDB connected successfully");
   } catch (err) {
-    console.error("✗ MongoDB connection error:", err.message);
-    console.warn("⚠ Server still running despite MongoDB error - auth will fail");
+    console.error("MongoDB connection error:", err.message);
+    console.warn("Server still running despite MongoDB error - auth will fail");
   }
 };
 
