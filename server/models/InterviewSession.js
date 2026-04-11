@@ -25,6 +25,10 @@ const interviewSessionSchema = new mongoose.Schema(
         type: Number,
         required: true,
       },
+      questionId: {
+        type: String,
+        default: null,
+      },
     },
     transcript: {
       type: String,

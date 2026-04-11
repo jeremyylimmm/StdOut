@@ -108,6 +108,19 @@ p {
 
 .app-scroll--session {
   overflow: hidden;
+  scrollbar-gutter: auto;
+}
+
+.app-body {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  min-height: 0;
+}
+
+.app-body--with-sidebar .app-main {
+  flex: 1;
+  min-width: 0;
 }
 
 .app-main {
@@ -249,18 +262,30 @@ p {
 
 /* Dashboard */
 .dashboard-layout {
-  display: grid;
-  grid-template-columns: 200px 1fr;
   height: 100%;
   min-height: 0;
 }
 
 .dashboard-sidebar {
-  border-right: 1px solid var(--border);
-  padding: 1.5rem 1rem;
+  width: 200px;
+  flex-shrink: 0;
+  padding: 2.5rem 1rem 1.5rem 2rem;
   display: flex;
   flex-direction: column;
   gap: 0.25rem;
+  align-self: flex-start;
+  background: var(--bg);
+  position: relative;
+}
+
+.dashboard-sidebar::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 2rem;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
 }
 
 .dashboard-sidebar-label {
@@ -978,8 +1003,10 @@ p {
   overflow: hidden;
 }
 
-.question-panel-wrap .card {
+.question-panel-wrap .card,
+.editor-panel-wrap .card {
   min-height: 0;
+  border-width: 1px;
 }
 
 .question-card {
@@ -1021,6 +1048,39 @@ p {
 
 .question-card::-webkit-scrollbar-thumb:hover {
   background: var(--border-light);
+}
+
+.question-constraints {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border);
+}
+
+.question-constraints h5 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.question-constraints ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: none;
+}
+
+.question-constraints li {
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.question-constraints strong {
+  color: var(--text);
+  font-weight: 600;
 }
 
 .terminal-output {
@@ -1208,10 +1268,14 @@ p {
 
 .cm-editor {
   height: clamp(340px, 52vh, 760px);
-  border: 2px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: 0;
   overflow: hidden;
   box-shadow: none;
+}
+
+.code-editor-card .cm-editor {
+  height: 100%;
 }
 
 .editor-panel-wrap {
@@ -1233,10 +1297,69 @@ p {
   align-items: center;
   justify-content: space-between;
   padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0.5rem;
+}
+
+.code-editor-header-left {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
 }
 
 .code-editor-header h3 {
   margin: 0;
+}
+
+.vim-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted-text);
+  cursor: pointer;
+  margin: 0;
+  user-select: none;
+  padding: 0.45rem 1.1rem;
+}
+
+.vim-toggle input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 16px;
+  height: 16px;
+  min-width: 16px;
+  margin: 0;
+  padding: 0;
+  border: 1.5px solid var(--muted-text);
+  cursor: pointer;
+  position: relative;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+
+.vim-toggle input[type="checkbox"]::before {
+  content: "×";
+  font-size: 16px;
+  line-height: 1;
+  color: var(--brand);
+  display: none;
+}
+
+.vim-toggle input[type="checkbox"]:checked {
+  border-color: var(--brand);
+}
+
+.vim-toggle input[type="checkbox"]:checked::before {
+  display: block;
+}
+
+.vim-toggle:has(input:checked) {
+  color: var(--brand);
 }
 
 .code-editor-actions {
@@ -1268,7 +1391,7 @@ p {
 
 .code-editor-card {
   display: grid;
-  grid-template-rows: auto minmax(0, 1fr) auto;
+  grid-template-rows: auto minmax(0, 1fr);
   min-height: 0;
   height: 100%;
   overflow: hidden;
@@ -1305,7 +1428,7 @@ p {
 }
 
 .editor-actions {
-  margin-top: 1rem;
+  display: none;
 }
 
 .timeline-widget {
@@ -1456,7 +1579,7 @@ p {
 
 .run-output {
   margin-top: 0;
-  border: 2px solid var(--border);
+  border: 1px solid var(--border);
   border-radius: 0;
   background: var(--muted-surface);
   padding: 1.25rem;
@@ -1476,7 +1599,14 @@ p {
   color: var(--error-text);
 }
 
-input,
+input[type="checkbox"],
+input[type="radio"] {
+  all: revert;
+  cursor: pointer;
+  accent-color: var(--brand);
+}
+
+input:not([type="checkbox"]):not([type="radio"]),
 select {
   border: 2px solid var(--border);
   border-radius: 0;
@@ -1816,6 +1946,36 @@ button:disabled {
   gap: 0.75rem;
   justify-content: flex-end;
   padding-top: 0.5rem;
+}
+
+.rp-solution {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  padding: 1.25rem;
+  background: var(--muted-surface);
+  border: 1px solid var(--border);
+}
+
+.rp-solution-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rp-solution-section h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rp-solution-section p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 .rp-modal-label {

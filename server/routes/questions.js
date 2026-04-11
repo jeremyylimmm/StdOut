@@ -66,15 +66,32 @@ router.get("/company/:company", async (req, res) => {
 router.get("/:questionId", async (req, res) => {
   try {
     const { questionId } = req.params;
-    const question =
-      await InterviewQuestion.findById(questionId).select("-solution");
+    console.log("Fetching question with ID:", questionId);
+
+    let question;
+
+    // Try to find by MongoDB _id first, then by the unique id field
+    if (questionId.match(/^[0-9a-fA-F]{24}$/)) {
+      // Valid MongoDB ObjectId
+      question = await InterviewQuestion.findById(questionId);
+      console.log("Found by MongoDB _id:", question ? "YES" : "NO");
+    }
+
+    // If not found by _id, try finding by the unique id field
+    if (!question) {
+      question = await InterviewQuestion.findOne({ id: questionId });
+      console.log("Found by id field:", question ? "YES" : "NO");
+    }
 
     if (!question) {
+      console.log("Question not found for ID:", questionId);
       return res.status(404).json({ error: "Question not found" });
     }
 
+    console.log("Returning question with solution:", question.solution ? "YES" : "NO");
     res.json(question);
   } catch (error) {
+    console.error("Error fetching question:", error);
     res.status(500).json({
       error: "Failed to fetch question",
       details: error.message,
