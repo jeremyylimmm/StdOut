@@ -1600,9 +1600,8 @@ button:disabled {
 
 .rp-header-main {
   display: flex;
-  align-items: flex-start;
-  justify-content: space-between;
-  gap: 1.5rem;
+  flex-direction: column;
+  gap: 0.5rem;
 }
 
 .rp-title {
@@ -1633,23 +1632,7 @@ button:disabled {
 .rp-chip--medium { color: var(--warning); border-color: var(--warning); background: var(--warning-light); }
 .rp-chip--hard   { color: var(--error);   border-color: var(--error);   background: var(--error-light); }
 
-.rp-verdict {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0.15rem;
-  padding: 0.75rem 1.25rem;
-  border: 2px solid;
-  flex-shrink: 0;
-  min-width: 90px;
-}
 
-.rp-verdict--pass { border-color: var(--success); color: var(--success); }
-.rp-verdict--fail { border-color: var(--error);   color: var(--error); }
-
-.rp-verdict-icon  { font-size: 1.4rem; line-height: 1; }
-.rp-verdict-label { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; }
-.rp-verdict-score { font-size: 0.85rem; font-weight: 600; font-family: "Consolas", monospace; }
 
 .rp-stats {
   display: flex;
@@ -1687,7 +1670,7 @@ button:disabled {
   display: grid;
   grid-template-columns: 1fr auto;
   gap: 1.5rem;
-  align-items: start;
+  align-items: stretch;
 }
 
 .rp-section-title {
@@ -1741,33 +1724,39 @@ button:disabled {
 
 .rp-tests-card {
   width: 220px;
-}
-
-.rp-test-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(52px, 1fr));
-  gap: 0.5rem;
-}
-
-.rp-test-tile {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 0.2rem;
-  padding: 0.6rem 0.4rem;
-  border: 2px solid;
-  cursor: pointer;
-  transition: opacity 0.15s, transform 0.1s;
 }
 
-.rp-test-tile--pass { border-color: var(--success); color: var(--success); background: var(--success-light); }
-.rp-test-tile--fail { border-color: var(--error);   color: var(--error);   background: var(--error-light); }
-.rp-test-tile--pass:hover:not(:disabled) { background: var(--success); color: #fff; border-color: var(--success); }
-.rp-test-tile--fail:hover:not(:disabled) { background: var(--error);   color: #fff; border-color: var(--error); }
+.rp-test-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  flex: 1;
+}
 
-.rp-test-tile-num    { font-size: 0.7rem; font-weight: 600; font-family: "Consolas", monospace; }
-.rp-test-tile-status { font-size: 0.9rem; font-weight: 700; }
+.rp-test-row {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  cursor: pointer;
+  text-align: left;
+  transition: background 0.15s, border-color 0.15s, transform 0.1s;
+  width: 100%;
+}
+
+.rp-test-row--pass:hover:not(:disabled) { border-color: var(--success); background: var(--success-light); transform: translateY(-1px); }
+.rp-test-row--fail:hover:not(:disabled) { border-color: var(--error);   background: var(--error-light);   transform: translateY(-1px); }
+
+.rp-test-row-icon   { font-size: 0.85rem; font-weight: 700; flex-shrink: 0; }
+.rp-test-row--pass .rp-test-row-icon { color: var(--success); }
+.rp-test-row--fail .rp-test-row-icon { color: var(--error); }
+
+.rp-test-row-label  { font-size: 0.82rem; font-weight: 600; color: var(--text); flex: 1; font-family: "Consolas", monospace; }
+.rp-test-row-status { font-size: 0.72rem; color: var(--muted-text); text-transform: uppercase; letter-spacing: 0.04em; }
 
 .rp-collapsible {
   border: 1px solid var(--border);
@@ -1846,7 +1835,10 @@ button:disabled {
   font-family: "Consolas", "Fira Code", monospace;
   font-size: 0.875rem;
   white-space: pre-wrap;
-  word-break: break-word;
+  word-break: break-all;
+  overflow-wrap: anywhere;
+  max-height: 200px;
+  overflow-y: auto;
   color: var(--text);
 }
 

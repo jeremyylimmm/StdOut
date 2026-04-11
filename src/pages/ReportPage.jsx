@@ -95,6 +95,29 @@ function CodeHighlighter({ code }) {
   );
 }
 
+function extractGot(value) {
+  if (typeof value === "string") {
+    const lines = value.split("\n").map((l) => l.trim()).filter(Boolean);
+    // Detect runtime error (traceback or exception)
+    if (lines.some((l) => l.startsWith("Traceback") || /^[\w.]*Error:/.test(l))) {
+      return "__runtime_error__";
+    }
+    for (const line of lines) {
+      const match = line.match(/^FAIL:\s*expected\s*.+,\s*got\s+(.+)$/i);
+      if (match) return match[1].trim();
+    }
+  }
+  return value;
+}
+
+function formatCompact(value) {
+  let data = value;
+  if (typeof value === "string") {
+    try { data = JSON.parse(value); } catch { return value; }
+  }
+  try { return JSON.stringify(data); } catch { return String(data); }
+}
+
 function formatOutput(value) {
   let data = value;
   if (typeof value === "string") {
@@ -204,21 +227,17 @@ function ReportPage() {
           <FiArrowLeft /> Interviews
         </Link>
         <div className="rp-header-main">
-          <div className="rp-header-left">
-            <h1 className="rp-title">{interview.interview?.title}</h1>
-            <div className="rp-chips">
-              {interview.interview?.company && <span className="rp-chip">{interview.interview.company}</span>}
-              {interview.interview?.difficulty && <span className={`rp-chip rp-chip--${interview.interview.difficulty.toLowerCase()}`}>{interview.interview.difficulty}</span>}
-              <span className="rp-chip">{formatDate(interview.completedAt)}</span>
-            </div>
+          <h1 className="rp-title">{interview.interview?.title}</h1>
+          <div className="rp-chips">
+            {interview.interview?.company && <span className="rp-chip">{interview.interview.company}</span>}
+            {interview.interview?.difficulty && <span className={`rp-chip rp-chip--${interview.interview.difficulty.toLowerCase()}`}>{interview.interview.difficulty}</span>}
+            <span className="rp-chip">{formatDate(interview.completedAt)}</span>
+            {tr && (
+              <span className="rp-chip" style={{ color: passed ? "var(--success)" : "var(--error)", borderColor: passed ? "var(--success)" : "var(--error)" }}>
+                {passed ? "✓" : "✗"} {passed ? "Passed" : "Failed"} {tr.passedCount}/{tr.totalTests}
+              </span>
+            )}
           </div>
-          {tr && (
-            <div className={`rp-verdict ${passed ? "rp-verdict--pass" : "rp-verdict--fail"}`}>
-              <span className="rp-verdict-icon">{passed ? "✓" : "✗"}</span>
-              <span className="rp-verdict-label">{passed ? "Passed" : "Failed"}</span>
-              <span className="rp-verdict-score">{tr.passedCount}/{tr.totalTests}</span>
-            </div>
-          )}
         </div>
       </div>
 
@@ -240,12 +259,10 @@ function ReportPage() {
             <span className="rp-stat-value">{interview.code.length} chars</span>
           </div>
         )}
-        {hasStructuredReview && (
+        {hasStructuredReview && review.overallScore != null && (
           <div className="rp-stat">
-            <span className="rp-stat-label">Avg Score</span>
-            <span className="rp-stat-value">
-              {(((review.logic?.score ?? 0) + (review.codeQuality?.score ?? 0) + (review.reasoning?.score ?? 0)) / 3).toFixed(1)}/10
-            </span>
+            <span className="rp-stat-label">Overall Score</span>
+            <span className="rp-stat-value">{review.overallScore}/10</span>
           </div>
         )}
       </div>
@@ -272,16 +289,17 @@ function ReportPage() {
           {tr?.testCases?.length > 0 && (
             <div className="card rp-tests-card">
               <h2 className="rp-section-title">Test Cases</h2>
-              <div className="rp-test-grid">
+              <div className="rp-test-list">
                 {tr.testCases.map((tc, idx) => (
                   <button
                     key={idx}
                     type="button"
-                    className={`rp-test-tile ${tc.passed ? "rp-test-tile--pass" : "rp-test-tile--fail"}`}
+                    className={`rp-test-row ${tc.passed ? "rp-test-row--pass" : "rp-test-row--fail"}`}
                     onClick={() => setSelectedTestCase(tc)}
                   >
-                    <span className="rp-test-tile-num">#{tc.testCaseId}</span>
-                    <span className="rp-test-tile-status">{tc.passed ? "✓" : "✗"}</span>
+                    <span className="rp-test-row-icon">{tc.passed ? "✓" : "✗"}</span>
+                    <span className="rp-test-row-label">Test {tc.testCaseId}</span>
+                    <span className="rp-test-row-status">{tc.passed ? "passed" : "failed"}</span>
                   </button>
                 ))}
               </div>
@@ -344,25 +362,26 @@ function ReportPage() {
               </div>
               <div>
                 <p className="rp-modal-label">Input</p>
-                <pre className="rp-modal-code">{formatOutput(selectedTestCase.input)}</pre>
+                <pre className="rp-modal-code">{formatCompact(selectedTestCase.input)}</pre>
               </div>
-              {!selectedTestCase.passed && selectedTestCase.actualOutput ? (
-                <div className="rp-modal-comparison">
-                  <div>
-                    <p className="rp-modal-label">Expected</p>
-                    <pre className="rp-modal-code">{formatOutput(selectedTestCase.expectedOutput)}</pre>
+              {(() => {
+                const got = selectedTestCase.actualOutput ? extractGot(selectedTestCase.actualOutput) : null;
+                const isRuntimeError = got === "__runtime_error__";
+                return (
+                  <div className="rp-modal-comparison">
+                    <div>
+                      <p className="rp-modal-label">Expected</p>
+                      <pre className="rp-modal-code">{formatCompact(selectedTestCase.expectedOutput)}</pre>
+                    </div>
+                    <div>
+                      <p className="rp-modal-label" style={{ color: !selectedTestCase.passed ? "var(--error)" : undefined }}>Got</p>
+                      <pre className={`rp-modal-code ${!selectedTestCase.passed ? "rp-modal-code--error" : ""}`}>
+                        {isRuntimeError ? "Runtime error" : got ? formatCompact(got) : formatCompact(selectedTestCase.expectedOutput)}
+                      </pre>
+                    </div>
                   </div>
-                  <div>
-                    <p className="rp-modal-label" style={{ color: "var(--error)" }}>Actual</p>
-                    <pre className="rp-modal-code rp-modal-code--error">{formatOutput(selectedTestCase.actualOutput)}</pre>
-                  </div>
-                </div>
-              ) : (
-                <div>
-                  <p className="rp-modal-label">Expected Output</p>
-                  <pre className="rp-modal-code">{formatOutput(selectedTestCase.expectedOutput)}</pre>
-                </div>
-              )}
+                );
+              })()}
             </div>
             <div className="modal-footer">
               <button type="button" className="ci-btn ci-btn--primary" onClick={() => setSelectedTestCase(null)}>Close</button>
