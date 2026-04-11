@@ -125,7 +125,7 @@ router.post("/:questionId/submit", async (req, res) => {
       const testCode = buildTestCode(
         code,
         testCase.input,
-        testCase.expectedOutput
+        testCase.expectedOutput,
       );
 
       const result = await runPython(testCode);
@@ -148,7 +148,9 @@ router.post("/:questionId/submit", async (req, res) => {
         passed,
         description: testCase.description,
         isHidden: testCase.isHidden,
-        output: passed ? null : result.stdout + result.stderr,
+        input: testCase.input,
+        expectedOutput: testCase.expectedOutput,
+        actualOutput: passed ? null : result.stdout + result.stderr,
       });
 
       if (passed) passedCount++;

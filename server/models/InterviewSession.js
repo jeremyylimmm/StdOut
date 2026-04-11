@@ -31,8 +31,8 @@ const interviewSessionSchema = new mongoose.Schema(
       default: "",
     },
     review: {
-      type: String,
-      default: "",
+      type: mongoose.Schema.Types.Mixed,
+      default: null,
     },
     code: {
       type: String,
@@ -65,6 +65,9 @@ const interviewSessionSchema = new mongoose.Schema(
           passed: Boolean,
           description: String,
           isHidden: Boolean,
+          input: mongoose.Schema.Types.Mixed,
+          expectedOutput: mongoose.Schema.Types.Mixed,
+          actualOutput: String,
         },
       ],
     },

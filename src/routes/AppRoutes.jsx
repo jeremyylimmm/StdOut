@@ -5,6 +5,7 @@ import InterviewSetupPage from "../pages/InterviewSetupPage";
 import LoginPage from "../pages/LoginPage";
 import OldInterviewsPage from "../pages/OldInterviewsPage";
 import ResultsPage from "../pages/ResultsPage";
+import ReportPage from "../pages/ReportPage";
 import { useAppState } from "../lib/AppStateContext";
 
 function ProtectedRoute({ children }) {
@@ -56,6 +57,14 @@ function AppRoutes() {
         element={
           <ProtectedRoute>
             <ResultsPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
+        path="/report"
+        element={
+          <ProtectedRoute>
+            <ReportPage />
           </ProtectedRoute>
         }
       />
