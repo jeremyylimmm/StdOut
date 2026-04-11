@@ -1,7 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useImperativeHandle, forwardRef } from "react";
 
-function Timer({ initialSeconds = 900 }) {
+const Timer = forwardRef(({ initialSeconds = 900 }, ref) => {
   const [secondsLeft, setSecondsLeft] = useState(initialSeconds);
+
+  useImperativeHandle(ref, () => ({
+    getTimeLeft: () => secondsLeft,
+  }));
 
   useEffect(() => {
     setSecondsLeft(initialSeconds);
@@ -26,6 +30,8 @@ function Timer({ initialSeconds = 900 }) {
       </p>
     </div>
   );
-}
+});
+
+Timer.displayName = "Timer";
 
 export default Timer;

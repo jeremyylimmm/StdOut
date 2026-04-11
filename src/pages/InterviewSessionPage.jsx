@@ -25,6 +25,7 @@ function InterviewSessionPage() {
   const codeDebounceRef = useRef(null);
   const startTimeRef = useRef(Date.now());
   const timelineEndRef = useRef(null);
+  const timerRef = useRef(null);
 
   function getTimestamp() {
     const elapsed = Math.floor((Date.now() - startTimeRef.current) / 1000);
@@ -192,8 +193,11 @@ function InterviewSessionPage() {
       .map((event) => `[${event.timestamp}] ${event.type}: ${event.content}`)
       .join("\n");
 
+    // Get remaining time from timer
+    const timeLeft = timerRef.current?.getTimeLeft() || 0;
+
     // Save the interview session
-    await saveInterview(transcript, code, 0);
+    await saveInterview(transcript, code, timeLeft);
 
     navigate("/results", {
       state: {
@@ -258,7 +262,7 @@ function InterviewSessionPage() {
             <div ref={timelineEndRef} />
           </div>
         </div>
-        <Timer initialSeconds={settings.durationMinutes * 60} />
+        <Timer ref={timerRef} initialSeconds={settings.durationMinutes * 60} />
         <div className="session-actions">
           <button type="button" onClick={handleFinish}>
             Finish Interview

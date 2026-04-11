@@ -10,6 +10,12 @@ function formatDate(isoDate) {
   });
 }
 
+function formatTime(seconds) {
+  const mins = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const secs = String(seconds % 60).padStart(2, "0");
+  return `${mins}:${secs}`;
+}
+
 function OldInterviewsPage() {
   const navigate = useNavigate();
   const { user } = useAppState();
@@ -84,8 +90,8 @@ function OldInterviewsPage() {
               {interview.interview.durationMinutes} minutes
             </p>
             {interview.timeLeftSeconds !== undefined && (
-              <p style={{ fontSize: "0.9em", color: "#666" }}>
-                Time left: {interview.timeLeftSeconds} seconds
+              <p style={{ fontSize: "0.9em", color: "var(--color-text, #666)" }}>
+                Time left: {formatTime(interview.timeLeftSeconds)}
               </p>
             )}
             <div style={{ display: "flex", gap: "0.5rem", marginTop: "1rem" }}>
