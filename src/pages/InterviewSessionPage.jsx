@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { diffLines } from "diff";
 import CodeEditor from "../components/CodeEditor";
@@ -16,6 +17,8 @@ function InterviewSessionPage() {
   const [timeline, setTimeline] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStep, setSubmitStep] = useState("");
 
   const mediaRecorderRef = useRef(null);
   const chunkIntervalRef = useRef(null);
@@ -274,6 +277,9 @@ function InterviewSessionPage() {
   };
 
   const handleFinish = async () => {
+    setSubmitting(true);
+    setSubmitStep("Stopping recording...");
+
     clearTimeout(chunkIntervalRef.current);
     if (mediaRecorderRef.current?.state === "recording") {
       mediaRecorderRef.current.onstop = null;
@@ -288,10 +294,9 @@ function InterviewSessionPage() {
     const timeLeft = timerRef.current?.getTimeLeft() || 0;
 
     let testResults = null;
-    console.log("Current question:", currentQuestion);
-    console.log("Question ID:", currentQuestion?._id);
 
     if (currentQuestion?._id) {
+      setSubmitStep("Running test cases...");
       try {
         const response = await fetch(
           `http://localhost:3001/api/questions/${currentQuestion._id}/submit`,
@@ -302,8 +307,7 @@ function InterviewSessionPage() {
           },
         );
         if (response.ok) {
-          testResults = await response.json(); // only call .json() once
-          console.log("Test results received:", testResults);
+          testResults = await response.json();
         } else {
           console.error("Submit response not ok:", response.status);
         }
@@ -312,7 +316,7 @@ function InterviewSessionPage() {
       }
     }
 
-    // Get GPT review FIRST before saving or navigating
+    setSubmitStep("Generating AI review...");
     let review = null;
     try {
       const res = await fetch("http://localhost:3001/api/review", {
@@ -331,7 +335,7 @@ function InterviewSessionPage() {
       console.error("Review failed:", err);
     }
 
-    // Now save with review available
+    setSubmitStep("Saving session...");
     await saveInterview(transcript, code, timeLeft, testResults, review);
 
     const initialTimeSeconds = settings.durationMinutes * 60;
@@ -419,6 +423,17 @@ function InterviewSessionPage() {
           </pre>
         </div>
       </div>
+
+      {submitting &&
+        createPortal(
+          <div className="submit-overlay">
+            <div className="submit-overlay-box">
+              <div className="submit-spinner" />
+              <p className="submit-overlay-step">{submitStep}</p>
+            </div>
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }

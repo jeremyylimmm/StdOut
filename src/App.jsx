@@ -14,11 +14,13 @@ function App() {
   return (
     <div className="app-shell">
       {!hideNavbar && <Navbar />}
-      <main
-        className={`app-main ${isInterviewSession ? "app-main--session" : ""} ${isLogin ? "app-main--login" : ""}`}
+      <div
+        className={`app-scroll ${isInterviewSession ? "app-scroll--session" : ""} ${isLogin ? "app-scroll--login" : ""}`}
       >
-        <AppRoutes />
-      </main>
+        <main className={`app-main ${isInterviewSession ? "app-main--session" : ""} ${isLogin ? "app-main--login" : ""}`}>
+          <AppRoutes />
+        </main>
+      </div>
     </div>
   );
 }
