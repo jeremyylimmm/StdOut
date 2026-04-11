@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
-import { FaSun, FaMoon } from "react-icons/fa";
 
 function Navbar() {
   const navigate = useNavigate();
@@ -17,14 +16,8 @@ function Navbar() {
       <nav className="nav-links">
       </nav>
       <div className="nav-user">
-        <button
-          type="button"
-          onClick={toggleTheme}
-          className={`theme-toggle ${theme === "dark" ? "theme-toggle--dark" : ""}`}
-          aria-label="Toggle theme"
-        >
-          <FaSun className="theme-toggle-icon theme-toggle-sun" />
-          <FaMoon className="theme-toggle-icon theme-toggle-moon" />
+        <button type="button" onClick={toggleTheme} className="theme-toggle-btn" aria-label="Toggle theme">
+          {theme === "dark" ? "[light]" : "[dark]"}
         </button>
 
         {user ? <span>{user.name}</span> : <span>Guest</span>}

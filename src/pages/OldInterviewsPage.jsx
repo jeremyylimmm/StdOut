@@ -213,10 +213,13 @@ function OldInterviewsPage() {
     fetchInterviews();
   }, [user?.id]);
 
-  const handleDelete = async (sessionId) => {
-    if (!window.confirm("Are you sure you want to delete this interview?")) {
-      return;
-    }
+  const handleDelete = (sessionId) => {
+    setDeleteTarget(sessionId);
+  };
+
+  const confirmDelete = async () => {
+    const sessionId = deleteTarget;
+    setDeleteTarget(null);
 
     try {
       const response = await fetch(
@@ -230,7 +233,6 @@ function OldInterviewsPage() {
         throw new Error("Failed to delete interview");
       }
 
-      // Remove from local state
       setInterviews(interviews.filter((i) => i._id !== sessionId));
     } catch (err) {
       alert("Failed to delete interview");
@@ -304,120 +306,47 @@ function OldInterviewsPage() {
         ))}
       </div>
 
+      {/* Delete Confirm Dialog */}
+      {deleteTarget && (
+        <div className="modal-backdrop" onClick={() => setDeleteTarget(null)}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modal-title">Delete Interview</h2>
+            <p className="modal-body">
+              Are you sure you want to delete this interview? This cannot be undone.
+            </p>
+            <div className="modal-actions">
+              <button type="button" className="ci-btn" onClick={() => setDeleteTarget(null)}>
+                Cancel
+              </button>
+              <button type="button" className="ci-btn ci-btn--delete-active" onClick={confirmDelete}>
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Content Modal (Transcript/Code) */}
       {selectedContent && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            padding: "1rem",
-          }}
-          onClick={() => setSelectedContent(null)}
-        >
-          <div
-            style={{
-              backgroundColor: "var(--color-bg, #fff)",
-              color: "var(--color-text, #000)",
-              borderRadius: "0.8rem",
-              maxWidth: "700px",
-              width: "100%",
-              maxHeight: "80vh",
-              display: "flex",
-              flexDirection: "column",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              style={{
-                padding: "1.5rem",
-                borderBottom: "1px solid var(--color-border, #e0e0e0)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <h2 style={{ margin: 0 }}>
-                {contentType === "code" ? "Code" : "Transcript"}
-              </h2>
-              <button
-                type="button"
-                onClick={() => setSelectedContent(null)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  fontSize: "1.5rem",
-                  cursor: "pointer",
-                  color: "var(--color-text, #666)",
-                }}
-              >
+        <div className="modal-backdrop" onClick={() => setSelectedContent(null)}>
+          <div className="modal-box modal-box--wide" onClick={(e) => e.stopPropagation()}>
+            <div className="modal-header">
+              <h2 className="modal-title">{contentType === "code" ? "Code" : "Transcript"}</h2>
+              <button type="button" className="modal-close" onClick={() => setSelectedContent(null)}>
                 ✕
               </button>
             </div>
 
             {contentType === "code" ? (
-              // Code view with syntax highlighting
-              <div
-                style={{
-                  flex: 1,
-                  overflowY: "auto",
-                  overflowX: "auto",
-                  padding: "1.5rem",
-                  backgroundColor: "#1e1e1e",
-                  color: "#d4d4d4",
-                  fontFamily: "monospace",
-                  fontSize: "0.9rem",
-                }}
-              >
+              <div className="modal-code">
                 <CodeHighlighter code={selectedContent} />
               </div>
             ) : (
-              // Transcript view
-              <div
-                style={{
-                  flex: 1,
-                  overflowY: "auto",
-                  padding: "1.5rem",
-                  backgroundColor: "var(--color-input-bg, #fafafa)",
-                  color: "var(--color-text, #000)",
-                  fontFamily: "monospace",
-                  fontSize: "0.9rem",
-                  whiteSpace: "pre-wrap",
-                  wordBreak: "break-word",
-                }}
-              >
-                {selectedContent}
-              </div>
+              <div className="modal-transcript">{selectedContent}</div>
             )}
 
-            <div
-              style={{
-                padding: "1rem",
-                borderTop: "1px solid var(--color-border, #e0e0e0)",
-                textAlign: "right",
-                backgroundColor: "var(--color-bg, #fff)",
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => setSelectedContent(null)}
-                style={{
-                  padding: "0.6rem 1.5rem",
-                  backgroundColor: "var(--color-primary, #007bff)",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "0.4rem",
-                  cursor: "pointer",
-                }}
-              >
+            <div className="modal-footer">
+              <button type="button" className="ci-btn ci-btn--primary" onClick={() => setSelectedContent(null)}>
                 Close
               </button>
             </div>
