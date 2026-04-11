@@ -1,12 +1,11 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { dummyQuestions } from "./mockData";
 
 const AppStateContext = createContext(null);
 
 const defaultSettings = {
   interviewName: "Frontend Interview",
   company: "Google",
-  difficulty: "Medium",
+  difficulty: "Easy",
   durationMinutes: 15,
 };
 
@@ -27,6 +26,8 @@ export function AppStateProvider({ children }) {
   const [settings, setSettings] = useState(defaultSettings);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [theme, setTheme] = useState(getInitialTheme);
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(false);
 
   // Check for stored auth token on load
   useEffect(() => {
@@ -71,12 +72,33 @@ export function AppStateProvider({ children }) {
     setSettings((prev) => ({ ...prev, ...newSettings }));
   };
 
-  const startInterview = () => {
+  const startInterview = async () => {
     setQuestionIndex(0);
+    setLoading(true);
+    try {
+      let url = `http://localhost:3001/api/questions/random?company=${settings.company}`;
+      if (settings.company === "LeetCode") {
+        url += `&difficulty=${settings.difficulty}`;
+      }
+
+      const response = await fetch(url);
+      if (response.ok) {
+        const question = await response.json();
+        setQuestions([question]);
+      } else {
+        console.error("Failed to fetch question");
+        setQuestions([]);
+      }
+    } catch (error) {
+      console.error("Error fetching question:", error);
+      setQuestions([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const nextQuestion = () => {
-    setQuestionIndex((prev) => Math.min(prev + 1, dummyQuestions.length - 1));
+    setQuestionIndex((prev) => Math.min(prev + 1, questions.length - 1));
   };
 
   const resetInterview = () => {
@@ -87,29 +109,33 @@ export function AppStateProvider({ children }) {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-  const saveInterview = async (transcript, code, timeLeftSeconds) => {
+  const saveInterview = async (transcript, code, timeLeftSeconds, testResults) => {
     if (!user?.id) {
       console.error("User not logged in");
       return false;
     }
 
     try {
-      const response = await fetch("http://localhost:3001/api/interviews/save", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: user.id,
-          interview: {
-            title: settings.interviewName,
-            company: settings.company,
-            difficulty: settings.difficulty,
-            durationMinutes: settings.durationMinutes,
-          },
-          transcript,
-          code,
-          timeLeftSeconds,
-        }),
-      });
+      const response = await fetch(
+        "http://localhost:3001/api/interviews/save",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            userId: user.id,
+            interview: {
+              title: settings.interviewName,
+              company: settings.company,
+              difficulty: settings.difficulty,
+              durationMinutes: settings.durationMinutes,
+            },
+            transcript,
+            code,
+            timeLeftSeconds,
+            testResults,
+          }),
+        },
+      );
 
       if (!response.ok) {
         console.error("Failed to save interview");
@@ -128,9 +154,10 @@ export function AppStateProvider({ children }) {
       user,
       theme,
       settings,
-      questions: dummyQuestions,
+      questions,
       questionIndex,
-      currentQuestion: dummyQuestions[questionIndex],
+      currentQuestion: questions[questionIndex] || null,
+      loading,
       login,
       logout,
       toggleTheme,
@@ -140,7 +167,7 @@ export function AppStateProvider({ children }) {
       resetInterview,
       saveInterview,
     }),
-    [user, theme, settings, questionIndex],
+    [user, theme, settings, questionIndex, questions, loading],
   );
 
   return (

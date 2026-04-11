@@ -52,8 +52,12 @@ function InterviewSessionPage() {
   }
 
   useEffect(() => {
-    timelineEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [timeline]);
+    // Initialize code editor with the question's initial code
+    if (currentQuestion?.initialCode) {
+      setCode(currentQuestion.initialCode);
+      prevCodeRef.current = currentQuestion.initialCode;
+    }
+  }, [currentQuestion]);
 
   useEffect(() => {
     let stopped = false;
@@ -220,7 +224,7 @@ function InterviewSessionPage() {
     setRunError("");
 
     try {
-      const res = await fetch("/api/run", {
+      const res = await fetch("http://localhost:3001/run", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),
@@ -265,14 +269,39 @@ function InterviewSessionPage() {
     // Get remaining time from timer
     const timeLeft = timerRef.current?.getTimeLeft() || 0;
 
-    // Save the interview session
-    await saveInterview(transcript, code, timeLeft);
+    // Submit code for testing
+    let testResults = null;
+    if (currentQuestion?._id) {
+      try {
+        const response = await fetch(
+          `http://localhost:3001/api/questions/${currentQuestion._id}/submit`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ code }),
+          }
+        );
+        if (response.ok) {
+          testResults = await response.json();
+        }
+      } catch (error) {
+        console.error("Error submitting code for testing:", error);
+      }
+    }
+
+    // Save the interview session with test results
+    await saveInterview(transcript, code, timeLeft, testResults);
+
+    // Calculate time spent (in seconds)
+    const initialTimeSeconds = 15 * 60; // 15 minutes default
+    const timeSpentSeconds = initialTimeSeconds - timeLeft;
 
     navigate("/results", {
       state: {
-        questionsAttempted: 1,
+        timeSpentSeconds,
         codeLength: code.length,
         timeline: timelineRef.current,
+        testResults,
       },
     });
   };

@@ -2,18 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
 
-const popularCompanies = [
-  "Google",
-  "Amazon",
-  "Microsoft",
-  "Meta",
-  "Apple",
-  "Netflix",
-  "OpenAI",
-  "Stripe",
-  "Uber",
-  "Salesforce",
-];
+const popularCompanies = ["Google", "Amazon", "Microsoft", "LeetCode"];
 
 function InterviewSetupPage() {
   const navigate = useNavigate();
@@ -27,10 +16,7 @@ function InterviewSetupPage() {
 
   const handleStart = (event) => {
     event.preventDefault();
-    saveSettings({
-      ...form,
-      durationMinutes: Number(form.durationMinutes),
-    });
+    saveSettings(form);
     startInterview();
     navigate("/interview/session");
   };
@@ -63,30 +49,22 @@ function InterviewSetupPage() {
             ))}
           </select>
 
-          <label htmlFor="difficulty">Difficulty</label>
-          <select
-            id="difficulty"
-            value={form.difficulty}
-            onChange={(event) => updateForm("difficulty", event.target.value)}
-          >
-            <option>Easy</option>
-            <option>Medium</option>
-            <option>Hard</option>
-          </select>
-
-          <label htmlFor="duration">Time limit (minutes)</label>
-          <select
-            id="duration"
-            value={form.durationMinutes}
-            onChange={(event) =>
-              updateForm("durationMinutes", event.target.value)
-            }
-          >
-            <option value={10}>10</option>
-            <option value={15}>15</option>
-            <option value={20}>20</option>
-            <option value={30}>30</option>
-          </select>
+          {form.company === "LeetCode" && (
+            <>
+              <label htmlFor="difficulty">Difficulty</label>
+              <select
+                id="difficulty"
+                value={form.difficulty}
+                onChange={(event) =>
+                  updateForm("difficulty", event.target.value)
+                }
+              >
+                <option>Easy</option>
+                <option>Medium</option>
+                <option>Hard</option>
+              </select>
+            </>
+          )}
 
           <button type="submit">Begin Session</button>
         </form>

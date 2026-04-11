@@ -1,45 +1,65 @@
-require('dotenv').config();
+require("dotenv").config();
 
-const express = require('express');
-const cors = require('cors');
-const { execFile } = require('child_process');
+const express = require("express");
+const cors = require("cors");
+const { execFile } = require("child_process");
 const app = express();
 
-const connectDB = require('./db');
-const authRoutes = require('./routes/auth');
-const interviewRoutes = require('./routes/interviews');
+const connectDB = require("./db");
+const authRoutes = require("./routes/auth");
+const interviewRoutes = require("./routes/interviews");
+const questionsRoutes = require("./routes/questions");
 const transcribeRoutes = require('./routes/transcribe');
 
 // Connect to DB and start server
 const startServer = async () => {
   try {
     await connectDB();
-    
+
     // Enable CORS for frontend (allow multiple ports)
-    app.use(cors({
-      origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
-      credentials: true
-    }));
+    app.use(
+      cors({
+        origin: [
+          "http://localhost:5173",
+          "http://localhost:5174",
+          "http://localhost:5175",
+        ],
+        credentials: true,
+      }),
+    );
 
     app.use(express.json()); // parses JSON request bodies
 
-    app.get('/hello', (req, res) => {
-      res.json({ message: 'Hello World' });
+    app.get("/hello", (req, res) => {
+      res.json({ message: "Hello World" });
     });
 
-    app.post('/run', (req, res) => {
+    app.post("/run", (req, res) => {
       const { code } = req.body;
-      const env = { ...process.env, PYTHONIOENCODING: 'utf-8', NO_COLOR: '1', PYTHON_COLORS: '0' };
-      execFile('python', ['-c', code], { encoding: 'utf8', env }, (error, stdout, stderr) => {
-        res.json({ stdout, stderr, exitCode: error ? error.code : 0 });
-      });
+      const env = {
+        ...process.env,
+        PYTHONIOENCODING: "utf-8",
+        NO_COLOR: "1",
+        PYTHON_COLORS: "0",
+      };
+      execFile(
+        "python",
+        ["-c", code],
+        { encoding: "utf8", env },
+        (error, stdout, stderr) => {
+          res.json({ stdout, stderr, exitCode: error ? error.code : 0 });
+        },
+      );
     });
 
     // Auth routes
-    app.use('/api/auth', authRoutes);
-    
+    app.use("/api/auth", authRoutes);
+
     // Interview routes
-    app.use('/api/interviews', interviewRoutes);
+    app.use("/api/interviews", interviewRoutes);
+
+    // Questions routes
+    app.use("/api/questions", questionsRoutes);
 
     // Transcription route
     app.use('/api/transcribe', transcribeRoutes);
@@ -50,7 +70,7 @@ const startServer = async () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
   } catch (error) {
-    console.error('Failed to start server:', error);
+    console.error("Failed to start server:", error);
     process.exit(1);
   }
 };
