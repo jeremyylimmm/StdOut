@@ -1950,6 +1950,8 @@ button:disabled {
   word-break: break-word;
   color: var(--text-secondary);
   background: var(--muted-surface);
+  max-height: 400px;
+  overflow: auto;
 }
 
 .rp-preblock::-webkit-scrollbar,
