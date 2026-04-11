@@ -11,11 +11,21 @@ function CodeEditor({ value, onChange, onRun, onSubmit }) {
   return (
     <div className="card code-editor-card">
       <div className="code-editor-header">
-        <h3>Code Editor</h3>
+        <div className="code-editor-header-left">
+          <h3>Code Editor</h3>
+        </div>
         <div className="code-editor-actions">
+          <label className="vim-toggle">
+            <input
+              type="checkbox"
+              checked={vimEnabled}
+              onChange={(e) => setVimEnabled(e.target.checked)}
+            />
+            <span>Vim</span>
+          </label>
           {onRun && (
             <button type="button" className="run-btn" onClick={onRun}>
-              Run Code
+              Run
             </button>
           )}
           {onSubmit && (
@@ -33,17 +43,6 @@ function CodeEditor({ value, onChange, onRun, onSubmit }) {
         theme={theme === "dark" ? "dark" : "light"}
         height="100%"
       />
-      <div className="editor-actions">
-        <label style={{ marginLeft: "1rem", cursor: "pointer" }}>
-          <input
-            type="checkbox"
-            checked={vimEnabled}
-            onChange={(e) => setVimEnabled(e.target.checked)}
-            style={{ marginRight: "0.4rem" }}
-          />
-          Vim
-        </label>
-      </div>
     </div>
   );
 }

@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate, NavLink } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
 
 const COMPANIES = ["Google", "Amazon", "Microsoft", "LeetCode"];
@@ -46,20 +46,7 @@ function InterviewSetupPage() {
   }, [fullGreeting]);
 
   return (
-    <div className="dashboard-layout">
-      <aside className="dashboard-sidebar">
-        <p className="dashboard-sidebar-label">Menu</p>
-        <nav className="dashboard-sidebar-nav">
-          <NavLink to="/interview/setup" className={({ isActive }) => `dashboard-sidebar-link ${isActive ? "dashboard-sidebar-link--active" : ""}`}>
-            Dashboard
-          </NavLink>
-          <NavLink to="/interviews/old" className={({ isActive }) => `dashboard-sidebar-link ${isActive ? "dashboard-sidebar-link--active" : ""}`}>
-            Completed Interviews
-          </NavLink>
-        </nav>
-      </aside>
-
-      <div className="dashboard">
+    <div className="dashboard">
         <div className="dashboard-header">
           <div>
             <h1 className="dashboard-greeting">
@@ -140,7 +127,6 @@ function InterviewSetupPage() {
             </span>
           </div>
         </form>
-      </div>
     </div>
   );
 }
