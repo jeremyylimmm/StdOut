@@ -9,12 +9,13 @@ function App() {
   const { user } = useAppState();
   const hideNavbar = location.pathname === "/login" && !user;
   const isInterviewSession = location.pathname === "/interview/session";
+  const isLogin = location.pathname === "/login" && !user;
 
   return (
     <div className="app-shell">
       {!hideNavbar && <Navbar />}
       <main
-        className={`app-main ${isInterviewSession ? "app-main--session" : ""}`}
+        className={`app-main ${isInterviewSession ? "app-main--session" : ""} ${isLogin ? "app-main--login" : ""}`}
       >
         <AppRoutes />
       </main>

@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { diffLines } from "diff";
 import CodeEditor from "../components/CodeEditor";
 import QuestionPanel from "../components/QuestionPanel";
-import Timer from "../components/Timer";
 import { useAppState } from "../lib/AppStateContext";
 
 function InterviewSessionPage() {
@@ -319,7 +318,7 @@ function InterviewSessionPage() {
     <section className="page leetcode-layout">
       {/* Left: question + timeline + timer + finish */}
       <div className="question-panel-wrap">
-        <QuestionPanel question={currentQuestion} />
+        <QuestionPanel question={currentQuestion} timerRef={timerRef} initialSeconds={settings.durationMinutes * 60} />
         <div className="card timeline-widget">
           <div className="timeline-header">
             <span>Timeline</span>
@@ -363,21 +362,12 @@ function InterviewSessionPage() {
             <div ref={timelineEndRef} />
           </div>
         </div>
-        <Timer ref={timerRef} initialSeconds={settings.durationMinutes * 60} />
-        <div className="session-actions">
-          <button type="button" onClick={handleFinish}>
-            Finish Interview
-          </button>
-        </div>
       </div>
 
       {/* Right: editor + terminal */}
       <div className="editor-panel-wrap">
-        <CodeEditor value={code} onChange={handleCodeChange} />
+        <CodeEditor value={code} onChange={handleCodeChange} onRun={handleRunCode} onSubmit={handleFinish} />
         <div className="card terminal-card">
-          <button type="button" onClick={handleRunCode}>
-            Run Code
-          </button>
           <pre
             className={`run-output terminal-output ${runError ? "error" : ""}`}
           >

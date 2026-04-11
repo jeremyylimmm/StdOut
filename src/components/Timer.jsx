@@ -23,12 +23,9 @@ const Timer = forwardRef(({ initialSeconds = 900 }, ref) => {
   const seconds = String(secondsLeft % 60).padStart(2, "0");
 
   return (
-    <div className="card timer">
-      <h3>Timer</h3>
-      <p>
-        {minutes}:{seconds}
-      </p>
-    </div>
+    <span className="timer-inline">
+      {minutes}:{seconds}
+    </span>
   );
 });
 
