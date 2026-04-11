@@ -213,27 +213,22 @@ function OldInterviewsPage() {
     fetchInterviews();
   }, [user?.id]);
 
-  const handleDelete = async (sessionId) => {
-    if (!window.confirm("Are you sure you want to delete this interview?")) {
-      return;
-    }
+  const handleDelete = (sessionId) => {
+    setDeleteTarget(sessionId);
+  };
 
+  const confirmDelete = async () => {
     try {
       const response = await fetch(
-        `http://localhost:3001/api/interviews/${sessionId}`,
-        {
-          method: "DELETE",
-        },
+        `http://localhost:3001/api/interviews/${deleteTarget}`,
+        { method: "DELETE" },
       );
-
-      if (!response.ok) {
-        throw new Error("Failed to delete interview");
-      }
-
-      // Remove from local state
-      setInterviews(interviews.filter((i) => i._id !== sessionId));
-    } catch (err) {
-      alert("Failed to delete interview");
+      if (!response.ok) throw new Error();
+      setInterviews(interviews.filter((i) => i._id !== deleteTarget));
+    } catch {
+      setError("Failed to delete interview.");
+    } finally {
+      setDeleteTarget(null);
     }
   };
 

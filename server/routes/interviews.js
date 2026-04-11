@@ -10,6 +10,7 @@ router.post("/save", async (req, res) => {
       userId,
       interview,
       transcript,
+      review,
       code,
       timeLeftSeconds,
       testResults,
@@ -25,6 +26,7 @@ router.post("/save", async (req, res) => {
       userId,
       interview,
       transcript,
+      review,
       code,
       timeLeftSeconds,
       testResults,
@@ -52,7 +54,7 @@ router.get("/user/:userId", async (req, res) => {
     const sessions = await InterviewSession.find({ userId })
       .sort({ completedAt: -1 })
       .select(
-        "interview transcript code timeLeftSeconds completedAt createdAt testResults",
+        "interview transcript review code timeLeftSeconds completedAt createdAt testResults",
       );
 
     res.json(sessions);
