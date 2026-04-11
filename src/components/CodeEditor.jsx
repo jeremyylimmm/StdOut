@@ -2,6 +2,7 @@ import { useState } from "react";
 import CodeMirror from "@uiw/react-codemirror";
 import { python } from "@codemirror/lang-python";
 import { vim } from "@replit/codemirror-vim";
+import { indentUnit } from "@codemirror/language";
 import { useAppState } from "../lib/AppStateContext";
 
 function CodeEditor({ value, onChange, onRun, onSubmit }) {
@@ -28,7 +29,11 @@ function CodeEditor({ value, onChange, onRun, onSubmit }) {
       <CodeMirror
         value={value}
         onChange={onChange}
-        extensions={vimEnabled ? [vim(), python()] : [python()]}
+        extensions={[
+          vimEnabled ? vim() : [],
+          python(),
+          indentUnit.of("    "), // 4 spaces
+        ].filter(Boolean)}
         basicSetup={{ lineNumbers: true }}
         theme={theme === "dark" ? "dark" : "light"}
         height="100%"

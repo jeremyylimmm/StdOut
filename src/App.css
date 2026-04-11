@@ -1855,6 +1855,9 @@ button:disabled {
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+  padding: 1.25rem;
+  background: var(--muted-surface);
+  border: 1px solid var(--border);
 }
 
 .rp-solution-section {
