@@ -5,7 +5,14 @@ const OpenAI = require("openai");
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 router.post("/", async (req, res) => {
-  const { transcript, code, question } = req.body;
+  const { transcript, code, question, testResults } = req.body;
+
+  // Calculate test performance summary
+  let testPerformance = "";
+  if (testResults) {
+    const { passedCount, totalTests, passPercentage } = testResults;
+    testPerformance = `\n\nTEST RESULTS:\nPassed: ${passedCount}/${totalTests} tests (${passPercentage}%)`;
+  }
 
   const prompt = `You are a technical interview evaluator. Review the candidate's performance on the following problem.
 
@@ -15,7 +22,7 @@ TRANSCRIPT (timestamped speech and code changes):
 ${transcript}
 
 FINAL CODE:
-${code}
+${code}${testPerformance}
 
 Evaluate and provide scores out of 10 in these three areas:
 1. **Logic** - Did they approach the problem correctly and handle edge cases?
@@ -36,6 +43,7 @@ Return your response in the following JSON format:
     "score": <number 0-10>,
     "feedback": "<2-3 sentences>"
   },
+  "overallScore": <number 0-10 (average of the three scores)>,
   "summary": "<brief overall summary paragraph>"
 }`;
 

@@ -146,6 +146,11 @@ function OldInterviewsPage() {
                 {interview.testResults.totalTests} passing
               </span>
             )}
+            {interview.review?.overallScore !== undefined && (
+              <span className="ci-score ci-score--review">
+                Score: {interview.review.overallScore}/10
+              </span>
+            )}
             <div className="ci-actions">
               {interview.code && (
                 <button
