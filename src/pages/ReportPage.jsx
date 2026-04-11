@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { useLocation, useNavigate, Link } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
-import { FiArrowLeft } from "react-icons/fi";
 import CodeViewer from "../components/CodeViewer";
 
 function formatDate(isoDate) {
@@ -180,12 +179,8 @@ function ReportPage() {
 
   return (
     <section className="page rp-page">
-
       {/* Header */}
       <div className="rp-header">
-        <Link to="/interviews/old" className="back-link">
-          <FiArrowLeft /> Interviews
-        </Link>
         <div className="rp-header-main">
           <h1 className="rp-title">{interview.interview?.title}</h1>
           <div className="rp-chips">
