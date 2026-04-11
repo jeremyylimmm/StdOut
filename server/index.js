@@ -8,6 +8,7 @@ const app = express();
 const connectDB = require('./db');
 const authRoutes = require('./routes/auth');
 const interviewRoutes = require('./routes/interviews');
+const transcribeRoutes = require('./routes/transcribe');
 
 // Connect to DB and start server
 const startServer = async () => {
@@ -39,6 +40,10 @@ const startServer = async () => {
     
     // Interview routes
     app.use('/api/interviews', interviewRoutes);
+
+    // Transcription route
+    app.use('/api/transcribe', transcribeRoutes);
+    app.post('/api/transcribe-test', (req, res) => res.json({ ok: true }));
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {
