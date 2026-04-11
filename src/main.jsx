@@ -6,11 +6,9 @@ import App from "./App.jsx";
 import { AppStateProvider } from "./lib/AppStateContext";
 
 createRoot(document.getElementById("root")).render(
-  <StrictMode>
     <BrowserRouter>
       <AppStateProvider>
         <App />
       </AppStateProvider>
-    </BrowserRouter>
-  </StrictMode>,
+    </BrowserRouter>,
 );

@@ -359,7 +359,6 @@ function OldInterviewsPage() {
                   color: "var(--color-text, #666)",
                 }}
               >
-                ✕
               </button>
             </div>
 

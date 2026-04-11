@@ -14,6 +14,7 @@ const questionsRoutes = require("./routes/questions");
 const InterviewQuestion = require("./models/InterviewQuestion");
 const transcribeRoutes = require('./routes/transcribe');
 const reviewRoutes = require('./routes/review');
+const realTime = require("./routes/real_time")
 
 // Connect to DB and start server
 const startServer = async () => {
@@ -78,6 +79,8 @@ const startServer = async () => {
     // Interview routes
     app.use("/api/interviews", interviewRoutes);
 
+    app.use("/api/realTime", realTime)
+
     // Questions routes
     app.use("/api/questions", questionsRoutes);
 
@@ -91,6 +94,7 @@ const startServer = async () => {
     app.listen(PORT, () => {
       console.log(`Server running on http://localhost:${PORT}`);
     });
+
   } catch (error) {
     console.error("Failed to start server:", error);
     process.exit(1);
