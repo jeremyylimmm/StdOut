@@ -134,7 +134,13 @@ function OldInterviewsPage() {
             </div>
             {interview.testResults && (
               <span
-                className={`ci-score ${interview.testResults.passed ? "ci-score--pass" : "ci-score--fail"}`}
+                className={`ci-score ${
+                  interview.testResults.passed
+                    ? "ci-score--pass"
+                    : interview.testResults.passedCount >= 8
+                      ? "ci-score--partial"
+                      : "ci-score--fail"
+                }`}
               >
                 {interview.testResults.passedCount}/
                 {interview.testResults.totalTests} passing
