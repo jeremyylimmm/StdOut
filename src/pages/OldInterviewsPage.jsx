@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, Link } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
 import { FiArrowLeft } from "react-icons/fi";
@@ -17,169 +18,12 @@ function formatTime(seconds) {
   return `${mins}:${secs}`;
 }
 
-// Python syntax highlighter
-function highlightPython(code) {
-  const pythonKeywords =
-    /\b(def|class|if|elif|else|for|while|return|import|from|as|try|except|finally|with|lambda|yield|assert|break|continue|del|global|nonlocal|pass|raise|and|or|not|in|is|True|False|None)\b/g;
-  const pythonBuiltins =
-    /\b(print|len|range|str|int|float|list|dict|set|tuple|sum|max|min|enumerate|zip|map|filter|sorted|reversed|open|input|type|isinstance|hasattr|getattr|setattr|callable)\b/g;
-  const strings = /(['"`])(?:(?=(\\?))\2.)*?\1/g;
-  const comments = /#.*$/gm;
-  const numbers = /\b\d+\.?\d*\b/g;
-
-  let highlighted = code;
-  let offset = 0;
-
-  // Store all matches with their positions and types
-  const matches = [];
-
-  // Comments
-  code.replace(comments, (match, index) => {
-    matches.push({
-      start: code.indexOf(match, offset),
-      end: code.indexOf(match, offset) + match.length,
-      type: "comment",
-      text: match,
-    });
-    offset = code.indexOf(match, offset) + match.length;
-    return match;
-  });
-
-  // Strings
-  offset = 0;
-  code.replace(strings, (match, index) => {
-    matches.push({
-      start: code.indexOf(match, offset),
-      end: code.indexOf(match, offset) + match.length,
-      type: "string",
-      text: match,
-    });
-    offset = code.indexOf(match, offset) + match.length;
-    return match;
-  });
-
-  // Keywords
-  offset = 0;
-  code.replace(pythonKeywords, (match, index) => {
-    const start = code.indexOf(match, offset);
-    matches.push({
-      start,
-      end: start + match.length,
-      type: "keyword",
-      text: match,
-    });
-    offset = start + match.length;
-    return match;
-  });
-
-  // Builtins
-  offset = 0;
-  code.replace(pythonBuiltins, (match, index) => {
-    const start = code.indexOf(match, offset);
-    matches.push({
-      start,
-      end: start + match.length,
-      type: "builtin",
-      text: match,
-    });
-    offset = start + match.length;
-    return match;
-  });
-
-  // Numbers
-  offset = 0;
-  code.replace(numbers, (match, index) => {
-    const start = code.indexOf(match, offset);
-    matches.push({
-      start,
-      end: start + match.length,
-      type: "number",
-      text: match,
-    });
-    offset = start + match.length;
-    return match;
-  });
-
-  return matches;
-}
-
-// Component to render highlighted code
-function CodeHighlighter({ code }) {
-  const matches = highlightPython(code);
-  const colorMap = {
-    keyword: "#569cd6", // Blue
-    string: "#ce9178", // Orange/brown
-    comment: "#6a9955", // Green
-    builtin: "#4fc1ff", // Light blue
-    number: "#b5cea8", // Light green
-  };
-
-  const lines = code.split("\n");
-
-  return (
-    <div style={{ display: "flex", lineHeight: "1.6" }}>
-      <div
-        style={{
-          color: "#858585",
-          paddingRight: "1.5rem",
-          textAlign: "right",
-          userSelect: "none",
-          minWidth: "fit-content",
-        }}
-      >
-        {lines.map((_, i) => (
-          <div key={i}>{i + 1}</div>
-        ))}
-      </div>
-      <pre
-        style={{
-          margin: 0,
-          whiteSpace: "pre-wrap",
-          wordBreak: "break-word",
-          flex: 1,
-          color: "#d4d4d4",
-          fontFamily: "monospace",
-        }}
-      >
-        {lines.map((line, lineNum) => (
-          <div key={lineNum}>
-            {line.split("").map((char, charIdx) => {
-              let displayColor = "#d4d4d4";
-
-              for (const match of matches) {
-                const lineStart = code
-                  .substring(0, code.lastIndexOf("\n", code.indexOf(line)))
-                  .split("\n")
-                  .reduce((a, b, i) => a + b.length + 1, 0);
-                const charPos = lineStart + charIdx;
-
-                if (charPos >= match.start && charPos < match.end) {
-                  displayColor = colorMap[match.type];
-                  break;
-                }
-              }
-
-              return (
-                <span key={charIdx} style={{ color: displayColor }}>
-                  {char}
-                </span>
-              );
-            })}
-          </div>
-        ))}
-      </pre>
-    </div>
-  );
-}
-
 function OldInterviewsPage() {
   const navigate = useNavigate();
   const { user } = useAppState();
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
-  const [selectedContent, setSelectedContent] = useState(null);
-  const [contentType, setContentType] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
   useEffect(() => {
@@ -213,10 +57,13 @@ function OldInterviewsPage() {
     fetchInterviews();
   }, [user?.id]);
 
-  const handleDelete = async (sessionId) => {
-    if (!window.confirm("Are you sure you want to delete this interview?")) {
-      return;
-    }
+  const handleDelete = (sessionId) => {
+    setDeleteTarget(sessionId);
+  };
+
+  const confirmDelete = async () => {
+    const sessionId = deleteTarget;
+    setDeleteTarget(null);
 
     try {
       const response = await fetch(
@@ -230,16 +77,16 @@ function OldInterviewsPage() {
         throw new Error("Failed to delete interview");
       }
 
-      // Remove from local state
       setInterviews(interviews.filter((i) => i._id !== sessionId));
     } catch (err) {
       alert("Failed to delete interview");
     }
   };
 
-  const handleViewContent = (content, type) => {
-    setSelectedContent(content);
-    setContentType(type);
+  const handleViewReport = (interview) => {
+    navigate("/report", {
+      state: { sessionId: interview._id, sessionData: interview },
+    });
   };
 
   return (
@@ -275,28 +122,50 @@ function OldInterviewsPage() {
               <span className="ci-title">{interview.interview.title}</span>
               <span className="ci-meta">
                 {interview.interview.company}
-                {interview.interview.difficulty ? ` · ${interview.interview.difficulty}` : ""}
-                {interview.timeLeftSeconds !== undefined && ` · ${formatTime((interview.interview.durationMinutes * 60) - interview.timeLeftSeconds)} spent`}
+                {interview.interview.difficulty
+                  ? ` · ${interview.interview.difficulty}`
+                  : ""}
+                {interview.timeLeftSeconds !== undefined &&
+                  ` · ${formatTime(interview.interview.durationMinutes * 60 - interview.timeLeftSeconds)} spent`}
               </span>
-              <span className="ci-date">{formatDate(interview.completedAt)}</span>
+              <span className="ci-date">
+                {formatDate(interview.completedAt)}
+              </span>
             </div>
             {interview.testResults && (
-              <span className={`ci-score ${interview.testResults.passed ? "ci-score--pass" : "ci-score--fail"}`}>
-                {interview.testResults.passedCount}/{interview.testResults.totalTests} passing
+              <span
+                className={`ci-score ${
+                  interview.testResults.passed
+                    ? "ci-score--pass"
+                    : interview.testResults.passedCount >= 8
+                      ? "ci-score--partial"
+                      : "ci-score--fail"
+                }`}
+              >
+                {interview.testResults.passedCount}/
+                {interview.testResults.totalTests} passing
+              </span>
+            )}
+            {interview.review?.overallScore !== undefined && (
+              <span className="ci-score ci-score--review">
+                Score: {interview.review.overallScore}/10
               </span>
             )}
             <div className="ci-actions">
-              {interview.transcript && (
-                <button type="button" className="ci-btn" onClick={() => handleViewContent(interview.transcript, "transcript")}>
-                  Transcript
-                </button>
-              )}
               {interview.code && (
-                <button type="button" className="ci-btn" onClick={() => handleViewContent(interview.code, "code")}>
-                  View
+                <button
+                  type="button"
+                  className="ci-btn"
+                  onClick={() => handleViewReport(interview)}
+                >
+                  View Report
                 </button>
               )}
-              <button type="button" className="ci-btn ci-btn--delete" onClick={() => handleDelete(interview._id)}>
+              <button
+                type="button"
+                className="ci-btn ci-btn--delete"
+                onClick={() => handleDelete(interview._id)}
+              >
                 Delete
               </button>
             </div>
@@ -304,125 +173,36 @@ function OldInterviewsPage() {
         ))}
       </div>
 
-      {/* Content Modal (Transcript/Code) */}
-      {selectedContent && (
-        <div
-          style={{
-            position: "fixed",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundColor: "rgba(0, 0, 0, 0.5)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 1000,
-            padding: "1rem",
-          }}
-          onClick={() => setSelectedContent(null)}
-        >
-          <div
-            style={{
-              backgroundColor: "var(--color-bg, #fff)",
-              color: "var(--color-text, #000)",
-              borderRadius: "0.8rem",
-              maxWidth: "700px",
-              width: "100%",
-              maxHeight: "80vh",
-              display: "flex",
-              flexDirection: "column",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.3)",
-            }}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div
-              style={{
-                padding: "1.5rem",
-                borderBottom: "1px solid var(--color-border, #e0e0e0)",
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-              }}
-            >
-              <h2 style={{ margin: 0 }}>
-                {contentType === "code" ? "Code" : "Transcript"}
-              </h2>
-              <button
-                type="button"
-                onClick={() => setSelectedContent(null)}
-                style={{
-                  background: "none",
-                  border: "none",
-                  fontSize: "1.5rem",
-                  cursor: "pointer",
-                  color: "var(--color-text, #666)",
-                }}
-              >
-              </button>
-            </div>
-
-            {contentType === "code" ? (
-              // Code view with syntax highlighting
-              <div
-                style={{
-                  flex: 1,
-                  overflowY: "auto",
-                  overflowX: "auto",
-                  padding: "1.5rem",
-                  backgroundColor: "#1e1e1e",
-                  color: "#d4d4d4",
-                  fontFamily: "monospace",
-                  fontSize: "0.9rem",
-                }}
-              >
-                <CodeHighlighter code={selectedContent} />
+      {/* Delete Confirm Dialog */}
+      {deleteTarget &&
+        createPortal(
+          <div className="modal-backdrop" onClick={() => setDeleteTarget(null)}>
+            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+              <h2 className="modal-title">Delete Interview</h2>
+              <p className="modal-body">
+                Are you sure you want to delete this interview? This cannot be
+                undone.
+              </p>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="ci-btn"
+                  onClick={() => setDeleteTarget(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="ci-btn ci-btn--delete-active"
+                  onClick={confirmDelete}
+                >
+                  Delete
+                </button>
               </div>
-            ) : (
-              // Transcript view
-              <div
-                style={{
-                  flex: 1,
-                  overflowY: "auto",
-                  padding: "1.5rem",
-                  backgroundColor: "var(--color-input-bg, #fafafa)",
-                  color: "var(--color-text, #000)",
-                  fontFamily: "monospace",
-                  fontSize: "0.9rem",
-                  whiteSpace: "pre-wrap",
-                  wordBreak: "break-word",
-                }}
-              >
-                {selectedContent}
-              </div>
-            )}
-
-            <div
-              style={{
-                padding: "1rem",
-                borderTop: "1px solid var(--color-border, #e0e0e0)",
-                textAlign: "right",
-                backgroundColor: "var(--color-bg, #fff)",
-              }}
-            >
-              <button
-                type="button"
-                onClick={() => setSelectedContent(null)}
-                style={{
-                  padding: "0.6rem 1.5rem",
-                  backgroundColor: "var(--color-primary, #007bff)",
-                  color: "#fff",
-                  border: "none",
-                  borderRadius: "0.4rem",
-                  cursor: "pointer",
-                }}
-              >
-                Close
-              </button>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }

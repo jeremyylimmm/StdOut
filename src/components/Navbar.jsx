@@ -1,9 +1,17 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
-import { FaSun, FaMoon } from "react-icons/fa";
+
+const PATH_LABELS = {
+  "/interview/setup": "~/dashboard",
+  "/interviews/old": "~/interviews",
+  "/interview/session": "~/session",
+  "/results": "~/results",
+  "/dashboard": "~/dashboard",
+};
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { user, logout, theme, toggleTheme } = useAppState();
 
   const handleLogout = () => {
@@ -11,29 +19,37 @@ function Navbar() {
     navigate("/login");
   };
 
+  const pathLabel = PATH_LABELS[location.pathname] ?? "~";
+
   return (
     <header className="navbar">
-      <Link to="/interview/setup" className="brand">St<span className="brand-sub">&#123;an&#125;</span>dOut</Link>
-      <nav className="nav-links">
-      </nav>
-      <div className="nav-user">
+      <Link to="/interview/setup" className="navbar-brand">
+        <span className="navbar-prompt">&gt;</span>
+        <span className="navbar-brand-name">St<span className="navbar-brand-sub">an</span>dOut</span>
+      </Link>
+
+      <div className="navbar-path">{pathLabel}</div>
+
+      <nav className="navbar-actions">
+        {user && (
+          <span className="navbar-user">
+            <span className="navbar-user-sigil">@</span>{user.name}
+          </span>
+        )}
         <button
           type="button"
           onClick={toggleTheme}
-          className={`theme-toggle ${theme === "dark" ? "theme-toggle--dark" : ""}`}
+          className="navbar-flag-btn"
           aria-label="Toggle theme"
         >
-          <FaSun className="theme-toggle-icon theme-toggle-sun" />
-          <FaMoon className="theme-toggle-icon theme-toggle-moon" />
+          {theme === "dark" ? "light" : "dark"}
         </button>
-
-        {user ? <span>{user.name}</span> : <span>Guest</span>}
         {user && (
-          <button type="button" onClick={handleLogout} className="ghost-btn">
-            Logout
+          <button type="button" onClick={handleLogout} className="navbar-flag-btn navbar-flag-btn--danger">
+            logout
           </button>
         )}
-      </div>
+      </nav>
     </header>
   );
 }

@@ -125,22 +125,10 @@ router.post("/:questionId/submit", async (req, res) => {
       const testCode = buildTestCode(
         code,
         testCase.input,
-        testCase.expectedOutput
+        testCase.expectedOutput,
       );
 
       const result = await runPython(testCode);
-
-      // Debug logging
-      if (testCase.id === 1) {
-        console.log("=== TEST CASE 1 DEBUG ===");
-        console.log("Generated code:");
-        console.log(testCode);
-        console.log("\nPython output:");
-        console.log("stdout:", JSON.stringify(result.stdout));
-        console.log("stderr:", JSON.stringify(result.stderr));
-        console.log("exitCode:", result.exitCode);
-        console.log("========================\n");
-      }
 
       const passed = result.exitCode === 0 && result.stdout.trim() === "PASS";
       testResults.push({
@@ -148,7 +136,9 @@ router.post("/:questionId/submit", async (req, res) => {
         passed,
         description: testCase.description,
         isHidden: testCase.isHidden,
-        output: passed ? null : result.stdout + result.stderr,
+        input: testCase.input,
+        expectedOutput: testCase.expectedOutput,
+        actualOutput: passed ? null : result.stdout + result.stderr,
       });
 
       if (passed) passedCount++;
@@ -162,7 +152,7 @@ router.post("/:questionId/submit", async (req, res) => {
       passedCount,
       totalTests,
       passPercentage: Math.round(passPercentage),
-      testResults,
+      testCases: testResults,
     });
   } catch (error) {
     res.status(500).json({
@@ -177,12 +167,6 @@ function buildTestCode(userCode, input, expectedOutput) {
   // Convert to JSON strings directly instead of escaping
   const inputArray = JSON.stringify(input);
   const expectedArray = JSON.stringify(expectedOutput);
-
-  console.log("=== buildTestCode DEBUG ===");
-  console.log("User code received:");
-  console.log(userCode);
-  console.log("Input:", inputArray);
-  console.log("Expected:", expectedArray);
 
   return `
 import json

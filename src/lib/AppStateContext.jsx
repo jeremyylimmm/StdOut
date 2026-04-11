@@ -28,6 +28,7 @@ export function AppStateProvider({ children }) {
   const [theme, setTheme] = useState(getInitialTheme);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [lastSessionId, setLastSessionId] = useState(null);
 
   // Check for stored auth token on load
   useEffect(() => {
@@ -109,10 +110,16 @@ export function AppStateProvider({ children }) {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-  const saveInterview = async (transcript, code, timeLeftSeconds, testResults, review) => {
+  const saveInterview = async (
+    transcript,
+    code,
+    timeLeftSeconds,
+    testResults,
+    review,
+  ) => {
     if (!user?.id) {
       console.error("User not logged in");
-      return false;
+      return null;
     }
 
     try {
@@ -140,13 +147,15 @@ export function AppStateProvider({ children }) {
 
       if (!response.ok) {
         console.error("Failed to save interview");
-        return false;
+        return null;
       }
 
-      return true;
+      const data = await response.json();
+      setLastSessionId(data.sessionId);
+      return data.sessionId;
     } catch (error) {
       console.error("Error saving interview:", error);
-      return false;
+      return null;
     }
   };
 
@@ -159,6 +168,7 @@ export function AppStateProvider({ children }) {
       questionIndex,
       currentQuestion: questions[questionIndex] || null,
       loading,
+      lastSessionId,
       login,
       logout,
       toggleTheme,
@@ -168,7 +178,7 @@ export function AppStateProvider({ children }) {
       resetInterview,
       saveInterview,
     }),
-    [user, theme, settings, questionIndex, questions, loading],
+    [user, theme, settings, questionIndex, questions, loading, lastSessionId],
   );
 
   return (

@@ -5,22 +5,26 @@ import { useAppState } from "../lib/AppStateContext";
 function ResultsPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  const { settings, resetInterview } = useAppState();
+  const { settings, resetInterview, lastSessionId } = useAppState();
 
   const timeSpentSeconds = location.state?.timeSpentSeconds ?? 0;
   const codeLength = location.state?.codeLength ?? 0;
   const testResults = location.state?.testResults;
   const review = location.state?.review;
 
-  console.log(review);
-
-  const handleTryAgain = () => {
+  const handleDashboard = () => {
     resetInterview();
     navigate("/interview/setup");
   };
 
+  const handleViewReport = () => {
+    navigate("/report", {
+      state: { sessionId: lastSessionId, timeSpentSeconds, codeLength, testResults, review },
+    });
+  };
+
   return (
-    <section className="page narrow">
+    <section className="page narrow results-enter">
       <ResultsCard
         settings={settings}
         timeSpentSeconds={timeSpentSeconds}
@@ -28,24 +32,18 @@ function ResultsPage() {
         testResults={testResults}
       />
 
-  {review && (
-    <div className="card review-card">
-      <h2>AI Review</h2>
-      {review.split("\n").map((line, i) => {
-        const heading = line.match(/^\*\*(.+?)\*\*(.*)$/);
-        if (heading) return (
-          <p key={i}>
-            <strong>{heading[1]}</strong>{heading[2]}
-          </p>
-        );
-        if (line.trim() === "") return <br key={i} />;
-        return <p key={i}>{line}</p>;
-      })}
-    </div>
-  )}
-      <button type="button" onClick={handleTryAgain}>
-        Start New Interview
-      </button>
+      <div className="results-actions">
+        <button type="button" className="ci-btn" onClick={handleDashboard}>
+          Back to Dashboard
+        </button>
+        <button
+          type="button"
+          className="ci-btn ci-btn--primary"
+          onClick={handleViewReport}
+        >
+          View Full Report
+        </button>
+      </div>
     </section>
   );
 }

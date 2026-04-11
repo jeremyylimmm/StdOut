@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
+import Dither from "../components/Dither";
 
 function LoginPage() {
   const [mode, setMode] = useState("login");
@@ -62,8 +63,17 @@ function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-brand-panel">
+        <Dither
+          waveColor={[0.1, 0.07, 0.35]}
+          waveSpeed={0.04}
+          waveFrequency={3}
+          waveAmplitude={0.3}
+          colorNum={4}
+          pixelSize={3}
+          enableMouseInteraction={false}
+        />
         <div className="login-brand-content">
-          <div className="login-brand-name">St<span className="login-brand-sub">&#123;an&#125;</span>dOut</div>
+          <div className="login-brand-name">St<span className="login-brand-sub">an</span>dOut</div>
           <p className="login-brand-tagline">
             Practice technical interviews.<br />Get feedback.
           </p>

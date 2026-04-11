@@ -1,10 +1,11 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import DashboardPage from "../pages/DashboardPage";
 import InterviewSessionPage from "../pages/InterviewSessionPage";
 import InterviewSetupPage from "../pages/InterviewSetupPage";
 import LoginPage from "../pages/LoginPage";
 import OldInterviewsPage from "../pages/OldInterviewsPage";
 import ResultsPage from "../pages/ResultsPage";
+import ReportPage from "../pages/ReportPage";
 import { useAppState } from "../lib/AppStateContext";
 
 function ProtectedRoute({ children }) {
@@ -19,8 +20,10 @@ function ProtectedRoute({ children }) {
 
 function AppRoutes() {
   const { user } = useAppState();
+  const location = useLocation();
 
   return (
+    <div key={location.pathname} className="page-enter">
     <Routes>
       <Route
         path="/"
@@ -60,6 +63,14 @@ function AppRoutes() {
         }
       />
       <Route
+        path="/report"
+        element={
+          <ProtectedRoute>
+            <ReportPage />
+          </ProtectedRoute>
+        }
+      />
+      <Route
         path="/interviews/old"
         element={
           <ProtectedRoute>
@@ -69,6 +80,7 @@ function AppRoutes() {
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </div>
   );
 }
 

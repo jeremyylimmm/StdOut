@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { diffLines } from "diff";
 import CodeEditor from "../components/CodeEditor";
@@ -12,9 +13,12 @@ function InterviewSessionPage() {
   const [code, setCode] = useState("");
   const [runOutput, setRunOutput] = useState("");
   const [runError, setRunError] = useState("");
+  const [outputKey, setOutputKey] = useState(0);
   const [timeline, setTimeline] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState("");
+  const [submitting, setSubmitting] = useState(false);
+  const [submitStep, setSubmitStep] = useState("");
 
   const mediaRecorderRef = useRef(null);
   const chunkIntervalRef = useRef(null);
@@ -49,7 +53,11 @@ function InterviewSessionPage() {
       if (tsToSeconds(list[i].timestamp) <= incoming) break;
       insertAt = i;
     }
-    const updated = [...list.slice(0, insertAt), event, ...list.slice(insertAt)];
+    const updated = [
+      ...list.slice(0, insertAt),
+      event,
+      ...list.slice(insertAt),
+    ];
     timelineRef.current = updated;
     setTimeline(updated);
   }
@@ -166,9 +174,15 @@ Your rules:
         };
 
         recorder.onstop = async () => {
-          if (chunks.length === 0) { if (!stopped) recordChunk(); return; }
+          if (chunks.length === 0) {
+            if (!stopped) recordChunk();
+            return;
+          }
           const blob = new Blob(chunks, { type: recorder.mimeType });
-          if ((recorder._speechMs?.() ?? 0) < 400) { if (!stopped) recordChunk(); return; }
+          if ((recorder._speechMs?.() ?? 0) < 400) {
+            if (!stopped) recordChunk();
+            return;
+          }
 
           const formData = new FormData();
           formData.append("audio", blob, "audio.webm");
@@ -181,7 +195,11 @@ Your rules:
             const data = await res.json();
             const text = data.text?.trim();
             if (text) {
-              pushEvent({ type: "speech", content: text, timestamp: chunkStartTimestamp });
+              pushEvent({
+                type: "speech",
+                content: text,
+                timestamp: chunkStartTimestamp,
+              });
             }
           } catch (err) {
             // silently ignore transcription errors
@@ -203,7 +221,10 @@ Your rules:
         const startedAt = Date.now();
 
         const vadInterval = setInterval(() => {
-          if (recorder.state !== "recording") { clearInterval(vadInterval); return; }
+          if (recorder.state !== "recording") {
+            clearInterval(vadInterval);
+            return;
+          }
 
           const now = Date.now();
           const dt = now - lastTick;
@@ -238,7 +259,9 @@ Your rules:
     }
 
     let cleanup = () => {};
-    startRecording().then((fn) => { if (fn) cleanup = fn; });
+    startRecording().then((fn) => {
+      if (fn) cleanup = fn;
+    });
 
     return () => {
       stopped = true;
@@ -365,6 +388,7 @@ Your rules:
   const handleRunCode = async () => {
     setRunOutput("");
     setRunError("");
+    setOutputKey((k) => k + 1);
 
     try {
       const res = await fetch("http://localhost:3001/run", {
@@ -397,6 +421,9 @@ Your rules:
   };
 
   const handleFinish = async () => {
+    setSubmitting(true);
+    setSubmitStep("Stopping recording...");
+
     clearTimeout(chunkIntervalRef.current);
     if (mediaRecorderRef.current?.state === "recording") {
       mediaRecorderRef.current.onstop = null;
@@ -417,10 +444,13 @@ Your rules:
       .map((event) => `[${event.timestamp}] ${event.type}: ${event.content}`)
       .join("\n");
 
+
     const timeLeft = timerRef.current?.getTimeLeft() || 0;
+
 
     let testResults = null;
     if (currentQuestion?._id) {
+      setSubmitStep("Running test cases...");
       try {
         const response = await fetch(
           `http://localhost:3001/api/questions/${currentQuestion._id}/submit`,
@@ -428,9 +458,10 @@ Your rules:
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ code }),
-          }
+          },
         );
         if (response.ok) {
+          testResults = await response.json();
           testResults = await response.json();
         } else {
           console.error("Submit response not ok:", response.status);
@@ -440,12 +471,18 @@ Your rules:
       }
     }
 
+    setSubmitStep("Generating AI review...");
     let review = null;
     try {
       const res = await fetch("http://localhost:3001/api/review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript, code, question: currentQuestion?.title }),
+        body: JSON.stringify({
+          transcript,
+          code,
+          question: currentQuestion?.title,
+          testResults,
+        }),
       });
       const data = await res.json();
       review = data.review;
@@ -453,6 +490,7 @@ Your rules:
       console.error("Review failed:", err);
     }
 
+    setSubmitStep("Saving session...");
     await saveInterview(transcript, code, timeLeft, testResults, review);
 
     const initialTimeSeconds = settings.durationMinutes * 60;
@@ -472,7 +510,11 @@ Your rules:
   return (
     <section className="page leetcode-layout">
       <div className="question-panel-wrap">
-        <QuestionPanel question={currentQuestion} timerRef={timerRef} initialSeconds={settings.durationMinutes * 60} />
+        <QuestionPanel
+          question={currentQuestion}
+          timerRef={timerRef}
+          initialSeconds={settings.durationMinutes * 60}
+        />
         <div className="card timeline-widget">
           <div className="timeline-header">
             <span>Timeline</span>
@@ -517,13 +559,32 @@ Your rules:
       </div>
 
       <div className="editor-panel-wrap">
-        <CodeEditor value={code} onChange={handleCodeChange} onRun={handleRunCode} onSubmit={handleFinish} />
+        <CodeEditor
+          value={code}
+          onChange={handleCodeChange}
+          onRun={handleRunCode}
+          onSubmit={handleFinish}
+        />
         <div className="card terminal-card">
-          <pre className={`run-output terminal-output ${runError ? "error" : ""}`}>
+          <pre
+            key={outputKey}
+            className={`run-output terminal-output terminal-fade ${runError ? "error" : ""}`}
+          >
             {runError || runOutput || "Run your code to see output here..."}
           </pre>
         </div>
       </div>
+
+      {submitting &&
+        createPortal(
+          <div className="submit-overlay">
+            <div className="submit-overlay-box">
+              <div className="submit-spinner" />
+              <p className="submit-overlay-step">{submitStep}</p>
+            </div>
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }
