@@ -43,7 +43,7 @@ router.get("/user/:userId", async (req, res) => {
     const sessions = await InterviewSession.find({ userId })
       .sort({ completedAt: -1 })
       .select(
-        "interview transcript code timeLeftSeconds completedAt createdAt",
+        "interview transcript code timeLeftSeconds completedAt createdAt"
       );
 
     res.json(sessions);
@@ -70,6 +70,25 @@ router.get("/:sessionId", async (req, res) => {
     res
       .status(500)
       .json({ error: "Failed to fetch interview", details: error.message });
+  }
+});
+
+// Delete interview session
+router.delete("/:sessionId", async (req, res) => {
+  try {
+    const { sessionId } = req.params;
+
+    const session = await InterviewSession.findByIdAndDelete(sessionId);
+
+    if (!session) {
+      return res.status(404).json({ error: "Interview session not found" });
+    }
+
+    res.json({ message: "Interview deleted successfully" });
+  } catch (error) {
+    res
+      .status(500)
+      .json({ error: "Failed to delete interview", details: error.message });
   }
 });
 
