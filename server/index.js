@@ -46,9 +46,6 @@ const startServer = async () => {
     // Enable CORS for frontend
     // In production, this allows requests from the deployed Vercel frontend
     const allowedOrigins = [
-      "http://localhost:5173",
-      "http://localhost:5174",
-      "http://localhost:5175",
       process.env.FRONTEND_URL, // Set in Render/production
     ].filter(Boolean); // Remove undefined values
 
