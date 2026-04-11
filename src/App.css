@@ -127,8 +127,61 @@ p {
   padding: 1rem 1.5rem;
   position: sticky;
   top: 0;
-  box-shadow: var(--shadow-sm);
+  box-shadow: none;
   z-index: 100;
+}
+
+.theme-toggle {
+  width: 44px;
+  height: 24px;
+  border-radius: 12px;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  padding: 0;
+  position: relative;
+  transition: background 0.25s ease;
+  flex-shrink: 0;
+}
+
+.theme-toggle--dark {
+  background: var(--brand);
+}
+
+.theme-toggle-icon {
+  position: absolute;
+  top: 50%;
+  width: 15px;
+  height: 15px;
+  transition: opacity 0.6s ease, transform 0.6s ease;
+}
+
+.theme-toggle-sun {
+  left: 4px;
+  color: #f59e0b;
+  opacity: 1;
+  transform: translateY(-50%) scale(1) rotate(0deg);
+}
+
+.theme-toggle--dark .theme-toggle-sun {
+  opacity: 0;
+  transform: translateY(-50%) scale(0.3) rotate(90deg);
+}
+
+.theme-toggle-moon {
+  right: 4px;
+  color: #c4b5fd;
+  opacity: 0;
+  transform: translateY(-50%) scale(0.3) rotate(-90deg);
+}
+
+.theme-toggle--dark .theme-toggle-moon {
+  opacity: 1;
+  transform: translateY(-50%) scale(1) rotate(0deg);
+}
+
+.theme-toggle--dark .theme-toggle-knob {
+  transform: translateX(20px);
 }
 
 .brand {
@@ -481,7 +534,7 @@ p {
 
 .card:hover {
   border-color: var(--border-light);
-  box-shadow: var(--shadow-lg);
+  box-shadow: none;
 }
 
 .card h1,
@@ -600,7 +653,7 @@ p {
   padding: 1.25rem;
   min-height: 0;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
 }
 
 .mic-status {
@@ -662,7 +715,7 @@ p {
 .transcript-box:focus {
   outline: none;
   border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: none;
 }
 
 .cm-editor {
@@ -670,7 +723,7 @@ p {
   border: 1.5px solid var(--border);
   border-radius: 12px;
   overflow: hidden;
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
 }
 
 .editor-panel-wrap {
@@ -755,7 +808,7 @@ p {
 .code-editor:focus {
   outline: none;
   border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: none;
 }
 
 .editor-actions {
@@ -892,7 +945,7 @@ p {
   border: 1.5px solid var(--border);
   border-radius: 12px;
   padding: 1.25rem;
-  box-shadow: var(--shadow-md);
+  box-shadow: none;
 }
 
 .timer p {
@@ -946,7 +999,7 @@ input:focus,
 select:focus {
   outline: none;
   border-color: var(--brand);
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+  box-shadow: none;
 }
 
 input::placeholder {
@@ -971,13 +1024,13 @@ button {
   font-weight: 600;
   font-size: 1rem;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(37, 99, 235, 0.2);
+  box-shadow: none;
   font-family: inherit;
 }
 
 button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+  box-shadow: none;
 }
 
 button:active:not(:disabled) {
