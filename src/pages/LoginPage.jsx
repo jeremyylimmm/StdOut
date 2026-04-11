@@ -20,11 +20,23 @@ function LoginPage() {
   }, [user, navigate]);
 
   const validateForm = () => {
-    if (!username.trim()) { setError("Username is required"); return false; }
-    if (!password) { setError("Password is required"); return false; }
+    if (!username.trim()) {
+      setError("Username is required");
+      return false;
+    }
+    if (!password) {
+      setError("Password is required");
+      return false;
+    }
     if (mode === "signup") {
-      if (username.length < 3) { setError("Username must be at least 3 characters"); return false; }
-      if (password.length < 6) { setError("Password must be at least 6 characters"); return false; }
+      if (username.length < 3) {
+        setError("Username must be at least 3 characters");
+        return false;
+      }
+      if (password.length < 6) {
+        setError("Password must be at least 6 characters");
+        return false;
+      }
     }
     return true;
   };
@@ -41,7 +53,10 @@ function LoginPage() {
         body: JSON.stringify({ username, password }),
       });
       const data = await response.json();
-      if (!response.ok) { setError(data.error || `${mode} failed`); return; }
+      if (!response.ok) {
+        setError(data.error || `${mode} failed`);
+        return;
+      }
       login(data.username ?? username, data.userId);
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("userId", data.userId);
@@ -74,9 +89,13 @@ function LoginPage() {
           enableMouseInteraction={false}
         />
         <div className="login-brand-content">
-          <div className="login-brand-name">St<span className="login-brand-sub">an</span>dOut</div>
+          <div className="login-brand-name">
+            St<span className="login-brand-sub">an</span>dOut
+          </div>
           <p className="login-brand-tagline">
-            Practice technical interviews.<br />Get feedback.
+            Practice technical interviews.
+            <br />
+            Get feedback.
           </p>
           <ul className="login-features">
             <li>Live speech transcription</li>
@@ -112,7 +131,9 @@ function LoginPage() {
                 autoComplete="username"
               />
               {mode === "signup" && username && username.length < 3 && (
-                <small className="login-hint">At least 3 characters ({username.length}/3)</small>
+                <small className="login-hint">
+                  At least 3 characters ({username.length}/3)
+                </small>
               )}
             </div>
 
@@ -125,22 +146,35 @@ function LoginPage() {
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="Enter password"
                 disabled={loading}
-                autoComplete={mode === "login" ? "current-password" : "new-password"}
+                autoComplete={
+                  mode === "login" ? "current-password" : "new-password"
+                }
               />
               {mode === "signup" && password && password.length < 6 && (
-                <small className="login-hint">At least 6 characters ({password.length}/6)</small>
+                <small className="login-hint">
+                  At least 6 characters ({password.length}/6)
+                </small>
               )}
             </div>
 
             <button type="submit" className="login-submit" disabled={loading}>
-              {loading ? "Please wait..." : mode === "login" ? "Sign in" : "Create account"}
+              {loading
+                ? "Please wait..."
+                : mode === "login"
+                  ? "Sign in"
+                  : "Create account"}
             </button>
           </form>
 
           <div className="login-switch">
-            {mode === "login" ? "Don't have an account?" : "Already have an account?"}
-            {" "}
-            <button type="button" onClick={switchMode} className="login-switch-btn">
+            {mode === "login"
+              ? "Don't have an account?"
+              : "Already have an account?"}{" "}
+            <button
+              type="button"
+              onClick={switchMode}
+              className="login-switch-btn"
+            >
               {mode === "login" ? "Sign up" : "Sign in"}
             </button>
           </div>
