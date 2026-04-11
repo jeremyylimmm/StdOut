@@ -396,6 +396,14 @@ function ReportPage() {
       {interview.review && typeof interview.review === "object" && (
         <div className="card">
           <h2>Performance Analysis</h2>
+          {interview.review.overallScore !== undefined && (
+            <div className="overall-score-section">
+              <div className="overall-score-box">
+                <span className="overall-score-label">Overall Score</span>
+                <span className="overall-score-value">{interview.review.overallScore}/10</span>
+              </div>
+            </div>
+          )}
           <ScoreGauges review={interview.review} />
           {interview.review.summary && (
             <div className="score-summary">

@@ -299,7 +299,7 @@ function InterviewSessionPage() {
       const res = await fetch("http://localhost:3001/api/review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript, code, question: currentQuestion?.title }),
+        body: JSON.stringify({ transcript, code, question: currentQuestion?.title, testResults }),
       });
       const data = await res.json();
       review = data.review;

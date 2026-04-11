@@ -557,6 +557,11 @@ p {
   border-color: var(--warning);
 }
 
+.ci-score--review {
+  color: var(--brand);
+  border-color: var(--brand);
+}
+
 .ci-actions {
   display: flex;
   gap: 0.5rem;
@@ -1752,6 +1757,37 @@ button:disabled {
 
 .report-actions button {
   padding: 0.5rem 1.25rem;
+}
+
+/* Overall Score Display */
+.overall-score-section {
+  display: flex;
+  justify-content: center;
+  margin: 1.5rem 0;
+}
+
+.overall-score-box {
+  background: var(--brand);
+  color: white;
+  padding: 1.5rem 2rem;
+  border: 2px solid var(--brand-dark);
+  border-radius: 0;
+  text-align: center;
+  min-width: 200px;
+}
+
+.overall-score-label {
+  display: block;
+  font-size: 0.9rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  opacity: 0.95;
+}
+
+.overall-score-value {
+  display: block;
+  font-size: 2.5rem;
+  font-weight: 700;
 }
 
 /* Fuel Gauge Scores */
