@@ -13,10 +13,8 @@ function Navbar() {
 
   return (
     <header className="navbar">
-      <div className="brand">St<span className="brand-sub">&#123;an&#125;</span>dOut</div>
+      <Link to="/interview/setup" className="brand">St<span className="brand-sub">&#123;an&#125;</span>dOut</Link>
       <nav className="nav-links">
-        <Link to="/interview/setup">New Interview</Link>
-        <Link to="/interviews/old">Previous Interviews</Link>
       </nav>
       <div className="nav-user">
         <button
