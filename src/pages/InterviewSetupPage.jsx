@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, NavLink } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
 
@@ -11,18 +11,39 @@ function InterviewSetupPage() {
   const { settings, saveSettings, startInterview, user } = useAppState();
 
   const [form, setForm] = useState(settings);
+  const [loading, setLoading] = useState(false);
 
   const update = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
 
-  const handleStart = (event) => {
+  const handleStart = async (event) => {
     event.preventDefault();
+    setLoading(true);
     saveSettings(form);
-    startInterview();
+    await startInterview();
     navigate("/interview/session");
   };
 
   const hour = new Date().getHours();
-  const greeting = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const greetingBase = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
+  const fullGreeting = `${greetingBase}, ${user?.name ?? "there"}`;
+
+  const [typedGreeting, setTypedGreeting] = useState("");
+  const [greetingDone, setGreetingDone] = useState(false);
+
+  useEffect(() => {
+    setTypedGreeting("");
+    setGreetingDone(false);
+    let i = 0;
+    const interval = setInterval(() => {
+      i++;
+      setTypedGreeting(fullGreeting.slice(0, i));
+      if (i >= fullGreeting.length) {
+        clearInterval(interval);
+        setGreetingDone(true);
+      }
+    }, 40);
+    return () => clearInterval(interval);
+  }, [fullGreeting]);
 
   return (
     <div className="dashboard-layout">
@@ -41,7 +62,10 @@ function InterviewSetupPage() {
       <div className="dashboard">
         <div className="dashboard-header">
           <div>
-            <h1 className="dashboard-greeting">{greeting}, {user?.name ?? "there"}</h1>
+            <h1 className="dashboard-greeting">
+              {typedGreeting}
+              <span className={`greeting-cursor greeting-cursor--${greetingDone ? "done" : "typing"}`}>▋</span>
+            </h1>
             <p className="dashboard-subheading">Configure your session below and start when ready.</p>
           </div>
         </div>
@@ -108,8 +132,8 @@ function InterviewSetupPage() {
           </div>
 
           <div className="dashboard-start-row">
-            <button type="submit" className="dashboard-start-btn">
-              Begin Session
+            <button type="submit" className="dashboard-start-btn" disabled={loading}>
+              {loading ? "Loading..." : "Begin Session"}
             </button>
             <span className="dashboard-start-meta">
               {form.company}{form.company === "LeetCode" ? ` · ${form.difficulty}` : ""} · {form.durationMinutes} min

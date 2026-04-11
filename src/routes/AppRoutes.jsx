@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 import DashboardPage from "../pages/DashboardPage";
 import InterviewSessionPage from "../pages/InterviewSessionPage";
 import InterviewSetupPage from "../pages/InterviewSetupPage";
@@ -19,8 +19,10 @@ function ProtectedRoute({ children }) {
 
 function AppRoutes() {
   const { user } = useAppState();
+  const location = useLocation();
 
   return (
+    <div key={location.pathname} className="page-enter">
     <Routes>
       <Route
         path="/"
@@ -69,6 +71,7 @@ function AppRoutes() {
       />
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
+    </div>
   );
 }
 

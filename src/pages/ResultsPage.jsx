@@ -20,7 +20,7 @@ function ResultsPage() {
   };
 
   return (
-    <section className="page narrow">
+    <section className="page narrow results-enter">
       <ResultsCard
         settings={settings}
         timeSpentSeconds={timeSpentSeconds}

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, Link } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
 import { FiArrowLeft } from "react-icons/fi";
@@ -307,7 +308,7 @@ function OldInterviewsPage() {
       </div>
 
       {/* Delete Confirm Dialog */}
-      {deleteTarget && (
+      {deleteTarget && createPortal(
         <div className="modal-backdrop" onClick={() => setDeleteTarget(null)}>
           <div className="modal-box" onClick={(e) => e.stopPropagation()}>
             <h2 className="modal-title">Delete Interview</h2>
@@ -323,11 +324,12 @@ function OldInterviewsPage() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
       {/* Content Modal (Transcript/Code) */}
-      {selectedContent && (
+      {selectedContent && createPortal(
         <div className="modal-backdrop" onClick={() => setSelectedContent(null)}>
           <div className="modal-box modal-box--wide" onClick={(e) => e.stopPropagation()}>
             <div className="modal-header">
@@ -351,7 +353,8 @@ function OldInterviewsPage() {
               </button>
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </section>
   );
