@@ -18,8 +18,10 @@ function formatTime(seconds) {
 
 // Python syntax highlighter
 function highlightPython(code) {
-  const pythonKeywords = /\b(def|class|if|elif|else|for|while|return|import|from|as|try|except|finally|with|lambda|yield|assert|break|continue|del|global|nonlocal|pass|raise|and|or|not|in|is|True|False|None)\b/g;
-  const pythonBuiltins = /\b(print|len|range|str|int|float|list|dict|set|tuple|sum|max|min|enumerate|zip|map|filter|sorted|reversed|open|input|type|isinstance|hasattr|getattr|setattr|callable)\b/g;
+  const pythonKeywords =
+    /\b(def|class|if|elif|else|for|while|return|import|from|as|try|except|finally|with|lambda|yield|assert|break|continue|del|global|nonlocal|pass|raise|and|or|not|in|is|True|False|None)\b/g;
+  const pythonBuiltins =
+    /\b(print|len|range|str|int|float|list|dict|set|tuple|sum|max|min|enumerate|zip|map|filter|sorted|reversed|open|input|type|isinstance|hasattr|getattr|setattr|callable)\b/g;
   const strings = /(['"`])(?:(?=(\\?))\2.)*?\1/g;
   const comments = /#.*$/gm;
   const numbers = /\b\d+\.?\d*\b/g;
@@ -32,7 +34,12 @@ function highlightPython(code) {
 
   // Comments
   code.replace(comments, (match, index) => {
-    matches.push({ start: code.indexOf(match, offset), end: code.indexOf(match, offset) + match.length, type: "comment", text: match });
+    matches.push({
+      start: code.indexOf(match, offset),
+      end: code.indexOf(match, offset) + match.length,
+      type: "comment",
+      text: match,
+    });
     offset = code.indexOf(match, offset) + match.length;
     return match;
   });
@@ -40,7 +47,12 @@ function highlightPython(code) {
   // Strings
   offset = 0;
   code.replace(strings, (match, index) => {
-    matches.push({ start: code.indexOf(match, offset), end: code.indexOf(match, offset) + match.length, type: "string", text: match });
+    matches.push({
+      start: code.indexOf(match, offset),
+      end: code.indexOf(match, offset) + match.length,
+      type: "string",
+      text: match,
+    });
     offset = code.indexOf(match, offset) + match.length;
     return match;
   });
@@ -49,7 +61,12 @@ function highlightPython(code) {
   offset = 0;
   code.replace(pythonKeywords, (match, index) => {
     const start = code.indexOf(match, offset);
-    matches.push({ start, end: start + match.length, type: "keyword", text: match });
+    matches.push({
+      start,
+      end: start + match.length,
+      type: "keyword",
+      text: match,
+    });
     offset = start + match.length;
     return match;
   });
@@ -58,7 +75,12 @@ function highlightPython(code) {
   offset = 0;
   code.replace(pythonBuiltins, (match, index) => {
     const start = code.indexOf(match, offset);
-    matches.push({ start, end: start + match.length, type: "builtin", text: match });
+    matches.push({
+      start,
+      end: start + match.length,
+      type: "builtin",
+      text: match,
+    });
     offset = start + match.length;
     return match;
   });
@@ -67,7 +89,12 @@ function highlightPython(code) {
   offset = 0;
   code.replace(numbers, (match, index) => {
     const start = code.indexOf(match, offset);
-    matches.push({ start, end: start + match.length, type: "number", text: match });
+    matches.push({
+      start,
+      end: start + match.length,
+      type: "number",
+      text: match,
+    });
     offset = start + match.length;
     return match;
   });
@@ -79,11 +106,11 @@ function highlightPython(code) {
 function CodeHighlighter({ code }) {
   const matches = highlightPython(code);
   const colorMap = {
-    keyword: "#569cd6",  // Blue
-    string: "#ce9178",   // Orange/brown
-    comment: "#6a9955",  // Green
-    builtin: "#4fc1ff",  // Light blue
-    number: "#b5cea8",   // Light green
+    keyword: "#569cd6", // Blue
+    string: "#ce9178", // Orange/brown
+    comment: "#6a9955", // Green
+    builtin: "#4fc1ff", // Light blue
+    number: "#b5cea8", // Light green
   };
 
   const lines = code.split("\n");
@@ -119,7 +146,10 @@ function CodeHighlighter({ code }) {
               let displayColor = "#d4d4d4";
 
               for (const match of matches) {
-                const lineStart = code.substring(0, code.lastIndexOf("\n", code.indexOf(line))).split("\n").reduce((a, b, i) => a + b.length + 1, 0);
+                const lineStart = code
+                  .substring(0, code.lastIndexOf("\n", code.indexOf(line)))
+                  .split("\n")
+                  .reduce((a, b, i) => a + b.length + 1, 0);
                 const charPos = lineStart + charIdx;
 
                 if (charPos >= match.start && charPos < match.end) {
@@ -160,7 +190,7 @@ function OldInterviewsPage() {
     const fetchInterviews = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/interviews/user/${user.id}`
+          `http://localhost:3001/api/interviews/user/${user.id}`,
         );
 
         if (!response.ok) {
@@ -171,7 +201,7 @@ function OldInterviewsPage() {
         setInterviews(data);
       } catch (err) {
         setError(
-          "Could not load previous interviews. Make sure the server is running."
+          "Could not load previous interviews. Make sure the server is running.",
         );
       } finally {
         setLoading(false);
@@ -191,7 +221,7 @@ function OldInterviewsPage() {
         `http://localhost:3001/api/interviews/${sessionId}`,
         {
           method: "DELETE",
-        }
+        },
       );
 
       if (!response.ok) {
@@ -227,7 +257,9 @@ function OldInterviewsPage() {
 
       {!loading && !error && interviews.length === 0 && (
         <div className="card">
-          <p>No interviews yet. Complete an interview session to see it here!</p>
+          <p>
+            No interviews yet. Complete an interview session to see it here!
+          </p>
         </div>
       )}
 
@@ -244,9 +276,52 @@ function OldInterviewsPage() {
             </p>
             {interview.timeLeftSeconds !== undefined && (
               <p style={{ fontSize: "0.9em", opacity: 0.7 }}>
-                Time left: {formatTime(interview.timeLeftSeconds)}
+                Time spent: {formatTime((interview.interview.durationMinutes * 60) - interview.timeLeftSeconds)} · Time left: {formatTime(interview.timeLeftSeconds)}
               </p>
             )}
+
+            {/* Display test results if available */}
+            {interview.testResults && (
+              <div
+                style={{
+                  marginTop: "1rem",
+                  padding: "1rem",
+                  backgroundColor: "var(--muted-surface)",
+                  borderRadius: "0.5rem",
+                }}
+              >
+                <p style={{ margin: "0 0 0.5rem 0", fontWeight: 600 }}>
+                  Score: {interview.testResults.passPercentage}% (
+                  {interview.testResults.passedCount}/
+                  {interview.testResults.totalTests} tests passed)
+                </p>
+                {interview.testResults.passed ? (
+                  <p
+                    style={{
+                      margin: 0,
+                      color: "var(--success)",
+                      fontWeight: 600,
+                    }}
+                  >
+                    ✓ All test cases passed!
+                  </p>
+                ) : (
+                  <p
+                    style={{
+                      margin: 0,
+                      color: "var(--error)",
+                      fontWeight: 600,
+                    }}
+                  >
+                    ✗{" "}
+                    {interview.testResults.totalTests -
+                      interview.testResults.passedCount}{" "}
+                    test case(s) failed
+                  </p>
+                )}
+              </div>
+            )}
+
             <div style={{ display: "flex", gap: "0.5rem", marginTop: "1rem" }}>
               {interview.transcript && (
                 <button

@@ -677,6 +677,26 @@ button:disabled {
   color: var(--brand);
 }
 
+.test-results {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  background: var(--muted-surface);
+}
+
+.test-status {
+  margin: 0.5rem 0 0 0;
+  font-weight: 600;
+}
+
+.test-status.passed {
+  color: var(--success);
+}
+
+.test-status.failed {
+  color: var(--error);
+}
+
 @media (max-width: 880px) {
   .session-layout {
     grid-template-columns: 1fr;
