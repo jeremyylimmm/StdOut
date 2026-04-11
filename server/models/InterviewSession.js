@@ -38,6 +38,32 @@ const interviewSessionSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    testResults: {
+      passed: {
+        type: Boolean,
+        default: false,
+      },
+      passedCount: {
+        type: Number,
+        default: 0,
+      },
+      totalTests: {
+        type: Number,
+        default: 0,
+      },
+      passPercentage: {
+        type: Number,
+        default: 0,
+      },
+      testCases: [
+        {
+          testCaseId: Number,
+          passed: Boolean,
+          description: String,
+          isHidden: Boolean,
+        },
+      ],
+    },
     completedAt: {
       type: Date,
       default: Date.now,

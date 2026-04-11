@@ -6,12 +6,19 @@ const router = express.Router();
 // Save interview session
 router.post("/save", async (req, res) => {
   try {
-    const { userId, interview, transcript, code, timeLeftSeconds } = req.body;
+    const {
+      userId,
+      interview,
+      transcript,
+      code,
+      timeLeftSeconds,
+      testResults,
+    } = req.body;
 
     if (!userId || !interview) {
-      return res
-        .status(400)
-        .json({ error: "userId and interview data are required" });
+      return res.status(400).json({
+        error: "userId and interview data are required",
+      });
     }
 
     const session = new InterviewSession({
@@ -20,6 +27,7 @@ router.post("/save", async (req, res) => {
       transcript,
       code,
       timeLeftSeconds,
+      testResults,
     });
 
     await session.save();
@@ -29,9 +37,10 @@ router.post("/save", async (req, res) => {
       sessionId: session._id,
     });
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Failed to save interview", details: error.message });
+    res.status(500).json({
+      error: "Failed to save interview",
+      details: error.message,
+    });
   }
 });
 
@@ -43,14 +52,15 @@ router.get("/user/:userId", async (req, res) => {
     const sessions = await InterviewSession.find({ userId })
       .sort({ completedAt: -1 })
       .select(
-        "interview transcript code timeLeftSeconds completedAt createdAt"
+        "interview transcript code timeLeftSeconds completedAt createdAt testResults",
       );
 
     res.json(sessions);
   } catch (error) {
-    res
-      .status(500)
-      .json({ error: "Failed to fetch interviews", details: error.message });
+    res.status(500).json({
+      error: "Failed to fetch interviews",
+      details: error.message,
+    });
   }
 });
 

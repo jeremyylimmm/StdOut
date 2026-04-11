@@ -7,8 +7,9 @@ function ResultsPage() {
   const location = useLocation();
   const { user, settings, resetInterview } = useAppState();
 
-  const questionsAttempted = location.state?.questionsAttempted ?? 1;
+  const timeSpentSeconds = location.state?.timeSpentSeconds ?? 0;
   const codeLength = location.state?.codeLength ?? 0;
+  const testResults = location.state?.testResults;
 
   const handleTryAgain = () => {
     resetInterview();
@@ -18,10 +19,10 @@ function ResultsPage() {
   return (
     <section className="page narrow">
       <ResultsCard
-        user={user}
         settings={settings}
-        questionsAttempted={questionsAttempted}
+        timeSpentSeconds={timeSpentSeconds}
         codeLength={codeLength}
+        testResults={testResults}
       />
       <button type="button" onClick={handleTryAgain}>
         Start New Interview
