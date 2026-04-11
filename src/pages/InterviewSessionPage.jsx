@@ -271,6 +271,9 @@ function InterviewSessionPage() {
 
     // Submit code for testing
     let testResults = null;
+    console.log("Current question:", currentQuestion);
+    console.log("Question ID:", currentQuestion?._id);
+
     if (currentQuestion?._id) {
       try {
         const response = await fetch(
@@ -283,10 +286,16 @@ function InterviewSessionPage() {
         );
         if (response.ok) {
           testResults = await response.json();
+          console.log("Test results received:", testResults);
+          console.log("First test case result:", testResults.testResults[0]);
+        } else {
+          console.error("Submit response not ok:", response.status);
         }
       } catch (error) {
         console.error("Error submitting code for testing:", error);
       }
+    } else {
+      console.warn("No question ID found, skipping test submission");
     }
 
     // Save the interview session with test results

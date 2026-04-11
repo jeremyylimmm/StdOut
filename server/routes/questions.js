@@ -101,11 +101,17 @@ router.post("/:questionId/submit", async (req, res) => {
     const { questionId } = req.params;
     const { code } = req.body;
 
+    console.log("\n=== SUBMIT DEBUG ===");
+    console.log("Question ID:", questionId);
+    console.log("Code:", code ? `${code.length} characters` : "NO CODE");
+
     if (!code) {
       return res.status(400).json({ error: "Code is required" });
     }
 
     const question = await InterviewQuestion.findById(questionId);
+
+    console.log("Question found:", question ? question.title : "NOT FOUND");
 
     if (!question) {
       return res.status(404).json({ error: "Question not found" });
@@ -123,6 +129,18 @@ router.post("/:questionId/submit", async (req, res) => {
       );
 
       const result = await runPython(testCode);
+
+      // Debug logging
+      if (testCase.id === 1) {
+        console.log("=== TEST CASE 1 DEBUG ===");
+        console.log("Generated code:");
+        console.log(testCode);
+        console.log("\nPython output:");
+        console.log("stdout:", JSON.stringify(result.stdout));
+        console.log("stderr:", JSON.stringify(result.stderr));
+        console.log("exitCode:", result.exitCode);
+        console.log("========================\n");
+      }
 
       const passed = result.exitCode === 0 && result.stdout.trim() === "PASS";
       testResults.push({
@@ -156,13 +174,15 @@ router.post("/:questionId/submit", async (req, res) => {
 
 // Helper function to build test code
 function buildTestCode(userCode, input, expectedOutput) {
-  // Escape strings properly for Python
-  const inputJson = JSON.stringify(input)
-    .replace(/\\/g, "\\\\")
-    .replace(/"/g, '\\"');
-  const expectedJson = JSON.stringify(expectedOutput)
-    .replace(/\\/g, "\\\\")
-    .replace(/"/g, '\\"');
+  // Convert to JSON strings directly instead of escaping
+  const inputArray = JSON.stringify(input);
+  const expectedArray = JSON.stringify(expectedOutput);
+
+  console.log("=== buildTestCode DEBUG ===");
+  console.log("User code received:");
+  console.log(userCode);
+  console.log("Input:", inputArray);
+  console.log("Expected:", expectedArray);
 
   return `
 import json
@@ -171,8 +191,8 @@ ${userCode}
 
 # Test case execution
 try:
-    input_data = json.loads("${inputJson}")
-    expected = json.loads("${expectedJson}")
+    input_data = json.loads('''${inputArray}''')
+    expected = json.loads('''${expectedArray}''')
 
     # Call solution function
     # If input is a list, unpack it as arguments; otherwise pass as single arg
@@ -184,9 +204,11 @@ try:
     if result == expected:
         print("PASS")
     else:
-        print("FAIL")
+        print(f"FAIL: expected {expected}, got {result}")
 except Exception as e:
-    print(f"Error: {str(e)}")
+    import traceback
+    print(f"ERROR: {str(e)}")
+    traceback.print_exc()
 `;
 }
 
