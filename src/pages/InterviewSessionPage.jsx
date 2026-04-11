@@ -13,7 +13,6 @@ function InterviewSessionPage() {
   const [code, setCode] = useState("");
   const [runOutput, setRunOutput] = useState("");
   const [runError, setRunError] = useState("");
-  const [outputKey, setOutputKey] = useState(0);
   const [timeline, setTimeline] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState("");
@@ -53,41 +52,32 @@ function InterviewSessionPage() {
       if (tsToSeconds(list[i].timestamp) <= incoming) break;
       insertAt = i;
     }
-    const updated = [
-      ...list.slice(0, insertAt),
-      event,
-      ...list.slice(insertAt),
-    ];
+    const updated = [...list.slice(0, insertAt), event, ...list.slice(insertAt)];
     timelineRef.current = updated;
     setTimeline(updated);
   }
 
   function buildSessionInstructions(currentCode) {
-    return `You are a senior software engineer conducting a mock technical interview.
+    return `SYSTEM: You are a strict technical interview assistant. You have one job only.
 
-The candidate is solving this problem:
+QUESTION THE CANDIDATE IS SOLVING:
 Title: ${currentQuestion?.title ?? "Unknown"}
 Description: ${currentQuestion?.description ?? "No description provided"}
 Difficulty: ${currentQuestion?.difficulty ?? "Unknown"}
 
-The candidate's CURRENT code is:
+CANDIDATE'S CURRENT CODE:
 \`\`\`
 ${currentCode || "(no code written yet)"}
 \`\`\`
 
-Your rules:
-- Only discuss the question above. Refuse to discuss anything else.
-- Only ask one clarifying question at a time about their reasoning or logic.
-- Be slightly strict but fair.
-- Remember you are not trying to help the user but gauge their understanding.
-- NEVER reveal anything about the answer such as time complexity or optimal approach even if the user asks.
-- Keep all responses under 20 seconds of speech.
-- Silence is key, only respond if they ask questions or their approach is confusing.
-- If what is said is not related to the question or approach at all DONT RESPOND.
-- Never give away the answer.
-- If they are stuck and ask for help, give only vague hints.
-- Do not solve the problem for them.
-- When asked to review the code, refer to the current code shown above.`;
+ABSOLUTE RULES - NEVER BREAK THESE:
+1. You ONLY discuss the question above. Any other topic: say "I can only discuss the interview question."
+2. Ask ONE clarifying question at a time about logic or reasoning only.
+3. NEVER reveal the answer or write code for the candidate.
+4. Hints must be vague - point to a concept, never a solution.
+5. Keep every response under 20 seconds of speech.
+6. Be strict but fair in your assessment of their reasoning.
+7. When asked about their code, refer to the current code block above.`;
   }
 
   useEffect(() => {
@@ -174,15 +164,9 @@ Your rules:
         };
 
         recorder.onstop = async () => {
-          if (chunks.length === 0) {
-            if (!stopped) recordChunk();
-            return;
-          }
+          if (chunks.length === 0) { if (!stopped) recordChunk(); return; }
           const blob = new Blob(chunks, { type: recorder.mimeType });
-          if ((recorder._speechMs?.() ?? 0) < 400) {
-            if (!stopped) recordChunk();
-            return;
-          }
+          if ((recorder._speechMs?.() ?? 0) < 400) { if (!stopped) recordChunk(); return; }
 
           const formData = new FormData();
           formData.append("audio", blob, "audio.webm");
@@ -195,11 +179,7 @@ Your rules:
             const data = await res.json();
             const text = data.text?.trim();
             if (text) {
-              pushEvent({
-                type: "speech",
-                content: text,
-                timestamp: chunkStartTimestamp,
-              });
+              pushEvent({ type: "speech", content: text, timestamp: chunkStartTimestamp });
             }
           } catch (err) {
             // silently ignore transcription errors
@@ -221,10 +201,7 @@ Your rules:
         const startedAt = Date.now();
 
         const vadInterval = setInterval(() => {
-          if (recorder.state !== "recording") {
-            clearInterval(vadInterval);
-            return;
-          }
+          if (recorder.state !== "recording") { clearInterval(vadInterval); return; }
 
           const now = Date.now();
           const dt = now - lastTick;
@@ -259,9 +236,7 @@ Your rules:
     }
 
     let cleanup = () => {};
-    startRecording().then((fn) => {
-      if (fn) cleanup = fn;
-    });
+    startRecording().then((fn) => { if (fn) cleanup = fn; });
 
     return () => {
       stopped = true;
@@ -285,6 +260,25 @@ Your rules:
 
       const channel = pc.createDataChannel("oai-events");
       channelRef.current = channel;
+
+      // Listen for AI responses and add them to the timeline
+      channel.onmessage = (event) => {
+        try {
+          const msg = JSON.parse(event.data);
+          if (msg.type === "response.audio_transcript.done") {
+            const text = msg.transcript?.trim();
+            if (text) {
+              pushEvent({
+                type: "ai",
+                content: text,
+                timestamp: getTimestamp(),
+              });
+            }
+          }
+        } catch (err) {
+          // ignore parse errors
+        }
+      };
 
       const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       streamRef.current = stream;
@@ -373,7 +367,6 @@ Your rules:
 
       prevCodeRef.current = newCode;
 
-      // Push updated code context to the realtime AI
       if (channelRef.current?.readyState === "open") {
         channelRef.current.send(JSON.stringify({
           type: "session.update",
@@ -388,7 +381,6 @@ Your rules:
   const handleRunCode = async () => {
     setRunOutput("");
     setRunError("");
-    setOutputKey((k) => k + 1);
 
     try {
       const res = await fetch("http://localhost:3001/run", {
@@ -423,6 +415,7 @@ Your rules:
   const handleFinish = async () => {
     setSubmitting(true);
     setSubmitStep("Stopping recording...");
+    await new Promise((resolve) => setTimeout(resolve, 0));
 
     clearTimeout(chunkIntervalRef.current);
     if (mediaRecorderRef.current?.state === "recording") {
@@ -444,9 +437,7 @@ Your rules:
       .map((event) => `[${event.timestamp}] ${event.type}: ${event.content}`)
       .join("\n");
 
-
     const timeLeft = timerRef.current?.getTimeLeft() || 0;
-
 
     let testResults = null;
     if (currentQuestion?._id) {
@@ -458,10 +449,9 @@ Your rules:
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ code }),
-          },
+          }
         );
         if (response.ok) {
-          testResults = await response.json();
           testResults = await response.json();
         } else {
           console.error("Submit response not ok:", response.status);
@@ -477,12 +467,7 @@ Your rules:
       const res = await fetch("http://localhost:3001/api/review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          transcript,
-          code,
-          question: currentQuestion?.title,
-          testResults,
-        }),
+        body: JSON.stringify({ transcript, code, question: currentQuestion?.title }),
       });
       const data = await res.json();
       review = data.review;
@@ -491,30 +476,17 @@ Your rules:
     }
 
     setSubmitStep("Saving session...");
-    await saveInterview(transcript, code, timeLeft, testResults, review);
+    const sessionId = await saveInterview(transcript, code, timeLeft, testResults, review);
 
-    const initialTimeSeconds = settings.durationMinutes * 60;
-    const timeSpentSeconds = initialTimeSeconds - timeLeft;
-
-    navigate("/results", {
-      state: {
-        timeSpentSeconds,
-        codeLength: code.length,
-        timeline: timelineRef.current,
-        testResults,
-        review,
-      },
+    navigate("/report", {
+      state: { sessionId },
     });
   };
 
   return (
     <section className="page leetcode-layout">
       <div className="question-panel-wrap">
-        <QuestionPanel
-          question={currentQuestion}
-          timerRef={timerRef}
-          initialSeconds={settings.durationMinutes * 60}
-        />
+        <QuestionPanel question={currentQuestion} timerRef={timerRef} initialSeconds={settings.durationMinutes * 60} />
         <div className="card timeline-widget">
           <div className="timeline-header">
             <span>Timeline</span>
@@ -536,6 +508,11 @@ Your rules:
                 <span className="timeline-ts">{event.timestamp}</span>
                 {event.type === "speech" ? (
                   <span className="timeline-speech">{event.content}</span>
+                ) : event.type === "ai" ? (
+                  <div>
+                    <div className="timeline-label">interviewer</div>
+                    <span className="timeline-ai">{event.content}</span>
+                  </div>
                 ) : event.type === "output" ? (
                   <div>
                     <div className="timeline-label">
@@ -559,32 +536,22 @@ Your rules:
       </div>
 
       <div className="editor-panel-wrap">
-        <CodeEditor
-          value={code}
-          onChange={handleCodeChange}
-          onRun={handleRunCode}
-          onSubmit={handleFinish}
-        />
+        <CodeEditor value={code} onChange={handleCodeChange} onRun={handleRunCode} onSubmit={handleFinish} />
         <div className="card terminal-card">
-          <pre
-            key={outputKey}
-            className={`run-output terminal-output terminal-fade ${runError ? "error" : ""}`}
-          >
+          <pre className={`run-output terminal-output ${runError ? "error" : ""}`}>
             {runError || runOutput || "Run your code to see output here..."}
           </pre>
         </div>
       </div>
-
-      {submitting &&
-        createPortal(
-          <div className="submit-overlay">
-            <div className="submit-overlay-box">
-              <div className="submit-spinner" />
-              <p className="submit-overlay-step">{submitStep}</p>
-            </div>
-          </div>,
-          document.body,
-        )}
+      {submitting && createPortal(
+        <div className="submit-overlay">
+          <div className="submit-overlay-box">
+            <div className="submit-spinner" />
+            <p className="submit-overlay-step">{submitStep}</p>
+          </div>
+        </div>,
+        document.body,
+      )}
     </section>
   );
 }

@@ -196,6 +196,7 @@ function ReportPage() {
   const [selectedTestCase, setSelectedTestCase] = useState(null);
   const [solution, setSolution] = useState(null);
   const [solutionLoading, setSolutionLoading] = useState(false);
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const sessionData = location.state?.sessionData;
   const sessionId = location.state?.sessionId;
@@ -253,8 +254,10 @@ function ReportPage() {
     loadSolution();
   }, [interview?.interview?.questionId]);
 
-  const handleDelete = async () => {
-    if (!confirm("Are you sure you want to delete this interview?")) return;
+  const handleDelete = () => setShowDeleteConfirm(true);
+
+  const confirmDelete = async () => {
+    setShowDeleteConfirm(false);
     try {
       const response = await fetch(`http://localhost:3001/api/interviews/${interview._id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Failed to delete interview");
@@ -430,6 +433,23 @@ function ReportPage() {
         <button type="button" className="ci-btn ci-btn--delete" onClick={handleDelete}>Delete</button>
         <button type="button" className="ci-btn" onClick={() => navigate("/interviews/old")}>Back</button>
       </div>
+
+      {/* Delete confirm dialog */}
+      {showDeleteConfirm && createPortal(
+        <div className="modal-backdrop" onClick={() => setShowDeleteConfirm(false)}>
+          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+            <h2 className="modal-title">Delete Interview</h2>
+            <p className="modal-body">
+              Are you sure you want to delete this interview? This cannot be undone.
+            </p>
+            <div className="modal-actions">
+              <button type="button" className="ci-btn" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
+              <button type="button" className="ci-btn ci-btn--delete-active" onClick={confirmDelete}>Delete</button>
+            </div>
+          </div>
+        </div>,
+        document.body
+      )}
 
       {/* Test case modal */}
       {selectedTestCase && createPortal(

@@ -5,7 +5,6 @@ const PATH_LABELS = {
   "/interview/setup": "~/dashboard",
   "/interviews/old": "~/interviews",
   "/interview/session": "~/session",
-  "/results": "~/results",
   "/dashboard": "~/dashboard",
 };
 

@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
-import { FiArrowLeft } from "react-icons/fi";
 
 function formatDate(isoDate) {
   return new Date(isoDate).toLocaleDateString(undefined, {
@@ -91,9 +90,7 @@ function OldInterviewsPage() {
 
   return (
     <section className="page">
-      <Link to="/interview/setup" className="back-link">
-        <FiArrowLeft /> Dashboard
-      </Link>
+
       <div>
         <h1>Completed Interviews</h1>
         <p>Review your past interview sessions and code.</p>
