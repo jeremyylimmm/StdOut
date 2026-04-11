@@ -1,24 +1,49 @@
+require('dotenv').config();
+
 const express = require('express');
+const cors = require('cors');
 const { execFile } = require('child_process');
 const app = express();
 
 const connectDB = require('./db');
-connectDB();
+const authRoutes = require('./routes/auth');
 
-app.use(express.json()); // parses JSON request bodies
+// Connect to DB and start server
+const startServer = async () => {
+  try {
+    await connectDB();
+    
+    // Enable CORS for frontend
+    app.use(cors({
+      origin: 'http://localhost:5173',
+      credentials: true
+    }));
 
-app.get('/hello', (req, res) => {
-  res.json({ message: 'Hello World' });
-});
+    app.use(express.json()); // parses JSON request bodies
 
-app.post('/run', (req, res) => {
-  const { code } = req.body;
-  const env = { ...process.env, PYTHONIOENCODING: 'utf-8', NO_COLOR: '1', PYTHON_COLORS: '0' };
-  execFile('python', ['-c', code], { encoding: 'utf8', env }, (error, stdout, stderr) => {
-    res.json({ stdout, stderr, exitCode: error ? error.code : 0 });
-  });
-});
+    app.get('/hello', (req, res) => {
+      res.json({ message: 'Hello World' });
+    });
 
-app.listen(3001, () => {
-  console.log('Server running on http://localhost:3001');
-});
+    app.post('/run', (req, res) => {
+      const { code } = req.body;
+      const env = { ...process.env, PYTHONIOENCODING: 'utf-8', NO_COLOR: '1', PYTHON_COLORS: '0' };
+      execFile('python', ['-c', code], { encoding: 'utf8', env }, (error, stdout, stderr) => {
+        res.json({ stdout, stderr, exitCode: error ? error.code : 0 });
+      });
+    });
+
+    // Auth routes
+    app.use('/api/auth', authRoutes);
+
+    const PORT = process.env.PORT || 3001;
+    app.listen(PORT, () => {
+      console.log(`Server running on http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('Failed to start server:', error);
+    process.exit(1);
+  }
+};
+
+startServer();

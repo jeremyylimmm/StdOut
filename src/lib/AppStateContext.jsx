@@ -33,10 +33,10 @@ export function AppStateProvider({ children }) {
     window.localStorage.setItem("theme", theme);
   }, [theme]);
 
-  const login = (username) => {
+  const login = (username, userId) => {
     const name = username?.trim() || "Candidate";
     setUser({
-      id: "mock-user-1",
+      id: userId || "mock-user-1",
       name,
       email: `${name.toLowerCase().replace(/\s+/g, ".")}@example.com`,
     });
