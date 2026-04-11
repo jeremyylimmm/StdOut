@@ -12,9 +12,9 @@ const authRoutes = require("./routes/auth");
 const interviewRoutes = require("./routes/interviews");
 const questionsRoutes = require("./routes/questions");
 const InterviewQuestion = require("./models/InterviewQuestion");
-const transcribeRoutes = require('./routes/transcribe');
-const reviewRoutes = require('./routes/review');
-const realTime = require("./routes/real_time")
+const transcribeRoutes = require("./routes/transcribe");
+const reviewRoutes = require("./routes/review");
+const realTime = require("./routes/real_time");
 
 // Connect to DB and start server
 const startServer = async () => {
@@ -27,32 +27,43 @@ const startServer = async () => {
       console.log("\nNo questions found. Auto-seeding from questions.json...");
       try {
         const questionsPath = path.join(__dirname, "data", "questions.json");
-        const questionData = JSON.parse(fs.readFileSync(questionsPath, "utf-8"));
-        const questionsToInsert = Array.isArray(questionData) ? questionData : [questionData];
+        const questionData = JSON.parse(
+          fs.readFileSync(questionsPath, "utf-8"),
+        );
+        const questionsToInsert = Array.isArray(questionData)
+          ? questionData
+          : [questionData];
 
         await InterviewQuestion.insertMany(questionsToInsert);
-        console.log(`Successfully seeded ${questionsToInsert.length} question(s)!\n`);
+        console.log(
+          `Successfully seeded ${questionsToInsert.length} question(s)!\n`,
+        );
       } catch (seedError) {
         console.warn("Could not auto-seed questions:", seedError.message);
       }
     }
 
-    // Enable CORS for frontend (allow multiple ports)
+    // Enable CORS for frontend
+    // In production, this allows requests from the deployed Vercel frontend
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "http://localhost:5174",
+      "http://localhost:5175",
+      process.env.FRONTEND_URL, // Set in Render/production
+    ].filter(Boolean); // Remove undefined values
+
     app.use(
       cors({
-        origin: [
-          "http://localhost:5173",
-          "http://localhost:5174",
-          "http://localhost:5175",
-        ],
+        origin: process.env.NODE_ENV === "production" ? allowedOrigins : "*",
         credentials: true,
       }),
     );
 
     app.use(express.json()); // parses JSON request bodies
 
-    app.get("/hello", (req, res) => {
-      res.json({ message: "Hello World" });
+    // Health check route
+    app.get("/", (req, res) => {
+      res.json({ status: "ok", message: "Server is running" });
     });
 
     app.post("/run", (req, res) => {
@@ -79,7 +90,7 @@ const startServer = async () => {
     // Interview routes
     app.use("/api/interviews", interviewRoutes);
 
-    app.use("/api/realTime", realTime)
+    app.use("/api/realTime", realTime);
 
     // Questions routes
     app.use("/api/questions", questionsRoutes);
@@ -87,14 +98,12 @@ const startServer = async () => {
     app.use("/api/review", reviewRoutes);
 
     // Transcription route
-    app.use('/api/transcribe', transcribeRoutes);
-    app.post('/api/transcribe-test', (req, res) => res.json({ ok: true }));
+    app.use("/api/transcribe", transcribeRoutes);
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
+      console.log(`Server running on port ${PORT}`);
     });
-
   } catch (error) {
     console.error("Failed to start server:", error);
     process.exit(1);
