@@ -28,21 +28,32 @@ function ScoreGauges({ review }) {
 
   return (
     <div className="score-gauges">
-      {scores.map((item, idx) => (
-        <div key={idx} className="score-gauge">
-          <div className="score-gauge-header">
-            <span className="score-gauge-label">{item.label}</span>
-            <span className="score-gauge-value">{item.score}/10</span>
+      {scores.map((item, idx) => {
+        const percentage = (item.score / 10) * 100;
+        // Adjust background position to show only relevant part of gradient
+        // The gradient is 300% wide (error, warning, success), so we need to position it
+        // such that the relevant portion is visible
+        const backgroundPosition = `${-(percentage * 2)}%`;
+
+        return (
+          <div key={idx} className="score-gauge">
+            <div className="score-gauge-header">
+              <span className="score-gauge-label">{item.label}</span>
+              <span className="score-gauge-value">{item.score}/10</span>
+            </div>
+            <div className="score-gauge-bar">
+              <div
+                className="score-gauge-fill"
+                style={{
+                  width: `${percentage}%`,
+                  backgroundPosition,
+                }}
+              />
+            </div>
+            <div className="score-gauge-feedback">{item.feedback}</div>
           </div>
-          <div className="score-gauge-bar">
-            <div
-              className="score-gauge-fill"
-              style={{ width: `${(item.score / 10) * 100}%` }}
-            />
-          </div>
-          <div className="score-gauge-feedback">{item.feedback}</div>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

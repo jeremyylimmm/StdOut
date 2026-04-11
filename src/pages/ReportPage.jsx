@@ -198,11 +198,49 @@ function ExpandableSection({
 
 // Helper to format JSON output
 function formatOutput(value) {
-  if (typeof value === "string") return value;
+  // Parse strings that might be JSON
+  let data = value;
+  if (typeof value === "string") {
+    try {
+      data = JSON.parse(value);
+    } catch {
+      // If not JSON, return as-is (for error messages, etc.)
+      return value;
+    }
+  }
+
+  // Custom formatting for better readability
+  // Check if it's a simple array (all primitives)
+  if (Array.isArray(data)) {
+    const isSimple = data.every(
+      (item) =>
+        typeof item !== "object" ||
+        item === null ||
+        Object.keys(item).length === 0,
+    );
+    if (isSimple && data.length <= 10) {
+      // Format as single-line for simple arrays
+      return JSON.stringify(data);
+    }
+
+    // For nested arrays with simple numbers, use compact format
+    const isSimpleNested =
+      Array.isArray(data) &&
+      data.every(
+        (item) =>
+          Array.isArray(item) &&
+          item.every((el) => typeof el === "number" || typeof el === "string"),
+      );
+    if (isSimpleNested) {
+      return data.map((arr) => `[${arr.join(", ")}]`).join("\n");
+    }
+  }
+
+  // For complex objects, use pretty formatting
   try {
-    return JSON.stringify(value, null, 2);
+    return JSON.stringify(data, null, 2);
   } catch {
-    return String(value);
+    return String(data);
   }
 }
 
@@ -218,6 +256,8 @@ function ReportPage() {
   // Get data from location.state
   const sessionData = location.state?.sessionData;
   const sessionId = location.state?.sessionId;
+  const stateTestResults = location.state?.testResults;
+  const stateReview = location.state?.review;
 
   useEffect(() => {
     const loadInterview = async () => {
@@ -236,6 +276,16 @@ function ReportPage() {
           );
           if (!response.ok) throw new Error("Failed to fetch interview");
           const data = await response.json();
+
+          // Merge state data (from results page) with fetched data
+          if (stateTestResults) {
+            data.testResults = stateTestResults;
+          }
+          if (stateReview) {
+            data.review = stateReview;
+          }
+
+          setInterview(data);
           setInterview(data);
         }
       } catch (err) {
@@ -459,18 +509,31 @@ function ReportPage() {
                 </pre>
               </div>
 
-              <div className="test-case-modal-section">
-                <h4>Expected Output</h4>
-                <pre className="test-case-modal-code">
-                  {formatOutput(selectedTestCase.expectedOutput)}
-                </pre>
-              </div>
-
-              {!selectedTestCase.passed && selectedTestCase.actualOutput && (
+              {!selectedTestCase.passed && selectedTestCase.actualOutput ? (
+                // Side-by-side comparison for failed tests
                 <div className="test-case-modal-section">
-                  <h4>Actual Output / Error</h4>
-                  <pre className="test-case-modal-code error">
-                    {selectedTestCase.actualOutput}
+                  <h4 style={{ marginBottom: "1rem" }}>Output Comparison</h4>
+                  <div className="test-case-output-comparison">
+                    <div className="test-case-output-expected">
+                      <div className="test-case-output-label">Expected</div>
+                      <pre className="test-case-modal-code">
+                        {formatOutput(selectedTestCase.expectedOutput)}
+                      </pre>
+                    </div>
+                    <div className="test-case-output-actual">
+                      <div className="test-case-output-label">Actual</div>
+                      <pre className="test-case-modal-code error">
+                        {formatOutput(selectedTestCase.actualOutput)}
+                      </pre>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                // For passed tests, just show expected output
+                <div className="test-case-modal-section">
+                  <h4>Expected Output</h4>
+                  <pre className="test-case-modal-code">
+                    {formatOutput(selectedTestCase.expectedOutput)}
                   </pre>
                 </div>
               )}

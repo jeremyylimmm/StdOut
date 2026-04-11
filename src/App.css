@@ -578,6 +578,11 @@ p {
   border-color: var(--error);
 }
 
+.ci-score--partial {
+  color: var(--warning);
+  border-color: var(--warning);
+}
+
 .ci-actions {
   display: flex;
   gap: 0.5rem;
@@ -1866,11 +1871,13 @@ button:disabled {
   height: 100%;
   background: linear-gradient(
     90deg,
-    var(--error),
-    var(--warning),
-    var(--success)
+    var(--error) 0%,
+    var(--warning) 50%,
+    var(--success) 100%
   );
-  transition: width 0.3s ease;
+  background-size: 300% 100%;
+  background-position: left;
+  transition: all 0.3s ease;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -1923,27 +1930,33 @@ button:disabled {
 /* Test Case Modal */
 .test-case-modal-backdrop {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
   padding: 1rem;
+  overflow: hidden;
 }
 
 .test-case-modal {
   background: var(--surface);
   color: var(--text);
   border: 2px solid var(--border);
-  max-width: 600px;
+  max-width: 900px;
   width: 100%;
   display: flex;
   flex-direction: column;
   gap: 0;
   padding: 0;
-  max-height: 80vh;
+  max-height: 90vh;
   overflow-y: auto;
+  position: relative;
+  margin: auto;
 }
 
 .test-case-modal-header {
@@ -1997,6 +2010,8 @@ button:disabled {
   flex-direction: column;
   gap: 1.5rem;
   overflow-y: auto;
+  max-height: calc(90vh - 200px);
+}
 }
 
 .test-case-modal-section {
@@ -2022,16 +2037,55 @@ button:disabled {
   border-radius: 0;
   font-family: "Consolas", "Fira Code", "Courier New", monospace;
   font-size: 0.8rem;
-  line-height: 1.4;
+  line-height: 1.5;
   color: var(--text);
   overflow-x: auto;
-  max-height: 200px;
+  max-height: 250px;
   overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-word;
 }
 
 .test-case-modal-code.error {
   color: var(--error);
   border-color: var(--error);
+}
+
+.test-case-output-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.test-case-output-expected,
+.test-case-output-actual {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.test-case-output-label {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.test-case-output-expected .test-case-output-label::before {
+  content: "✓";
+  color: var(--success);
+  font-weight: 900;
+}
+
+.test-case-output-actual .test-case-output-label::before {
+  content: "✗";
+  color: var(--error);
+  font-weight: 900;
 }
 
 .test-case-modal-footer {
