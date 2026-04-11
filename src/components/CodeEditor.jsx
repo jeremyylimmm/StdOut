@@ -4,13 +4,27 @@ import { python } from "@codemirror/lang-python";
 import { vim } from "@replit/codemirror-vim";
 import { useAppState } from "../lib/AppStateContext";
 
-function CodeEditor({ value, onChange }) {
+function CodeEditor({ value, onChange, onRun, onSubmit }) {
   const [vimEnabled, setVimEnabled] = useState(false);
   const { theme } = useAppState();
 
   return (
     <div className="card code-editor-card">
-      <h3>Code Editor</h3>
+      <div className="code-editor-header">
+        <h3>Code Editor</h3>
+        <div className="code-editor-actions">
+          {onRun && (
+            <button type="button" className="run-btn" onClick={onRun}>
+              Run Code
+            </button>
+          )}
+          {onSubmit && (
+            <button type="button" className="submit-btn" onClick={onSubmit}>
+              Submit
+            </button>
+          )}
+        </div>
+      </div>
       <CodeMirror
         value={value}
         onChange={onChange}
