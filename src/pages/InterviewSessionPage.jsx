@@ -5,6 +5,7 @@ import { diffLines } from "diff";
 import CodeEditor from "../components/CodeEditor";
 import QuestionPanel from "../components/QuestionPanel";
 import { useAppState } from "../lib/AppStateContext";
+import API_BASE_URL from "../config/api";
 
 function InterviewSessionPage() {
   const navigate = useNavigate();
@@ -179,7 +180,7 @@ ${buildSessionInstructions(currentCode)}`;
           formData.append("audio", blob, "audio.webm");
 
           try {
-            const res = await fetch("http://localhost:3001/api/transcribe", {
+            const res = await fetch(`${API_BASE_URL}/api/transcribe`, {
               method: "POST",
               body: formData,
             });
@@ -259,7 +260,7 @@ ${buildSessionInstructions(currentCode)}`;
 
   async function startRealtime() {
     try {
-      const tokenResponse = await fetch("http://localhost:3001/api/realTime/session");
+      const tokenResponse = await fetch(`${API_BASE_URL}/api/realTime/session`);
       const sessionData = await tokenResponse.json();
 
       const pc = new RTCPeerConnection();
@@ -404,7 +405,7 @@ ${buildSessionInstructions(currentCode)}`;
     setRunError("");
 
     try {
-      const res = await fetch("http://localhost:3001/run", {
+      const res = await fetch(`${API_BASE_URL}/run`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),
@@ -465,7 +466,7 @@ ${buildSessionInstructions(currentCode)}`;
       setSubmitStep("Running test cases...");
       try {
         const response = await fetch(
-          `http://localhost:3001/api/questions/${currentQuestion._id}/submit`,
+          `${API_BASE_URL}/api/questions/${currentQuestion._id}/submit`,
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -485,7 +486,7 @@ ${buildSessionInstructions(currentCode)}`;
     setSubmitStep("Generating AI review...");
     let review = null;
     try {
-      const res = await fetch("http://localhost:3001/api/review", {
+      const res = await fetch(`${API_BASE_URL}/api/review`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ transcript, code, question: currentQuestion?.title }),

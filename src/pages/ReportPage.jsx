@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
 import CodeViewer from "../components/CodeViewer";
+import API_BASE_URL from "../config/api";
 
 function formatDate(isoDate) {
   return new Date(isoDate).toLocaleDateString(undefined, {
@@ -108,7 +109,7 @@ function ReportPage() {
       try {
         if (sessionData) { setInterview(sessionData); setLoading(false); return; }
         if (sessionId) {
-          const response = await fetch(`http://localhost:3001/api/interviews/${sessionId}`);
+          const response = await fetch(`${API_BASE_URL}/api/interviews/${sessionId}`);
           if (!response.ok) throw new Error("Failed to fetch interview");
           const data = await response.json();
           if (stateTestResults) data.testResults = stateTestResults;
@@ -136,7 +137,7 @@ function ReportPage() {
       }
       try {
         setSolutionLoading(true);
-        const response = await fetch(`http://localhost:3001/api/questions/${interview.interview.questionId}`);
+        const response = await fetch(`${API_BASE_URL}/api/questions/${interview.interview.questionId}`);
         console.log("Solution fetch response:", response.ok, response.status);
 
         if (response.ok) {
@@ -159,7 +160,7 @@ function ReportPage() {
   const confirmDelete = async () => {
     setShowDeleteConfirm(false);
     try {
-      const response = await fetch(`http://localhost:3001/api/interviews/${interview._id}`, { method: "DELETE" });
+      const response = await fetch(`${API_BASE_URL}/api/interviews/${interview._id}`, { method: "DELETE" });
       if (!response.ok) throw new Error("Failed to delete interview");
       navigate("/interviews/old");
     } catch (err) {

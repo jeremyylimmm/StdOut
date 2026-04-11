@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import API_BASE_URL from "../config/api";
 
 const AppStateContext = createContext(null);
 
@@ -77,7 +78,7 @@ export function AppStateProvider({ children }) {
     setQuestionIndex(0);
     setLoading(true);
     try {
-      let url = `http://localhost:3001/api/questions/random?company=${settings.company}`;
+      let url = `${API_BASE_URL}/api/questions/random?company=${settings.company}`;
       if (settings.company === "LeetCode") {
         url += `&difficulty=${settings.difficulty}`;
       }
@@ -124,7 +125,7 @@ export function AppStateProvider({ children }) {
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/interviews/save",
+        `${API_BASE_URL}/api/interviews/save`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
 import Dither from "../components/Dither";
+import API_BASE_URL from "../config/api";
 
 function LoginPage() {
   const [mode, setMode] = useState("login");
@@ -12,7 +13,7 @@ function LoginPage() {
   const navigate = useNavigate();
   const { login, user } = useAppState();
 
-  const API_BASE = "http://localhost:3001/api/auth";
+  const API_BASE = `${API_BASE_URL}/api/auth`;
 
   useEffect(() => {
     if (user) navigate("/interview/setup");
