@@ -46,7 +46,11 @@ function InterviewSessionPage() {
       if (tsToSeconds(list[i].timestamp) <= incoming) break;
       insertAt = i;
     }
-    const updated = [...list.slice(0, insertAt), event, ...list.slice(insertAt)];
+    const updated = [
+      ...list.slice(0, insertAt),
+      event,
+      ...list.slice(insertAt),
+    ];
     timelineRef.current = updated;
     setTimeline(updated);
   }
@@ -98,9 +102,15 @@ function InterviewSessionPage() {
         };
 
         recorder.onstop = async () => {
-          if (chunks.length === 0) { if (!stopped) recordChunk(); return; }
+          if (chunks.length === 0) {
+            if (!stopped) recordChunk();
+            return;
+          }
           const blob = new Blob(chunks, { type: recorder.mimeType });
-          if ((recorder._speechMs?.() ?? 0) < 400) { if (!stopped) recordChunk(); return; }
+          if ((recorder._speechMs?.() ?? 0) < 400) {
+            if (!stopped) recordChunk();
+            return;
+          }
 
           const formData = new FormData();
           formData.append("audio", blob, "audio.webm");
@@ -113,7 +123,11 @@ function InterviewSessionPage() {
             const data = await res.json();
             const text = data.text?.trim();
             if (text) {
-              pushEvent({ type: "speech", content: text, timestamp: chunkStartTimestamp });
+              pushEvent({
+                type: "speech",
+                content: text,
+                timestamp: chunkStartTimestamp,
+              });
             }
           } catch (err) {
             // silently ignore transcription errors
@@ -136,7 +150,10 @@ function InterviewSessionPage() {
         const startedAt = Date.now();
 
         const vadInterval = setInterval(() => {
-          if (recorder.state !== "recording") { clearInterval(vadInterval); return; }
+          if (recorder.state !== "recording") {
+            clearInterval(vadInterval);
+            return;
+          }
 
           const now = Date.now();
           const dt = now - lastTick;
@@ -173,7 +190,9 @@ function InterviewSessionPage() {
     }
 
     let cleanup = () => {};
-    startRecording().then((fn) => { if (fn) cleanup = fn; });
+    startRecording().then((fn) => {
+      if (fn) cleanup = fn;
+    });
 
     return () => {
       stopped = true;
@@ -261,13 +280,13 @@ function InterviewSessionPage() {
       mediaRecorderRef.current.stop();
     }
     setIsRecording(false);
-  
+
     const transcript = timelineRef.current
       .map((event) => `[${event.timestamp}] ${event.type}: ${event.content}`)
       .join("\n");
-  
+
     const timeLeft = timerRef.current?.getTimeLeft() || 0;
-  
+
     let testResults = null;
     console.log("Current question:", currentQuestion);
     console.log("Question ID:", currentQuestion?._id);
@@ -280,10 +299,10 @@ function InterviewSessionPage() {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ code }),
-          }
+          },
         );
         if (response.ok) {
-          testResults = await response.json();  // only call .json() once
+          testResults = await response.json(); // only call .json() once
           console.log("Test results received:", testResults);
         } else {
           console.error("Submit response not ok:", response.status);
@@ -291,28 +310,33 @@ function InterviewSessionPage() {
       } catch (error) {
         console.error("Error submitting code for testing:", error);
       }
-    } 
-     
+    }
+
     // Get GPT review FIRST before saving or navigating
     let review = null;
     try {
       const res = await fetch("http://localhost:3001/api/review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript, code, question: currentQuestion?.title, testResults }),
+        body: JSON.stringify({
+          transcript,
+          code,
+          question: currentQuestion?.title,
+          testResults,
+        }),
       });
       const data = await res.json();
       review = data.review;
     } catch (err) {
       console.error("Review failed:", err);
     }
-  
+
     // Now save with review available
     await saveInterview(transcript, code, timeLeft, testResults, review);
-  
+
     const initialTimeSeconds = settings.durationMinutes * 60;
     const timeSpentSeconds = initialTimeSeconds - timeLeft;
-  
+
     navigate("/results", {
       state: {
         timeSpentSeconds,
@@ -328,7 +352,11 @@ function InterviewSessionPage() {
     <section className="page leetcode-layout">
       {/* Left: question + timeline + timer + finish */}
       <div className="question-panel-wrap">
-        <QuestionPanel question={currentQuestion} timerRef={timerRef} initialSeconds={settings.durationMinutes * 60} />
+        <QuestionPanel
+          question={currentQuestion}
+          timerRef={timerRef}
+          initialSeconds={settings.durationMinutes * 60}
+        />
         <div className="card timeline-widget">
           <div className="timeline-header">
             <span>Timeline</span>
@@ -376,7 +404,12 @@ function InterviewSessionPage() {
 
       {/* Right: editor + terminal */}
       <div className="editor-panel-wrap">
-        <CodeEditor value={code} onChange={handleCodeChange} onRun={handleRunCode} onSubmit={handleFinish} />
+        <CodeEditor
+          value={code}
+          onChange={handleCodeChange}
+          onRun={handleRunCode}
+          onSubmit={handleFinish}
+        />
         <div className="card terminal-card">
           <pre
             key={outputKey}
