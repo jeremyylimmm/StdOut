@@ -14,7 +14,11 @@ router.post("/", async (req, res) => {
     testPerformance = `\n\nTEST RESULTS:\nPassed: ${passedCount}/${totalTests} tests (${passPercentage}%)`;
   }
 
-  const prompt = `You are a technical interview evaluator. Review the candidate's performance on the following problem.
+  const prompt = `You are a technical interview evaluator providing personalized feedback.
+
+IMPORTANT: The code always includes a starter function definition with a docstring at the top. Evaluate ONLY the logic and implementation the candidate added inside the function body, NOT the function definition itself.
+
+If the candidate has NOT added any real logic (i.e., the function body is empty or contains only placeholder/pass statements), give a score of 0 with appropriate feedback about not attempting the problem.
 
 QUESTION: ${question ?? "Unknown"}
 
@@ -25,26 +29,28 @@ FINAL CODE:
 ${code}${testPerformance}
 
 Evaluate and provide scores out of 10 in these three areas:
-1. **Logic** - Did they approach the problem correctly and handle edge cases?
-2. **Code Quality** - Is the code clean, efficient, and correct?
-3. **Reasoning** - Did they clearly explain their thinking throughout?
+1. **Logic** - Did you approach the problem correctly and handle edge cases?
+2. **Code Quality** - Is your implementation clean, efficient, and correct? (Ignore the starter function definition and docstring)
+3. **Reasoning** - Did you clearly explain your thinking throughout?
+
+Address feedback directly to the person (use "you" and "your" instead of "the candidate"). Write the summary as personal feedback, not as an evaluation of someone else.
 
 Return your response in the following JSON format:
 {
   "logic": {
     "score": <number 0-10>,
-    "feedback": "<2-3 sentences>"
+    "feedback": "<2-3 sentences directed at you>"
   },
   "codeQuality": {
     "score": <number 0-10>,
-    "feedback": "<2-3 sentences>"
+    "feedback": "<2-3 sentences directed at you>"
   },
   "reasoning": {
     "score": <number 0-10>,
-    "feedback": "<2-3 sentences>"
+    "feedback": "<2-3 sentences directed at you>"
   },
   "overallScore": <number 0-10 (average of the three scores)>,
-  "summary": "<brief overall summary paragraph>"
+  "summary": "<brief overall summary paragraph directed at you>"
 }`;
 
   try {

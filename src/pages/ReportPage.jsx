@@ -69,7 +69,10 @@ function highlightPython(code) {
 function CodeHighlighter({ code }) {
   const matches = highlightPython(code);
   const colorMap = { keyword: "#569cd6", string: "#ce9178", comment: "#6a9955", builtin: "#4fc1ff", number: "#b5cea8" };
-  const lines = code.split("\n");
+
+  // Trim trailing empty lines
+  const trimmedCode = code.replace(/\n\s*$/, "");
+  const lines = trimmedCode.split("\n");
 
   // Build line position map: [lineNum] -> startCharPos in original code
   const linePositions = [];
@@ -79,14 +82,23 @@ function CodeHighlighter({ code }) {
     charPos += lines[i].length + 1; // +1 for newline
   }
 
+  const lineStyle = {
+    margin: 0,
+    padding: 0,
+    height: "1.6em",
+    lineHeight: "1.6em",
+  };
+
   return (
-    <div style={{ display: "flex", lineHeight: "1.6" }}>
-      <div style={{ color: "#858585", paddingRight: "1.5rem", textAlign: "right", userSelect: "none", minWidth: "fit-content" }}>
-        {lines.map((_, i) => <div key={i}>{i + 1}</div>)}
+    <div style={{ display: "flex", fontFamily: "monospace", fontSize: "0.875rem" }}>
+      <div style={{ color: "#858585", paddingRight: "1.5rem", textAlign: "right", userSelect: "none", minWidth: "fit-content", flexShrink: 0 }}>
+        {lines.map((_, i) => (
+          <div key={i} style={lineStyle}>{i + 1}</div>
+        ))}
       </div>
-      <pre style={{ margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-word", flex: 1, color: "#d4d4d4", fontFamily: "monospace" }}>
+      <pre style={{ margin: 0, padding: 0, whiteSpace: "pre-wrap", wordBreak: "break-word", flex: 1, color: "#d4d4d4" }}>
         {lines.map((line, lineNum) => (
-          <div key={lineNum}>
+          <div key={lineNum} style={lineStyle}>
             {line.split("").map((char, charIdx) => {
               const absolutePos = linePositions[lineNum] + charIdx;
               let displayColor = "#d4d4d4";
@@ -368,7 +380,7 @@ function ReportPage() {
       {/* Transcript */}
       {interview.transcript && (
         <Collapsible title="Transcript" defaultOpen>
-          <pre className="rp-preblock">{interview.transcript}</pre>
+          <pre className="rp-preblock">{interview.transcript.replace(/\n\s*$/, "")}</pre>
         </Collapsible>
       )}
 
