@@ -636,11 +636,15 @@ p {
   align-items: center;
   justify-content: center;
   padding: 3rem;
+  position: relative;
+  overflow: hidden;
 }
 
 .login-brand-content {
   color: #fff;
   max-width: 360px;
+  position: relative;
+  z-index: 1;
 }
 
 .login-brand-name {
