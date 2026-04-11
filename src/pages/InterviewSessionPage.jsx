@@ -58,9 +58,7 @@ function InterviewSessionPage() {
   }
 
   function buildSessionInstructions(currentCode) {
-    return `SYSTEM: You are a strict technical interview assistant. You have one job only.
-
-QUESTION THE CANDIDATE IS SOLVING:
+    return `QUESTION:
 Title: ${currentQuestion?.title ?? "Unknown"}
 Description: ${currentQuestion?.description ?? "No description provided"}
 Difficulty: ${currentQuestion?.difficulty ?? "Unknown"}
@@ -68,16 +66,25 @@ Difficulty: ${currentQuestion?.difficulty ?? "Unknown"}
 CANDIDATE'S CURRENT CODE:
 \`\`\`
 ${currentCode || "(no code written yet)"}
-\`\`\`
+\`\`\``;
+  }
 
-ABSOLUTE RULES - NEVER BREAK THESE:
-1. You ONLY discuss the question above. Any other topic: say "I can only discuss the interview question."
-2. Ask ONE clarifying question at a time about logic or reasoning only.
-3. NEVER reveal the answer or write code for the candidate.
-4. Hints must be vague - point to a concept, never a solution.
-5. Keep every response under 20 seconds of speech.
-6. Be strict but fair in your assessment of their reasoning.
-7. When asked about their code, refer to the current code block above.`;
+  function buildSystemInstructions(currentCode) {
+    return `You are a senior engineer conducting a technical coding interview. Your job is to assess the candidate, not help them.
+
+RULES:
+1. Silence is fine. Do NOT fill pauses or prompt the candidate to continue — let them think.
+2. Only speak when the candidate speaks to you, finishes a thought, or is clearly stuck for an extended period.
+3. When you do respond, be brief. One or two sentences maximum.
+4. Default to silence. Only speak if the candidate directly asks you something, or has been visibly stuck with no code progress for a long time.
+5. Do not ask the candidate to explain or walk through their reasoning. Their code is their answer.
+6. If you do ask anything, it must be a single short neutral question about a specific decision already visible in their code. Never ask open-ended questions about their approach or plan.
+7. Never suggest approaches, data structures, algorithms, or corrections — even indirectly or through questions.
+8. Never affirm, compliment, or signal whether the candidate is on the right track. No "good", "exactly", "right", "correct", or anything that implies approval. Stay completely neutral regardless of whether they're right or wrong.
+9. If they ask for a hint, say "I can't help with that." Nothing more.
+10. You ONLY discuss the interview question. Any other topic: "Let's stay focused on the problem."
+
+${buildSessionInstructions(currentCode)}`;
   }
 
   useEffect(() => {
@@ -275,6 +282,14 @@ ABSOLUTE RULES - NEVER BREAK THESE:
               });
             }
           }
+          if (msg.type === "input_audio_buffer.speech_stopped") {
+            channel.send(JSON.stringify({
+              type: "input_audio_buffer.commit",
+            }));
+            channel.send(JSON.stringify({
+              type: "response.create",
+            }));
+          }
         } catch (err) {
           // ignore parse errors
         }
@@ -287,7 +302,13 @@ ABSOLUTE RULES - NEVER BREAK THESE:
         channel.send(JSON.stringify({
           type: "session.update",
           session: {
-            instructions: buildSessionInstructions(codeRef.current),
+            instructions: buildSystemInstructions(codeRef.current),
+            turn_detection: {
+              type: "server_vad",
+              threshold: 0.7,
+              silence_duration_ms: 1500,
+              create_response: false,
+            },
           },
         }));
 
@@ -295,7 +316,7 @@ ABSOLUTE RULES - NEVER BREAK THESE:
           type: "response.create",
           response: {
             modalities: ["audio", "text"],
-            instructions: `Greet the candidate with exactly: "Hi, welcome to the technical interview, start when you are ready." Say nothing else.`,
+            instructions: `Greet the candidate with exactly: "Hi, start when you're ready." Say nothing else.`,
           },
         }));
       };
@@ -371,7 +392,7 @@ ABSOLUTE RULES - NEVER BREAK THESE:
         channelRef.current.send(JSON.stringify({
           type: "session.update",
           session: {
-            instructions: buildSessionInstructions(newCode),
+            instructions: buildSystemInstructions(newCode),
           },
         }));
       }
