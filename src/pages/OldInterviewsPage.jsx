@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate, Link } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
 import { FiArrowLeft } from "react-icons/fi";
@@ -162,33 +163,35 @@ function OldInterviewsPage() {
       </div>
 
       {/* Delete Confirm Dialog */}
-      {deleteTarget && (
-        <div className="modal-backdrop" onClick={() => setDeleteTarget(null)}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-            <h2 className="modal-title">Delete Interview</h2>
-            <p className="modal-body">
-              Are you sure you want to delete this interview? This cannot be
-              undone.
-            </p>
-            <div className="modal-actions">
-              <button
-                type="button"
-                className="ci-btn"
-                onClick={() => setDeleteTarget(null)}
-              >
-                Cancel
-              </button>
-              <button
-                type="button"
-                className="ci-btn ci-btn--delete-active"
-                onClick={confirmDelete}
-              >
-                Delete
-              </button>
+      {deleteTarget &&
+        createPortal(
+          <div className="modal-backdrop" onClick={() => setDeleteTarget(null)}>
+            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+              <h2 className="modal-title">Delete Interview</h2>
+              <p className="modal-body">
+                Are you sure you want to delete this interview? This cannot be
+                undone.
+              </p>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="ci-btn"
+                  onClick={() => setDeleteTarget(null)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="ci-btn ci-btn--delete-active"
+                  onClick={confirmDelete}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }

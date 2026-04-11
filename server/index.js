@@ -65,7 +65,7 @@ const startServer = async () => {
       execFile(
         "python",
         ["-c", code],
-        { encoding: "utf8", env },
+        { encoding: "utf8", env, timeout: 5000 },
         (error, stdout, stderr) => {
           res.json({ stdout, stderr, exitCode: error ? error.code : 0 });
         },

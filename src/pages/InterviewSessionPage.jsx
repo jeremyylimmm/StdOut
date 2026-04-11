@@ -12,6 +12,7 @@ function InterviewSessionPage() {
   const [code, setCode] = useState("");
   const [runOutput, setRunOutput] = useState("");
   const [runError, setRunError] = useState("");
+  const [outputKey, setOutputKey] = useState(0);
   const [timeline, setTimeline] = useState([]);
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState("");
@@ -221,6 +222,7 @@ function InterviewSessionPage() {
   const handleRunCode = async () => {
     setRunOutput("");
     setRunError("");
+    setOutputKey((k) => k + 1);
 
     try {
       const res = await fetch("http://localhost:3001/run", {
@@ -377,7 +379,8 @@ function InterviewSessionPage() {
         <CodeEditor value={code} onChange={handleCodeChange} onRun={handleRunCode} onSubmit={handleFinish} />
         <div className="card terminal-card">
           <pre
-            className={`run-output terminal-output ${runError ? "error" : ""}`}
+            key={outputKey}
+            className={`run-output terminal-output terminal-fade ${runError ? "error" : ""}`}
           >
             {runError || runOutput || "Run your code to see output here..."}
           </pre>
