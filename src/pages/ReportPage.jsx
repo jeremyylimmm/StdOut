@@ -3,6 +3,7 @@ import { createPortal } from "react-dom";
 import { useLocation, useNavigate, Link } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
 import { FiArrowLeft } from "react-icons/fi";
+import CodeViewer from "../components/CodeViewer";
 
 function formatDate(isoDate) {
   return new Date(isoDate).toLocaleDateString(undefined, {
@@ -18,106 +19,6 @@ function formatTime(seconds) {
   return `${mins}:${secs}`;
 }
 
-function highlightPython(code) {
-  const pythonKeywords =
-    /\b(def|class|if|elif|else|for|while|return|import|from|as|try|except|finally|with|lambda|yield|assert|break|continue|del|global|nonlocal|pass|raise|and|or|not|in|is|True|False|None)\b/g;
-  const pythonBuiltins =
-    /\b(print|len|range|str|int|float|list|dict|set|tuple|sum|max|min|enumerate|zip|map|filter|sorted|reversed|open|input|type|isinstance|hasattr|getattr|setattr|callable)\b/g;
-  const strings = /(['"`])(?:(?=(\\?))\2.)*?\1/g;
-  const comments = /#.*$/gm;
-  const numbers = /\b\d+\.?\d*\b/g;
-
-  let offset = 0;
-  const matches = [];
-
-  code.replace(comments, (match) => {
-    matches.push({ start: code.indexOf(match, offset), end: code.indexOf(match, offset) + match.length, type: "comment", text: match });
-    offset = code.indexOf(match, offset) + match.length;
-    return match;
-  });
-  offset = 0;
-  code.replace(strings, (match) => {
-    matches.push({ start: code.indexOf(match, offset), end: code.indexOf(match, offset) + match.length, type: "string", text: match });
-    offset = code.indexOf(match, offset) + match.length;
-    return match;
-  });
-  offset = 0;
-  code.replace(pythonKeywords, (match) => {
-    const start = code.indexOf(match, offset);
-    matches.push({ start, end: start + match.length, type: "keyword", text: match });
-    offset = start + match.length;
-    return match;
-  });
-  offset = 0;
-  code.replace(pythonBuiltins, (match) => {
-    const start = code.indexOf(match, offset);
-    matches.push({ start, end: start + match.length, type: "builtin", text: match });
-    offset = start + match.length;
-    return match;
-  });
-  offset = 0;
-  code.replace(numbers, (match) => {
-    const start = code.indexOf(match, offset);
-    matches.push({ start, end: start + match.length, type: "number", text: match });
-    offset = start + match.length;
-    return match;
-  });
-
-  return matches;
-}
-
-function CodeHighlighter({ code }) {
-  const matches = highlightPython(code);
-  const colorMap = { keyword: "#569cd6", string: "#ce9178", comment: "#6a9955", builtin: "#4fc1ff", number: "#b5cea8" };
-
-  // Trim trailing empty lines
-  const trimmedCode = code.replace(/\n\s*$/, "");
-  const lines = trimmedCode.split("\n");
-
-  // Build line position map: [lineNum] -> startCharPos in original code
-  const linePositions = [];
-  let charPos = 0;
-  for (let i = 0; i < lines.length; i++) {
-    linePositions[i] = charPos;
-    charPos += lines[i].length + 1; // +1 for newline
-  }
-
-  const lineStyle = {
-    margin: 0,
-    padding: 0,
-    height: "1.6em",
-    lineHeight: "1.6em",
-  };
-
-  return (
-    <div style={{ display: "flex", fontFamily: "monospace", fontSize: "0.875rem" }}>
-      <div style={{ color: "#858585", paddingRight: "1.5rem", textAlign: "right", userSelect: "none", minWidth: "fit-content", flexShrink: 0 }}>
-        {lines.map((_, i) => (
-          <div key={i} style={lineStyle}>{i + 1}</div>
-        ))}
-      </div>
-      <pre style={{ margin: 0, padding: 0, whiteSpace: "pre-wrap", wordBreak: "break-word", flex: 1, color: "#d4d4d4" }}>
-        {lines.map((line, lineNum) => (
-          <div key={lineNum} style={lineStyle}>
-            {line.split("").map((char, charIdx) => {
-              const absolutePos = linePositions[lineNum] + charIdx;
-              let displayColor = "#d4d4d4";
-
-              for (const match of matches) {
-                if (absolutePos >= match.start && absolutePos < match.end) {
-                  displayColor = colorMap[match.type];
-                  break;
-                }
-              }
-
-              return <span key={charIdx} style={{ color: displayColor }}>{char}</span>;
-            })}
-          </div>
-        ))}
-      </pre>
-    </div>
-  );
-}
 
 function extractGot(value) {
   if (typeof value === "string") {
@@ -390,8 +291,10 @@ function ReportPage() {
       {/* Code */}
       {interview.code && (
         <Collapsible title="Code">
-          <div className="rp-codebox">
-            <CodeHighlighter code={interview.code} />
+          <div className="rp-solution">
+            <div className="rp-solution-section">
+              <CodeViewer code={interview.code} />
+            </div>
           </div>
         </Collapsible>
       )}
@@ -401,10 +304,7 @@ function ReportPage() {
         <Collapsible title="Solution">
           <div className="rp-solution">
             <div className="rp-solution-section">
-              <h3>Code</h3>
-              <div className="rp-codebox">
-                <CodeHighlighter code={solution.code} />
-              </div>
+              <CodeViewer code={solution.code} />
             </div>
             {solution.explanation && (
               <div className="rp-solution-section">
