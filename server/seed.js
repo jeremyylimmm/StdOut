@@ -23,8 +23,8 @@ const seedDatabase = async () => {
       `\n📝 Attempting to insert ${questionsToInsert.length} question(s)...`,
     );
 
-    // Delete existing questions from the same companies (optional - set to false if you want to keep)
-    const companies = questionsToInsert.map((q) => q.company);
+    // Get unique companies and clear existing questions for those companies
+    const companies = [...new Set(questionsToInsert.flatMap((q) => q.company))];
     await InterviewQuestion.deleteMany({ company: { $in: companies } });
     console.log(
       `🗑️  Cleared existing questions for companies: ${companies.join(", ")}`,

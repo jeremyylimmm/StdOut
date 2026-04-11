@@ -1,92 +1,129 @@
 [
   {
-    "id": "two_sum_amazon_v2",
+    "id": "contains_duplicate_amazon_v1",
     "source": "leetcode",
     "company": [
       "Amazon"
     ],
-    "title": "Two Sum",
+    "title": "Contains Duplicate",
     "difficulty": "Easy",
     "tags": [
       "array",
       "hash-table"
     ],
     "patterns": [
-      "complement-lookup",
-      "hash-map"
+      "hash-set",
+      "element-lookup"
     ],
-    "description": "Given an array of integers nums and an integer target, return indices of two numbers that add up to target.",
+    "description": "Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.",
     "constraints": {
-      "n": "2 <= n <= 10^4",
+      "n": "1 <= nums.length <= 10^5",
       "nums[i]": "-10^9 <= nums[i] <= 10^9"
     },
     "followUps": [
-      "Can you solve it with O(1) space?",
-      "What if array is sorted?"
+      "What if the array has duplicates every k elements?",
+      "What if it's a linked list instead of an array?"
     ],
     "solution": {
       "language": "python",
-      "code": "def solution(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []",
-      "explanation": "Use hash map to track seen numbers. For each number, check if complement exists.",
+      "code": "def solution(nums):\n    seen = set()\n    for num in nums:\n        if num in seen:\n            return True\n        seen.add(num)\n    return False",
+      "explanation": "Use a hash set to track seen numbers. Return True if we see a duplicate.",
       "timeComplexity": "O(n)",
       "spaceComplexity": "O(n)"
     },
-    "initialCode": "def solution(nums, target):\n    \"\"\"\n    Find two numbers that add up to target.\n    Args:\n        nums: List of integers\n        target: Target sum\n    Returns:\n        Indices of two numbers\n    \"\"\"\n    pass",
+    "initialCode": "def solution(nums):\n    \"\"\"\n    Check if array contains duplicates.\n    Args:\n        nums: List of integers\n    Returns:\n        True if duplicates exist, False otherwise\n    \"\"\"\n    pass",
     "timeLimit": 900,
     "testCases": [
       {
         "id": 1,
         "input": [
           [
+            1,
             2,
-            7,
-            11,
-            15
-          ],
-          9
+            3,
+            1
+          ]
         ],
-        "expectedOutput": [
-          0,
-          1
-        ],
-        "description": "2 + 7 = 9",
+        "expectedOutput": true,
+        "description": "Duplicate 1",
         "isHidden": true
       },
       {
         "id": 2,
         "input": [
           [
-            3,
+            1,
             2,
+            3,
             4
-          ],
-          6
+          ]
         ],
-        "expectedOutput": [
-          1,
-          2
-        ],
-        "description": "2 + 4 = 6",
+        "expectedOutput": false,
+        "description": "No duplicates",
         "isHidden": true
       },
       {
         "id": 3,
         "input": [
           [
-            3,
-            3
-          ],
-          6
+            99,
+            99
+          ]
         ],
-        "expectedOutput": [
-          0,
-          1
-        ],
-        "description": "3 + 3 = 6",
+        "expectedOutput": true,
+        "description": "Two same",
         "isHidden": true
       },
       {
         "id": 4,
+        "input": [
+          [
+            1
+          ]
+        ],
+        "expectedOutput": false,
+        "description": "Single element",
+        "isHidden": true
+      },
+      {
+        "id": 5,
+        "input": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            1
+          ]
+        ],
+        "expectedOutput": true,
+        "description": "Duplicate at ends",
+        "isHidden": true
+      },
+      {
+        "id": 6,
+        "input": [
+          [
+            0,
+            4,
+            4,
+            0,
+            0,
+            6,
+            5
+          ]
+        ],
+        "expectedOutput": true,
+        "description": "Multiple duplicates",
+        "isHidden": true
+      },
+      {
+        "id": 7,
         "input": [
           [
             1,
@@ -94,104 +131,38 @@
             3,
             4,
             5
-          ],
-          9
+          ]
         ],
-        "expectedOutput": [
-          3,
-          4
-        ],
-        "description": "4 + 5 = 9",
-        "isHidden": true
-      },
-      {
-        "id": 5,
-        "input": [
-          [
-            0,
-            0,
-            3,
-            4
-          ],
-          0
-        ],
-        "expectedOutput": [
-          0,
-          1
-        ],
-        "description": "0 + 0 = 0",
-        "isHidden": true
-      },
-      {
-        "id": 6,
-        "input": [
-          [
-            1,
-            5,
-            7,
-            -1,
-            5
-          ],
-          0
-        ],
-        "expectedOutput": [
-          0,
-          3
-        ],
-        "description": "1 + (-1) = 0",
-        "isHidden": true
-      },
-      {
-        "id": 7,
-        "input": [
-          [
-            10,
-            20,
-            30,
-            40
-          ],
-          50
-        ],
-        "expectedOutput": [
-          0,
-          3
-        ],
-        "description": "10 + 40 = 50",
+        "expectedOutput": false,
+        "description": "All unique",
         "isHidden": true
       },
       {
         "id": 8,
         "input": [
           [
-            100,
-            200
-          ],
-          300
+            -1,
+            -1
+          ]
         ],
-        "expectedOutput": [
-          0,
-          1
-        ],
-        "description": "100 + 200 = 300",
+        "expectedOutput": true,
+        "description": "Negative duplicates",
         "isHidden": true
       },
       {
         "id": 9,
         "input": [
           [
-            -5,
-            -2,
+            -1,
             0,
-            3,
-            7
-          ],
-          2
+            1,
+            2,
+            -1,
+            -4
+          ]
         ],
-        "expectedOutput": [
-          0,
-          4
-        ],
-        "description": "-5 + 7 = 2",
+        "expectedOutput": true,
+        "description": "Mixed with negative",
         "isHidden": true
       },
       {
@@ -201,107 +172,85 @@
             1,
             1,
             1,
-            1,
             1
-          ],
-          2
+          ]
         ],
-        "expectedOutput": [
-          0,
-          1
-        ],
-        "description": "All same elements",
+        "expectedOutput": true,
+        "description": "All same",
         "isHidden": true
       },
       {
         "id": 11,
         "input": [
           [
-            11,
-            22,
-            33,
-            44
-          ],
-          55
+            5,
+            1,
+            2,
+            3,
+            4
+          ]
         ],
-        "expectedOutput": [
-          0,
-          2
-        ],
-        "description": "11 + 33 = 44",
+        "expectedOutput": false,
+        "description": "Sorted no dup",
         "isHidden": true
       },
       {
         "id": 12,
         "input": [
           [
-            1000000000,
-            -1000000000,
-            1
-          ],
-          1
+            9,
+            9,
+            9,
+            9,
+            9
+          ]
         ],
-        "expectedOutput": [
-          1,
-          2
-        ],
-        "description": "Large range values",
+        "expectedOutput": true,
+        "description": "All 9s",
         "isHidden": true
       },
       {
         "id": 13,
         "input": [
           [
+            1,
             2,
             3,
-            4
-          ],
-          6
+            4,
+            3,
+            5
+          ]
         ],
-        "expectedOutput": [
-          0,
-          2
-        ],
-        "description": "2 + 4 = 6",
+        "expectedOutput": true,
+        "description": "Middle duplicate",
         "isHidden": true
       },
       {
         "id": 14,
         "input": [
           [
-            15,
-            25,
-            5,
-            10
-          ],
-          40
+            100,
+            200,
+            300,
+            400
+          ]
         ],
-        "expectedOutput": [
-          0,
-          1
-        ],
-        "description": "15 + 25 = 40",
+        "expectedOutput": false,
+        "description": "Large numbers",
         "isHidden": true
       },
       {
         "id": 15,
         "input": [
           [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7
-          ],
-          13
+            0,
+            0,
+            0,
+            0
+          ]
         ],
-        "expectedOutput": [
-          6,
-          5
-        ],
-        "description": "7 + 6 = 13",
+        "expectedOutput": true,
+        "description": "All zeros",
         "isHidden": true
       }
     ]
