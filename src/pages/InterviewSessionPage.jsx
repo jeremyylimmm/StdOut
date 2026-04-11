@@ -259,16 +259,13 @@ function InterviewSessionPage() {
       mediaRecorderRef.current.stop();
     }
     setIsRecording(false);
-
-    // Convert timeline to transcript string
+  
     const transcript = timelineRef.current
       .map((event) => `[${event.timestamp}] ${event.type}: ${event.content}`)
       .join("\n");
-
-    // Get remaining time from timer
+  
     const timeLeft = timerRef.current?.getTimeLeft() || 0;
-
-    // Submit code for testing
+  
     let testResults = null;
     console.log("Current question:", currentQuestion);
     console.log("Question ID:", currentQuestion?._id);
@@ -284,32 +281,43 @@ function InterviewSessionPage() {
           }
         );
         if (response.ok) {
-          testResults = await response.json();
+          testResults = await response.json();  // only call .json() once
           console.log("Test results received:", testResults);
-          console.log("First test case result:", testResults.testResults[0]);
         } else {
           console.error("Submit response not ok:", response.status);
         }
       } catch (error) {
         console.error("Error submitting code for testing:", error);
       }
-    } else {
-      console.warn("No question ID found, skipping test submission");
+    } 
+     
+    // Get GPT review FIRST before saving or navigating
+    let review = null;
+    try {
+      const res = await fetch("http://localhost:3001/api/review", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ transcript, code, question: currentQuestion?.title }),
+      });
+      const data = await res.json();
+      review = data.review;
+    } catch (err) {
+      console.error("Review failed:", err);
     }
-
-    // Save the interview session with test results
-    await saveInterview(transcript, code, timeLeft, testResults);
-
-    // Calculate time spent (in seconds)
-    const initialTimeSeconds = 15 * 60; // 15 minutes default
+  
+    // Now save with review available
+    await saveInterview(transcript, code, timeLeft, testResults, review);
+  
+    const initialTimeSeconds = settings.durationMinutes * 60;
     const timeSpentSeconds = initialTimeSeconds - timeLeft;
-
+  
     navigate("/results", {
       state: {
         timeSpentSeconds,
         codeLength: code.length,
         timeline: timelineRef.current,
         testResults,
+        review,
       },
     });
   };

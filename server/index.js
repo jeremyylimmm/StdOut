@@ -13,6 +13,7 @@ const interviewRoutes = require("./routes/interviews");
 const questionsRoutes = require("./routes/questions");
 const InterviewQuestion = require("./models/InterviewQuestion");
 const transcribeRoutes = require('./routes/transcribe');
+const reviewRoutes = require('./routes/review');
 
 // Connect to DB and start server
 const startServer = async () => {
@@ -22,16 +23,16 @@ const startServer = async () => {
     // Auto-seed questions if database is empty
     const existingCount = await InterviewQuestion.countDocuments();
     if (existingCount === 0) {
-      console.log("\n📝 No questions found. Auto-seeding from questions.json...");
+      console.log("\nNo questions found. Auto-seeding from questions.json...");
       try {
         const questionsPath = path.join(__dirname, "data", "questions.json");
         const questionData = JSON.parse(fs.readFileSync(questionsPath, "utf-8"));
         const questionsToInsert = Array.isArray(questionData) ? questionData : [questionData];
 
         await InterviewQuestion.insertMany(questionsToInsert);
-        console.log(`✅ Successfully seeded ${questionsToInsert.length} question(s)!\n`);
+        console.log(`Successfully seeded ${questionsToInsert.length} question(s)!\n`);
       } catch (seedError) {
-        console.warn("⚠️  Could not auto-seed questions:", seedError.message);
+        console.warn("Could not auto-seed questions:", seedError.message);
       }
     }
 
@@ -79,6 +80,8 @@ const startServer = async () => {
 
     // Questions routes
     app.use("/api/questions", questionsRoutes);
+
+    app.use("/api/review", reviewRoutes);
 
     // Transcription route
     app.use('/api/transcribe', transcribeRoutes);

@@ -109,7 +109,7 @@ export function AppStateProvider({ children }) {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
-  const saveInterview = async (transcript, code, timeLeftSeconds, testResults) => {
+  const saveInterview = async (transcript, code, timeLeftSeconds, testResults, review) => {
     if (!user?.id) {
       console.error("User not logged in");
       return false;
@@ -130,6 +130,7 @@ export function AppStateProvider({ children }) {
               durationMinutes: settings.durationMinutes,
             },
             transcript,
+            review,
             code,
             timeLeftSeconds,
             testResults,
