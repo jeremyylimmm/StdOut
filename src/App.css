@@ -6,9 +6,9 @@
   --surface-hover: #f8fafc;
   --border: #e2e8f0;
   --border-light: #f1f5f9;
-  --brand: #2563eb;
-  --brand-light: #3b82f6;
-  --brand-dark: #1e40af;
+  --brand: #3a5fa0;
+  --brand-light: #5278b8;
+  --brand-dark: #2c4a7c;
   --success: #10b981;
   --success-light: #d1fae5;
   --error: #ef4444;
@@ -27,24 +27,24 @@
 }
 
 :root[data-theme="dark"] {
-  --bg: #0f172a;
-  --text: #f1f5f9;
-  --text-secondary: #cbd5e1;
-  --surface: #1e293b;
-  --surface-hover: #334155;
-  --border: #334155;
-  --border-light: #1e293b;
-  --brand: #3b82f6;
-  --brand-light: #60a5fa;
-  --brand-dark: #2563eb;
+  --bg: #111111;
+  --text: #eeeeee;
+  --text-secondary: #bbbbbb;
+  --surface: #1c1c1c;
+  --surface-hover: #2a2a2a;
+  --border: #2e2e2e;
+  --border-light: #3a3a3a;
+  --brand: #4a6fa5;
+  --brand-light: #6385b8;
+  --brand-dark: #3a5a8a;
   --success: #10b981;
   --success-light: #064e3b;
   --error: #ef4444;
   --error-light: #7c2d12;
   --warning: #f59e0b;
   --warning-light: #78350f;
-  --muted-surface: #1e293b;
-  --muted-text: #94a3b8;
+  --muted-surface: #222222;
+  --muted-text: #888888;
   --error-bg: #3a1f26;
   --error-text: #fecaca;
   --danger-border: #f87171;
@@ -117,6 +117,11 @@ p {
   overflow: hidden;
 }
 
+.app-main--login {
+  max-width: none;
+  padding: 0;
+}
+
 .navbar {
   display: flex;
   align-items: center;
@@ -145,7 +150,7 @@ p {
 }
 
 .theme-toggle--dark {
-  background: var(--brand);
+  background: #444;
 }
 
 .theme-toggle-icon {
@@ -185,13 +190,20 @@ p {
 }
 
 .brand {
-  font-family: "Fira Code", "Consolas", "Courier New", monospace;
+  font-family: "Consolas", "Fira Code", "Courier New", monospace;
   font-weight: 800;
   font-size: 1.25rem;
   background: linear-gradient(135deg, var(--brand) 0%, var(--brand-light) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+}
+
+.brand-sub {
+  font-size: 0.5em;
+  vertical-align: super;
+  -webkit-text-fill-color: var(--brand-light);
+  opacity: 0.5;
 }
 
 .nav-links {
@@ -363,8 +375,7 @@ p {
 .login-page {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  height: 100%;
-  min-height: 0;
+  height: 100vh;
 }
 
 .login-brand-panel {
@@ -381,11 +392,17 @@ p {
 }
 
 .login-brand-name {
-  font-family: "Fira Code", "Consolas", "Courier New", monospace;
+  font-family: "Consolas", "Fira Code", "Courier New", monospace;
   font-size: 3rem;
   font-weight: 800;
   letter-spacing: -1px;
   margin-bottom: 1rem;
+}
+
+.login-brand-sub {
+  font-size: 0.45em;
+  vertical-align: super;
+  opacity: 0.5;
 }
 
 .login-brand-tagline {

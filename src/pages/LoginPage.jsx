@@ -63,9 +63,9 @@ function LoginPage() {
     <div className="login-page">
       <div className="login-brand-panel">
         <div className="login-brand-content">
-          <div className="login-brand-name">StdOut</div>
+          <div className="login-brand-name">St<span className="login-brand-sub">&#123;an&#125;</span>dOut</div>
           <p className="login-brand-tagline">
-            Practice technical interviews.<br />Get feedback. Ship better code.
+            Practice technical interviews.<br />Get feedback.
           </p>
           <ul className="login-features">
             <li>Live speech transcription</li>

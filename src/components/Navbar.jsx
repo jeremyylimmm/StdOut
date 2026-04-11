@@ -13,7 +13,7 @@ function Navbar() {
 
   return (
     <header className="navbar">
-      <div className="brand">StdOut</div>
+      <div className="brand">St<span className="brand-sub">&#123;an&#125;</span>dOut</div>
       <nav className="nav-links">
         <Link to="/interview/setup">New Interview</Link>
         <Link to="/interviews/old">Previous Interviews</Link>
