@@ -1,7 +1,9 @@
 const express = require("express");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 const router = express.Router();
+const JWT_SECRET = process.env.JWT_SECRET || "your_secret_key";
 
 // Signup endpoint
 router.post("/signup", async (req, res) => {
@@ -24,9 +26,17 @@ router.post("/signup", async (req, res) => {
     const user = new User({ username, password });
     await user.save();
 
-    res
-      .status(201)
-      .json({ message: "User created successfully", userId: user._id });
+    // Generate JWT token (expires in 1 hour)
+    const token = jwt.sign({ userId: user._id, username: user.username }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
+    res.status(201).json({
+      message: "User created successfully",
+      userId: user._id,
+      username: user.username,
+      token,
+    });
   } catch (error) {
     res.status(500).json({ error: "Signup failed", details: error.message });
   }
@@ -55,10 +65,16 @@ router.post("/login", async (req, res) => {
       return res.status(401).json({ error: "Invalid credentials" });
     }
 
+    // Generate JWT token (expires in 1 hour)
+    const token = jwt.sign({ userId: user._id, username: user.username }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+
     res.json({
       message: "Login successful",
       userId: user._id,
       username: user.username,
+      token,
     });
   } catch (error) {
     res.status(500).json({ error: "Login failed", details: error.message });

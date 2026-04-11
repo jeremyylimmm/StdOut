@@ -28,6 +28,21 @@ export function AppStateProvider({ children }) {
   const [questionIndex, setQuestionIndex] = useState(0);
   const [theme, setTheme] = useState(getInitialTheme);
 
+  // Check for stored auth token on load
+  useEffect(() => {
+    const token = window.localStorage.getItem("authToken");
+    const userId = window.localStorage.getItem("userId");
+    const username = window.localStorage.getItem("username");
+
+    if (token && userId && username) {
+      setUser({
+        id: userId,
+        name: username,
+        email: `${username.toLowerCase().replace(/\s+/g, ".")}@example.com`,
+      });
+    }
+  }, []);
+
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     window.localStorage.setItem("theme", theme);
@@ -46,6 +61,10 @@ export function AppStateProvider({ children }) {
     setUser(null);
     setQuestionIndex(0);
     setSettings(defaultSettings);
+    // Clear stored auth data
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("userId");
+    localStorage.removeItem("username");
   };
 
   const saveSettings = (newSettings) => {
@@ -68,6 +87,42 @@ export function AppStateProvider({ children }) {
     setTheme((prev) => (prev === "light" ? "dark" : "light"));
   };
 
+  const saveInterview = async (transcript, code, timeLeftSeconds) => {
+    if (!user?.id) {
+      console.error("User not logged in");
+      return false;
+    }
+
+    try {
+      const response = await fetch("http://localhost:3001/api/interviews/save", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          userId: user.id,
+          interview: {
+            title: settings.interviewName,
+            company: settings.company,
+            difficulty: settings.difficulty,
+            durationMinutes: settings.durationMinutes,
+          },
+          transcript,
+          code,
+          timeLeftSeconds,
+        }),
+      });
+
+      if (!response.ok) {
+        console.error("Failed to save interview");
+        return false;
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error saving interview:", error);
+      return false;
+    }
+  };
+
   const value = useMemo(
     () => ({
       user,
@@ -83,6 +138,7 @@ export function AppStateProvider({ children }) {
       startInterview,
       nextQuestion,
       resetInterview,
+      saveInterview,
     }),
     [user, theme, settings, questionIndex],
   );

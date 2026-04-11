@@ -7,15 +7,16 @@ const app = express();
 
 const connectDB = require('./db');
 const authRoutes = require('./routes/auth');
+const interviewRoutes = require('./routes/interviews');
 
 // Connect to DB and start server
 const startServer = async () => {
   try {
     await connectDB();
     
-    // Enable CORS for frontend
+    // Enable CORS for frontend (allow multiple ports)
     app.use(cors({
-      origin: 'http://localhost:5173',
+      origin: ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:5175'],
       credentials: true
     }));
 
@@ -35,6 +36,9 @@ const startServer = async () => {
 
     // Auth routes
     app.use('/api/auth', authRoutes);
+    
+    // Interview routes
+    app.use('/api/interviews', interviewRoutes);
 
     const PORT = process.env.PORT || 3001;
     app.listen(PORT, () => {

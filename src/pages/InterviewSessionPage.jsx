@@ -8,7 +8,7 @@ import { useAppState } from "../lib/AppStateContext";
 
 function InterviewSessionPage() {
   const navigate = useNavigate();
-  const { currentQuestion, settings } = useAppState();
+  const { currentQuestion, settings, saveInterview } = useAppState();
 
   const [code, setCode] = useState("");
   const [runOutput, setRunOutput] = useState("");
@@ -68,7 +68,11 @@ function InterviewSessionPage() {
         if (result.isFinal) {
           const text = result[0].transcript.trim();
           interimRef.current = "";
-          pushEvent({ type: "speech", content: text, timestamp: getTimestamp() });
+          pushEvent({
+            type: "speech",
+            content: text,
+            timestamp: getTimestamp(),
+          });
         } else {
           interim += result[0].transcript;
         }
@@ -124,12 +128,16 @@ function InterviewSessionPage() {
             .trimEnd()
             .split("\n")
             .map((line) => (h.added ? `+ ${line}` : `- ${line}`))
-            .join("\n")
+            .join("\n"),
         )
         .join("\n");
 
       if (diffText) {
-        pushEvent({ type: "code", content: diffText, timestamp: getTimestamp() });
+        pushEvent({
+          type: "code",
+          content: diffText,
+          timestamp: getTimestamp(),
+        });
       }
 
       prevCodeRef.current = newCode;
@@ -149,18 +157,28 @@ function InterviewSessionPage() {
       const data = await res.json();
       if (data.stderr) {
         setRunError(data.stderr);
-        pushEvent({ type: "output", content: data.stderr, error: true, timestamp: getTimestamp() });
+        pushEvent({
+          type: "output",
+          content: data.stderr,
+          error: true,
+          timestamp: getTimestamp(),
+        });
       } else {
         const output = data.stdout || "Code ran successfully.";
         setRunOutput(output);
-        pushEvent({ type: "output", content: output, error: false, timestamp: getTimestamp() });
+        pushEvent({
+          type: "output",
+          content: output,
+          error: false,
+          timestamp: getTimestamp(),
+        });
       }
     } catch (err) {
       setRunError("Failed to reach the server.");
     }
   };
 
-  const handleFinish = () => {
+  const handleFinish = async () => {
     restartingRef.current = true;
     if (recognitionRef.current) {
       recognitionRef.current.onend = null;
@@ -168,6 +186,15 @@ function InterviewSessionPage() {
         recognitionRef.current.stop();
       } catch (err) {}
     }
+
+    // Convert timeline to transcript string
+    const transcript = timelineRef.current
+      .map((event) => `[${event.timestamp}] ${event.type}: ${event.content}`)
+      .join("\n");
+
+    // Save the interview session
+    await saveInterview(transcript, code, 0);
+
     navigate("/results", {
       state: {
         questionsAttempted: 1,
@@ -194,7 +221,9 @@ function InterviewSessionPage() {
           {error && <p className="mic-error">{error}</p>}
           <div className="timeline-scroll">
             {timeline.length === 0 && (
-              <p className="timeline-empty">Events will appear here as you speak and type...</p>
+              <p className="timeline-empty">
+                Events will appear here as you speak and type...
+              </p>
             )}
             {timeline.map((event, i) => (
               <div key={i} className={`timeline-event timeline-${event.type}`}>
@@ -203,8 +232,14 @@ function InterviewSessionPage() {
                   <span className="timeline-speech">{event.content}</span>
                 ) : event.type === "output" ? (
                   <div>
-                    <div className="timeline-label">{event.error ? "error" : "output"}</div>
-                    <pre className={`timeline-diff ${event.error ? "timeline-output-error" : "timeline-output-ok"}`}>{event.content}</pre>
+                    <div className="timeline-label">
+                      {event.error ? "error" : "output"}
+                    </div>
+                    <pre
+                      className={`timeline-diff ${event.error ? "timeline-output-error" : "timeline-output-ok"}`}
+                    >
+                      {event.content}
+                    </pre>
                   </div>
                 ) : (
                   <div>
@@ -238,7 +273,9 @@ function InterviewSessionPage() {
           <button type="button" onClick={handleRunCode}>
             Run Code
           </button>
-          <pre className={`run-output terminal-output ${runError ? "error" : ""}`}>
+          <pre
+            className={`run-output terminal-output ${runError ? "error" : ""}`}
+          >
             {runError || runOutput || "Run your code to see output here..."}
           </pre>
         </div>
@@ -248,4 +285,3 @@ function InterviewSessionPage() {
 }
 
 export default InterviewSessionPage;
-
