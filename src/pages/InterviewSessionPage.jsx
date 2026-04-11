@@ -17,9 +17,8 @@ function InterviewSessionPage() {
   const [isRecording, setIsRecording] = useState(false);
   const [error, setError] = useState("");
 
-  const recognitionRef = useRef(null);
-  const interimRef = useRef("");
-  const restartingRef = useRef(false);
+  const mediaRecorderRef = useRef(null);
+  const chunkIntervalRef = useRef(null);
   const timelineRef = useRef([]);
   const prevCodeRef = useRef("");
   const codeDebounceRef = useRef(null);
@@ -34,8 +33,20 @@ function InterviewSessionPage() {
     return `${m}:${s}`;
   }
 
+  function tsToSeconds(ts) {
+    const [m, s] = ts.split(":").map(Number);
+    return m * 60 + s;
+  }
+
   function pushEvent(event) {
-    const updated = [...timelineRef.current, event];
+    const incoming = tsToSeconds(event.timestamp);
+    const list = timelineRef.current;
+    let insertAt = list.length;
+    for (let i = list.length - 1; i >= 0; i--) {
+      if (tsToSeconds(list[i].timestamp) <= incoming) break;
+      insertAt = i;
+    }
+    const updated = [...list.slice(0, insertAt), event, ...list.slice(insertAt)];
     timelineRef.current = updated;
     setTimeline(updated);
   }
@@ -49,71 +60,130 @@ function InterviewSessionPage() {
   }, [currentQuestion]);
 
   useEffect(() => {
-    const SpeechRecognition =
-      window.SpeechRecognition || window.webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      setError("Speech recognition is not supported in this browser.");
-      return;
-    }
+    let stopped = false;
 
-    const recognition = new SpeechRecognition();
-    recognition.continuous = true;
-    recognition.interimResults = true;
-    recognition.lang = "en-US";
-
-    recognition.onstart = () => {
-      setIsRecording(true);
-      restartingRef.current = false;
-    };
-
-    recognition.onresult = (event) => {
-      let interim = "";
-      for (let i = event.resultIndex; i < event.results.length; i++) {
-        const result = event.results[i];
-        if (result.isFinal) {
-          const text = result[0].transcript.trim();
-          interimRef.current = "";
-          pushEvent({
-            type: "speech",
-            content: text,
-            timestamp: getTimestamp(),
-          });
-        } else {
-          interim += result[0].transcript;
-        }
-      }
-      interimRef.current = interim;
-      setIsRecording((v) => v);
-    };
-
-    recognition.onerror = (event) => {
-      if (event.error === "no-speech" || event.error === "aborted") return;
-      setError("Mic error: " + event.error);
-      setIsRecording(false);
-    };
-
-    recognition.onend = () => {
-      if (restartingRef.current) return;
-      restartingRef.current = true;
+    async function startRecording() {
+      let stream;
       try {
-        recognition.start();
-      } catch (err) {}
-    };
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch (err) {
+        setError("Mic error: " + err.message);
+        return;
+      }
 
-    recognitionRef.current = recognition;
+      setIsRecording(true);
 
-    try {
-      recognition.start();
-    } catch (err) {
-      setError(err.message);
+      const audioCtx = new AudioContext();
+      const source = audioCtx.createMediaStreamSource(stream);
+      const analyser = audioCtx.createAnalyser();
+      analyser.fftSize = 512;
+      source.connect(analyser);
+      const pcmData = new Float32Array(analyser.fftSize);
+
+      function getRMS() {
+        analyser.getFloatTimeDomainData(pcmData);
+        let sum = 0;
+        for (const v of pcmData) sum += v * v;
+        return Math.sqrt(sum / pcmData.length);
+      }
+
+      function recordChunk() {
+        if (stopped) return;
+
+        const recorder = new MediaRecorder(stream);
+        const chunks = [];
+
+        recorder.ondataavailable = (e) => {
+          if (e.data.size > 0) chunks.push(e.data);
+        };
+
+        recorder.onstop = async () => {
+          if (chunks.length === 0) { if (!stopped) recordChunk(); return; }
+          const blob = new Blob(chunks, { type: recorder.mimeType });
+          if ((recorder._speechMs?.() ?? 0) < 400) { if (!stopped) recordChunk(); return; }
+
+          const formData = new FormData();
+          formData.append("audio", blob, "audio.webm");
+
+          try {
+            const res = await fetch("http://localhost:3001/api/transcribe", {
+              method: "POST",
+              body: formData,
+            });
+            const data = await res.json();
+            const text = data.text?.trim();
+            if (text) {
+              pushEvent({ type: "speech", content: text, timestamp: chunkStartTimestamp });
+            }
+          } catch (err) {
+            // silently ignore transcription errors
+          }
+
+          if (!stopped) recordChunk();
+        };
+
+        const chunkStartTimestamp = getTimestamp();
+        recorder.start();
+        mediaRecorderRef.current = recorder;
+
+        const MAX_DURATION = 10000;
+        const SPEECH_THRESHOLD = 0.03;
+        const SILENCE_DURATION = 700;
+        const MIN_SPEECH_MS = 400; // must have this much speech to send
+        let silenceStart = null;
+        let speechMs = 0;
+        let lastTick = Date.now();
+        const startedAt = Date.now();
+
+        const vadInterval = setInterval(() => {
+          if (recorder.state !== "recording") { clearInterval(vadInterval); return; }
+
+          const now = Date.now();
+          const dt = now - lastTick;
+          lastTick = now;
+          const rms = getRMS();
+          const elapsed = now - startedAt;
+
+          if (rms >= SPEECH_THRESHOLD) {
+            speechMs += dt;
+            silenceStart = null;
+          } else {
+            if (silenceStart === null) silenceStart = now;
+            else if (now - silenceStart >= SILENCE_DURATION && elapsed >= 500) {
+              clearInterval(vadInterval);
+              recorder.stop();
+            }
+          }
+
+          if (elapsed >= MAX_DURATION) {
+            clearInterval(vadInterval);
+            recorder.stop();
+          }
+        }, 50);
+
+        // store speechMs ref so onstop can read it
+        recorder._speechMs = () => speechMs;
+
+        chunkIntervalRef.current = vadInterval;
+      }
+
+      recordChunk();
+
+      return () => audioCtx.close();
     }
+
+    let cleanup = () => {};
+    startRecording().then((fn) => { if (fn) cleanup = fn; });
 
     return () => {
-      restartingRef.current = true;
-      recognition.onend = null;
-      try {
-        recognition.stop();
-      } catch (err) {}
+      stopped = true;
+      clearInterval(chunkIntervalRef.current);
+      if (mediaRecorderRef.current?.state === "recording") {
+        mediaRecorderRef.current.onstop = null;
+        mediaRecorderRef.current.stop();
+      }
+      setIsRecording(false);
+      cleanup();
     };
   }, []);
 
@@ -184,13 +254,12 @@ function InterviewSessionPage() {
   };
 
   const handleFinish = async () => {
-    restartingRef.current = true;
-    if (recognitionRef.current) {
-      recognitionRef.current.onend = null;
-      try {
-        recognitionRef.current.stop();
-      } catch (err) {}
+    clearTimeout(chunkIntervalRef.current);
+    if (mediaRecorderRef.current?.state === "recording") {
+      mediaRecorderRef.current.onstop = null;
+      mediaRecorderRef.current.stop();
     }
+    setIsRecording(false);
 
     // Convert timeline to transcript string
     const transcript = timelineRef.current
@@ -282,12 +351,6 @@ function InterviewSessionPage() {
                 )}
               </div>
             ))}
-            {interimRef.current && (
-              <div className="timeline-event timeline-interim">
-                <span className="timeline-ts">...</span>
-                <span>{interimRef.current}</span>
-              </div>
-            )}
             <div ref={timelineEndRef} />
           </div>
         </div>
