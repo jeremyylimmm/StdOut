@@ -46,12 +46,19 @@ const startServer = async () => {
     // Enable CORS for frontend
     // In production, this allows requests from the deployed Vercel frontend
     const allowedOrigins = [
-      process.env.FRONTEND_URL, // Set in Render/production
-    ].filter(Boolean); // Remove undefined values
+      process.env.FRONTEND_URL,
+    ].filter(Boolean);
 
     app.use(
       cors({
-        origin: process.env.NODE_ENV === "production" ? allowedOrigins : "*",
+        origin: (origin, callback) => {
+          if (!origin) return callback(null, true); // allow non-browser requests
+          if (process.env.NODE_ENV !== "production") return callback(null, true);
+          if (allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+            return callback(null, true);
+          }
+          callback(new Error("Not allowed by CORS"));
+        },
         credentials: true,
       }),
     );
