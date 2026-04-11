@@ -1023,6 +1023,39 @@ p {
   background: var(--border-light);
 }
 
+.question-constraints {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 2px solid var(--border);
+}
+
+.question-constraints h5 {
+  margin: 0 0 0.75rem 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-secondary);
+}
+
+.question-constraints ul {
+  margin: 0;
+  padding-left: 1.25rem;
+  list-style: none;
+}
+
+.question-constraints li {
+  margin: 0.5rem 0;
+  font-size: 0.875rem;
+  color: var(--text);
+  line-height: 1.5;
+}
+
+.question-constraints strong {
+  color: var(--text);
+  font-weight: 600;
+}
+
 .terminal-output {
   margin-top: 0;
   min-height: 120px;
@@ -1816,6 +1849,33 @@ button:disabled {
   gap: 0.75rem;
   justify-content: flex-end;
   padding-top: 0.5rem;
+}
+
+.rp-solution {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.rp-solution-section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.rp-solution-section h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.rp-solution-section p {
+  margin: 0;
+  color: var(--text-secondary);
+  line-height: 1.6;
 }
 
 .rp-modal-label {

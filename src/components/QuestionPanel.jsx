@@ -12,6 +12,20 @@ function QuestionPanel({ question, timerRef, initialSeconds }) {
         {question?.description ||
           "Please start an interview to view a question."}
       </p>
+
+      {question?.constraints &&
+        Object.keys(question.constraints).length > 0 && (
+          <div className="question-constraints">
+            <h5>Constraints:</h5>
+            <ul>
+              {Object.entries(question.constraints).map(([key, value]) => (
+                <li key={key}>
+                  <strong>{key}:</strong> {value}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
     </div>
   );
 }

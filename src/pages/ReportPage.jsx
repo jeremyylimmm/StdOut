@@ -170,6 +170,8 @@ function ReportPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [selectedTestCase, setSelectedTestCase] = useState(null);
+  const [solution, setSolution] = useState(null);
+  const [solutionLoading, setSolutionLoading] = useState(false);
 
   const sessionData = location.state?.sessionData;
   const sessionId = location.state?.sessionId;
@@ -196,6 +198,36 @@ function ReportPage() {
     };
     loadInterview();
   }, [sessionData, sessionId]);
+
+  // Fetch solution when interview is loaded
+  useEffect(() => {
+    const loadSolution = async () => {
+      console.log("Interview data:", interview);
+      console.log("Question ID:", interview?.interview?.questionId);
+
+      if (!interview?.interview?.questionId) {
+        console.log("No questionId found");
+        return;
+      }
+      try {
+        setSolutionLoading(true);
+        const response = await fetch(`http://localhost:3001/api/questions/${interview.interview.questionId}`);
+        console.log("Solution fetch response:", response.ok, response.status);
+
+        if (response.ok) {
+          const data = await response.json();
+          console.log("Question data:", data);
+          console.log("Solution:", data.solution);
+          setSolution(data.solution);
+        }
+      } catch (err) {
+        console.error("Failed to load solution:", err);
+      } finally {
+        setSolutionLoading(false);
+      }
+    };
+    loadSolution();
+  }, [interview?.interview?.questionId]);
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this interview?")) return;
@@ -333,6 +365,38 @@ function ReportPage() {
         <Collapsible title="Code">
           <div className="rp-codebox">
             <CodeHighlighter code={interview.code} />
+          </div>
+        </Collapsible>
+      )}
+
+      {/* Solution */}
+      {solution && (
+        <Collapsible title="Solution">
+          <div className="rp-solution">
+            <div className="rp-solution-section">
+              <h3>Code</h3>
+              <div className="rp-codebox">
+                <CodeHighlighter code={solution.code} />
+              </div>
+            </div>
+            {solution.explanation && (
+              <div className="rp-solution-section">
+                <h3>Explanation</h3>
+                <p>{solution.explanation}</p>
+              </div>
+            )}
+            {solution.timeComplexity && (
+              <div className="rp-solution-section">
+                <h3>Time Complexity</h3>
+                <p><strong>{solution.timeComplexity}</strong></p>
+              </div>
+            )}
+            {solution.spaceComplexity && (
+              <div className="rp-solution-section">
+                <h3>Space Complexity</h3>
+                <p><strong>{solution.spaceComplexity}</strong></p>
+              </div>
+            )}
           </div>
         </Collapsible>
       )}
