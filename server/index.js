@@ -52,6 +52,7 @@ const startServer = async () => {
           "http://localhost:5173",
           "http://localhost:5174",
           "http://localhost:5175",
+          "https://std-out.vercel.app", // Add your Vercel domain
         ];
 
     app.use(
