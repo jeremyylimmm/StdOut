@@ -509,7 +509,7 @@
       {
         "id": 10,
         "input": ["au de"],
-        "expectedOutput": 4,
+        "expectedOutput": 5,
         "description": "With space",
         "isHidden": true
       },
@@ -544,8 +544,8 @@
       {
         "id": 15,
         "input": ["jbpnbwwd"],
-        "expectedOutput": 3,
-        "description": "nbd",
+        "expectedOutput": 4,
+        "description": "jbpn",
         "isHidden": true
       }
     ]
