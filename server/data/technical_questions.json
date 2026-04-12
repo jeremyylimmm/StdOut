@@ -1,0 +1,667 @@
+[
+    {
+      "id": "array_vs_linked_list_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "Array vs Linked List",
+      "difficulty": "Easy",
+      "tags": ["data-structures", "arrays", "linked-list"],
+      "patterns": ["conceptual"],
+      "description": "Explain the difference between an array and a linked list. What are the trade-offs?",
+      "constraints": {},
+      "followUps": [
+        "When would you prefer one over the other?",
+        "How does cache performance differ between the two?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "# Arrays: contiguous memory, O(1) random access, O(n) insert/delete\n# Linked Lists: non-contiguous, O(n) access, O(1) insert/delete at known node\ndef solution(choice):\n    return {\n        'array': 'O(1) access, O(n) insert',\n        'linked_list': 'O(n) access, O(1) insert'\n    }[choice]",
+        "explanation": "Arrays store elements in contiguous memory allowing O(1) random access but O(n) insertion/deletion. Linked lists use pointers to connect nodes, giving O(1) insertion/deletion at a known node but O(n) access time. Arrays are more cache-friendly; linked lists are better for frequent insertions/deletions.",
+        "timeComplexity": "O(1) access for arrays, O(n) for linked lists",
+        "spaceComplexity": "O(n) for both"
+      },
+      "initialCode": "def solution(choice):\n    \"\"\"\n    Return complexity characteristics.\n    Args:\n        choice: 'array' or 'linked_list'\n    Returns:\n        Dict with access and insert complexity\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [["array"]],
+          "expectedOutput": "O(1) access, O(n) insert",
+          "description": "Array complexity",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [["linked_list"]],
+          "expectedOutput": "O(n) access, O(1) insert",
+          "description": "Linked list complexity",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "big_o_notation_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "Big-O Notation",
+      "difficulty": "Easy",
+      "tags": ["complexity", "algorithms"],
+      "patterns": ["conceptual"],
+      "description": "What is Big-O notation? Why do we care about worst-case complexity?",
+      "constraints": {},
+      "followUps": [
+        "What is the difference between Big-O, Big-Theta, and Big-Omega?",
+        "Why do we drop constants in Big-O?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(n):\n    # O(1) - constant\n    constant = 1\n    # O(n) - linear\n    linear = n\n    # O(n^2) - quadratic\n    quadratic = n * n\n    return {'O(1)': constant, 'O(n)': linear, 'O(n^2)': quadratic}",
+        "explanation": "Big-O notation describes the upper bound of an algorithm's time or space complexity as input size grows. We care about worst-case because it guarantees performance under any input. Constants and lower-order terms are dropped because they become negligible for large n.",
+        "timeComplexity": "N/A",
+        "spaceComplexity": "N/A"
+      },
+      "initialCode": "def solution(n):\n    \"\"\"\n    Return growth rates for common complexities.\n    Args:\n        n: Input size\n    Returns:\n        Dict mapping complexity to value\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [[4]],
+          "expectedOutput": {"O(1)": 1, "O(n)": 4, "O(n^2)": 16},
+          "description": "n=4 growth rates",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [[10]],
+          "expectedOutput": {"O(1)": 1, "O(n)": 10, "O(n^2)": 100},
+          "description": "n=10 growth rates",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "hash_table_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "How Hash Tables Work",
+      "difficulty": "Easy",
+      "tags": ["data-structures", "hash-table"],
+      "patterns": ["conceptual"],
+      "description": "How does a hash table work under the hood? What causes collisions and how can they be resolved?",
+      "constraints": {},
+      "followUps": [
+        "What is the load factor?",
+        "How does Python's dict handle collisions?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(key, table_size):\n    return hash(key) % table_size",
+        "explanation": "A hash table uses a hash function to map keys to indices in an array. Collisions occur when two keys hash to the same index. They are resolved via chaining (linked list at each bucket) or open addressing (probing for next empty slot).",
+        "timeComplexity": "O(1) average, O(n) worst case",
+        "spaceComplexity": "O(n)"
+      },
+      "initialCode": "def solution(key, table_size):\n    \"\"\"\n    Compute hash table index for a key.\n    Args:\n        key: The key to hash\n        table_size: Size of the hash table\n    Returns:\n        Index in the hash table\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [["apple", 10]],
+          "expectedOutput": hash("apple") % 10,
+          "description": "Hash apple into size 10 table",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [["banana", 7]],
+          "expectedOutput": hash("banana") % 7,
+          "description": "Hash banana into size 7 table",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "stack_vs_queue_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "Stack vs Queue",
+      "difficulty": "Easy",
+      "tags": ["data-structures", "stack", "queue"],
+      "patterns": ["conceptual"],
+      "description": "When would you use a stack over a queue? Implement both push/pop and enqueue/dequeue.",
+      "constraints": {},
+      "followUps": [
+        "How would you implement a queue using two stacks?",
+        "What is a deque?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(operations):\n    stack = []\n    result = []\n    for op, *args in operations:\n        if op == 'push':\n            stack.append(args[0])\n        elif op == 'pop':\n            result.append(stack.pop() if stack else None)\n    return result",
+        "explanation": "A stack is LIFO (last in, first out) - use when you need to reverse order or track history (e.g., undo, DFS, call stack). A queue is FIFO (first in, first out) - use when order of arrival matters (e.g., BFS, task scheduling).",
+        "timeComplexity": "O(1) per operation",
+        "spaceComplexity": "O(n)"
+      },
+      "initialCode": "def solution(operations):\n    \"\"\"\n    Process stack operations.\n    Args:\n        operations: List of [op, *args] where op is 'push' or 'pop'\n    Returns:\n        List of results from pop operations\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [[["push", 1], ["push", 2], ["pop"], ["pop"]]],
+          "expectedOutput": [2, 1],
+          "description": "LIFO order",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [[["push", 5], ["pop"], ["pop"]]],
+          "expectedOutput": [5, null],
+          "description": "Pop empty stack",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "recursion_vs_iteration_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "Recursion vs Iteration",
+      "difficulty": "Easy",
+      "tags": ["algorithms", "recursion"],
+      "patterns": ["conceptual"],
+      "description": "What is recursion? When is it preferable to iteration? Implement factorial both ways.",
+      "constraints": {
+        "n": "0 <= n <= 15"
+      },
+      "followUps": [
+        "What is tail recursion?",
+        "How does the call stack relate to recursion?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(n):\n    result = 1\n    for i in range(2, n + 1):\n        result *= i\n    return result",
+        "explanation": "Recursion breaks a problem into smaller subproblems calling itself. It's preferable when the problem is naturally recursive (trees, graphs, divide and conquer). Iteration is more memory-efficient as it avoids call stack overhead.",
+        "timeComplexity": "O(n)",
+        "spaceComplexity": "O(1) iterative, O(n) recursive"
+      },
+      "initialCode": "def solution(n):\n    \"\"\"\n    Compute factorial iteratively.\n    Args:\n        n: Non-negative integer\n    Returns:\n        n!\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [[0]],
+          "expectedOutput": 1,
+          "description": "0! = 1",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [[5]],
+          "expectedOutput": 120,
+          "description": "5! = 120",
+          "isHidden": false
+        },
+        {
+          "id": 3,
+          "input": [[10]],
+          "expectedOutput": 3628800,
+          "description": "10!",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "dfs_vs_bfs_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "DFS vs BFS",
+      "difficulty": "Easy",
+      "tags": ["algorithms", "graph", "dfs", "bfs"],
+      "patterns": ["graph-traversal"],
+      "description": "Explain the difference between DFS and BFS. When would you use BFS instead of DFS?",
+      "constraints": {
+        "nodes": "1 <= nodes <= 100"
+      },
+      "followUps": [
+        "How does BFS find shortest paths?",
+        "What data structure does each use internally?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "from collections import deque\n\ndef solution(graph, start):\n    visited = []\n    queue = deque([start])\n    seen = {start}\n    while queue:\n        node = queue.popleft()\n        visited.append(node)\n        for neighbor in sorted(graph.get(node, [])):\n            if neighbor not in seen:\n                seen.add(neighbor)\n                queue.append(neighbor)\n    return visited",
+        "explanation": "DFS explores as deep as possible before backtracking - uses a stack. BFS explores level by level - uses a queue. Use BFS for shortest path in unweighted graphs. Use DFS for topological sort, cycle detection, or when memory is a constraint.",
+        "timeComplexity": "O(V + E)",
+        "spaceComplexity": "O(V)"
+      },
+      "initialCode": "from collections import deque\n\ndef solution(graph, start):\n    \"\"\"\n    BFS traversal of graph.\n    Args:\n        graph: Adjacency list as dict\n        start: Starting node\n    Returns:\n        List of nodes in BFS order\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [[{"0": ["1", "2"], "1": ["3"], "2": ["3"], "3": []}, "0"]],
+          "expectedOutput": ["0", "1", "2", "3"],
+          "description": "BFS from node 0",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [[{"A": ["B", "C"], "B": [], "C": ["D"], "D": []}, "A"]],
+          "expectedOutput": ["A", "B", "C", "D"],
+          "description": "BFS from A",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "dynamic_programming_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "Dynamic Programming",
+      "difficulty": "Medium",
+      "tags": ["algorithms", "dynamic-programming"],
+      "patterns": ["dynamic-programming"],
+      "description": "What is dynamic programming? Implement Fibonacci using memoization.",
+      "constraints": {
+        "n": "0 <= n <= 40"
+      },
+      "followUps": [
+        "What are overlapping subproblems and optimal substructure?",
+        "What is the difference between top-down and bottom-up DP?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(n):\n    dp = [0] * (n + 1)\n    if n >= 1:\n        dp[1] = 1\n    for i in range(2, n + 1):\n        dp[i] = dp[i - 1] + dp[i - 2]\n    return dp[n]",
+        "explanation": "Dynamic programming solves problems by breaking them into overlapping subproblems and storing results to avoid recomputation. It requires optimal substructure (optimal solution built from optimal subproblems) and overlapping subproblems.",
+        "timeComplexity": "O(n)",
+        "spaceComplexity": "O(n)"
+      },
+      "initialCode": "def solution(n):\n    \"\"\"\n    Compute nth Fibonacci number using DP.\n    Args:\n        n: Index in Fibonacci sequence\n    Returns:\n        nth Fibonacci number\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [[0]],
+          "expectedOutput": 0,
+          "description": "F(0) = 0",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [[1]],
+          "expectedOutput": 1,
+          "description": "F(1) = 1",
+          "isHidden": false
+        },
+        {
+          "id": 3,
+          "input": [[10]],
+          "expectedOutput": 55,
+          "description": "F(10) = 55",
+          "isHidden": false
+        },
+        {
+          "id": 4,
+          "input": [[20]],
+          "expectedOutput": 6765,
+          "description": "F(20) = 6765",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "stack_vs_heap_memory_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "Stack vs Heap Memory",
+      "difficulty": "Easy",
+      "tags": ["memory", "systems"],
+      "patterns": ["conceptual"],
+      "description": "What is the difference between stack memory and heap memory? What causes a memory leak?",
+      "constraints": {},
+      "followUps": [
+        "What is garbage collection?",
+        "What is a pointer?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(allocation_type):\n    return {\n        'stack': 'automatic, fixed size, fast, function scope',\n        'heap': 'manual/gc, dynamic size, slower, program scope'\n    }[allocation_type]",
+        "explanation": "Stack memory is automatically managed, fixed-size, and scoped to function calls (local variables). Heap memory is dynamically allocated, larger, and persists until freed. Memory leaks occur when heap memory is allocated but never freed/released.",
+        "timeComplexity": "N/A",
+        "spaceComplexity": "N/A"
+      },
+      "initialCode": "def solution(allocation_type):\n    \"\"\"\n    Return characteristics of memory type.\n    Args:\n        allocation_type: 'stack' or 'heap'\n    Returns:\n        String describing the memory type\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [["stack"]],
+          "expectedOutput": "automatic, fixed size, fast, function scope",
+          "description": "Stack characteristics",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [["heap"]],
+          "expectedOutput": "manual/gc, dynamic size, slower, program scope",
+          "description": "Heap characteristics",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "process_vs_thread_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "Process vs Thread",
+      "difficulty": "Medium",
+      "tags": ["concurrency", "operating-systems"],
+      "patterns": ["conceptual"],
+      "description": "What is the difference between a process and a thread? What is a race condition and a deadlock?",
+      "constraints": {},
+      "followUps": [
+        "What is a mutex?",
+        "What is a semaphore?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(query):\n    info = {\n        'process': 'independent memory space, heavier, isolated',\n        'thread': 'shared memory space, lighter, can race'\n    }\n    return info[query]",
+        "explanation": "A process is an independent program with its own memory. A thread is a lightweight unit within a process sharing memory. Race conditions occur when threads access shared data concurrently without synchronisation. Deadlock occurs when two threads wait on each other indefinitely.",
+        "timeComplexity": "N/A",
+        "spaceComplexity": "N/A"
+      },
+      "initialCode": "def solution(query):\n    \"\"\"\n    Return info about process or thread.\n    Args:\n        query: 'process' or 'thread'\n    Returns:\n        String describing the concept\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [["process"]],
+          "expectedOutput": "independent memory space, heavier, isolated",
+          "description": "Process definition",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [["thread"]],
+          "expectedOutput": "shared memory space, lighter, can race",
+          "description": "Thread definition",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "sql_vs_nosql_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "SQL vs NoSQL",
+      "difficulty": "Medium",
+      "tags": ["databases", "sql", "nosql"],
+      "patterns": ["conceptual"],
+      "description": "What is the difference between SQL and NoSQL databases? What are ACID properties?",
+      "constraints": {},
+      "followUps": [
+        "When would you choose NoSQL over SQL?",
+        "What is eventual consistency?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(db_type):\n    return {\n        'sql': 'structured, ACID, relational, fixed schema',\n        'nosql': 'flexible schema, scalable, eventual consistency'\n    }[db_type]",
+        "explanation": "SQL databases are relational with fixed schemas and ACID guarantees (Atomicity, Consistency, Isolation, Durability). NoSQL databases offer flexible schemas, horizontal scalability, and often trade consistency for availability and partition tolerance (CAP theorem).",
+        "timeComplexity": "N/A",
+        "spaceComplexity": "N/A"
+      },
+      "initialCode": "def solution(db_type):\n    \"\"\"\n    Return database type characteristics.\n    Args:\n        db_type: 'sql' or 'nosql'\n    Returns:\n        String describing the database type\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [["sql"]],
+          "expectedOutput": "structured, ACID, relational, fixed schema",
+          "description": "SQL characteristics",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [["nosql"]],
+          "expectedOutput": "flexible schema, scalable, eventual consistency",
+          "description": "NoSQL characteristics",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "tcp_vs_udp_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "TCP vs UDP",
+      "difficulty": "Easy",
+      "tags": ["networking", "systems"],
+      "patterns": ["conceptual"],
+      "description": "What is the difference between TCP and UDP? When would you use each?",
+      "constraints": {},
+      "followUps": [
+        "What happens during a TCP handshake?",
+        "What is HTTP vs HTTPS?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(protocol):\n    return {\n        'tcp': 'reliable, ordered, connection-oriented, slower',\n        'udp': 'unreliable, unordered, connectionless, faster'\n    }[protocol]",
+        "explanation": "TCP (Transmission Control Protocol) guarantees delivery and ordering via acknowledgements and retransmission - used for HTTP, email, file transfer. UDP (User Datagram Protocol) is faster with no delivery guarantee - used for video streaming, gaming, DNS.",
+        "timeComplexity": "N/A",
+        "spaceComplexity": "N/A"
+      },
+      "initialCode": "def solution(protocol):\n    \"\"\"\n    Return protocol characteristics.\n    Args:\n        protocol: 'tcp' or 'udp'\n    Returns:\n        String describing the protocol\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [["tcp"]],
+          "expectedOutput": "reliable, ordered, connection-oriented, slower",
+          "description": "TCP characteristics",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [["udp"]],
+          "expectedOutput": "unreliable, unordered, connectionless, faster",
+          "description": "UDP characteristics",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "oop_principles_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "OOP Principles",
+      "difficulty": "Easy",
+      "tags": ["oop", "design"],
+      "patterns": ["conceptual"],
+      "description": "What are the four pillars of OOP? Implement a class demonstrating encapsulation and inheritance.",
+      "constraints": {},
+      "followUps": [
+        "What are SOLID principles?",
+        "What is the difference between an interface and an abstract class?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "class Animal:\n    def __init__(self, name):\n        self._name = name\n\n    def speak(self):\n        return 'Some sound'\n\nclass Dog(Animal):\n    def speak(self):\n        return f'{self._name} says Woof'\n\ndef solution(name):\n    dog = Dog(name)\n    return dog.speak()",
+        "explanation": "The four pillars are: Encapsulation (hiding internal state), Inheritance (reusing behaviour from parent classes), Polymorphism (same interface, different implementations), Abstraction (exposing only necessary details). SOLID principles extend these for maintainable design.",
+        "timeComplexity": "O(1)",
+        "spaceComplexity": "O(1)"
+      },
+      "initialCode": "class Animal:\n    def __init__(self, name):\n        self._name = name\n\n    def speak(self):\n        return 'Some sound'\n\nclass Dog(Animal):\n    pass\n\ndef solution(name):\n    \"\"\"\n    Create a Dog and return its speak output.\n    Args:\n        name: Name of the dog\n    Returns:\n        String from dog's speak method\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [["Rex"]],
+          "expectedOutput": "Rex says Woof",
+          "description": "Dog named Rex",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [["Buddy"]],
+          "expectedOutput": "Buddy says Woof",
+          "description": "Dog named Buddy",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "binary_search_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "Binary Search",
+      "difficulty": "Easy",
+      "tags": ["algorithms", "binary-search"],
+      "patterns": ["binary-search"],
+      "description": "Explain how binary search works and its requirements. Implement it.",
+      "constraints": {
+        "n": "1 <= nums.length <= 10^4",
+        "values": "All values are unique and sorted"
+      },
+      "followUps": [
+        "What happens if the array is not sorted?",
+        "How would you find the leftmost or rightmost occurrence?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(nums, target):\n    left, right = 0, len(nums) - 1\n    while left <= right:\n        mid = (left + right) // 2\n        if nums[mid] == target:\n            return mid\n        elif nums[mid] < target:\n            left = mid + 1\n        else:\n            right = mid - 1\n    return -1",
+        "explanation": "Binary search requires a sorted array. It repeatedly halves the search space by comparing the target to the middle element. Time complexity is O(log n) because we halve the problem each step.",
+        "timeComplexity": "O(log n)",
+        "spaceComplexity": "O(1)"
+      },
+      "initialCode": "def solution(nums, target):\n    \"\"\"\n    Binary search for target in sorted array.\n    Args:\n        nums: Sorted list of integers\n        target: Value to find\n    Returns:\n        Index of target or -1 if not found\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [[[1, 3, 5, 7, 9], 5]],
+          "expectedOutput": 2,
+          "description": "Found at index 2",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [[[1, 3, 5, 7, 9], 6]],
+          "expectedOutput": -1,
+          "description": "Not found",
+          "isHidden": false
+        },
+        {
+          "id": 3,
+          "input": [[[1, 3, 5, 7, 9], 1]],
+          "expectedOutput": 0,
+          "description": "First element",
+          "isHidden": false
+        },
+        {
+          "id": 4,
+          "input": [[[1, 3, 5, 7, 9], 9]],
+          "expectedOutput": 4,
+          "description": "Last element",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "unit_testing_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "Unit Testing",
+      "difficulty": "Easy",
+      "tags": ["testing", "software-engineering"],
+      "patterns": ["conceptual"],
+      "description": "What is unit testing? Write a function and a test for it.",
+      "constraints": {},
+      "followUps": [
+        "What is mocking?",
+        "What is TDD (Test-Driven Development)?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(nums):\n    return sum(nums) / len(nums) if nums else 0",
+        "explanation": "Unit testing verifies individual functions or components in isolation. A good unit test is fast, isolated, repeatable, and tests one thing. TDD writes tests before implementation. Mocking replaces real dependencies with controlled substitutes.",
+        "timeComplexity": "O(n)",
+        "spaceComplexity": "O(1)"
+      },
+      "initialCode": "def solution(nums):\n    \"\"\"\n    Compute the average of a list.\n    Args:\n        nums: List of numbers\n    Returns:\n        Average value or 0 if empty\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [[[1, 2, 3, 4, 5]]],
+          "expectedOutput": 3.0,
+          "description": "Average of 1-5",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [[[]]],
+          "expectedOutput": 0,
+          "description": "Empty list",
+          "isHidden": false
+        },
+        {
+          "id": 3,
+          "input": [[[10]]],
+          "expectedOutput": 10.0,
+          "description": "Single element",
+          "isHidden": false
+        },
+        {
+          "id": 4,
+          "input": [[[0, 0, 0]]],
+          "expectedOutput": 0.0,
+          "description": "All zeros",
+          "isHidden": false
+        }
+      ]
+    },
+    {
+      "id": "cap_theorem_theory_v1",
+      "source": "theory",
+      "company": ["LeetCode"],
+      "title": "CAP Theorem",
+      "difficulty": "Hard",
+      "tags": ["distributed-systems", "databases"],
+      "patterns": ["conceptual"],
+      "description": "What is the CAP theorem? Explain consistency, availability, and partition tolerance.",
+      "constraints": {},
+      "followUps": [
+        "What is eventual consistency vs strong consistency?",
+        "What is consensus in distributed systems?"
+      ],
+      "solution": {
+        "language": "python",
+        "code": "def solution(system_type):\n    return {\n        'CP': 'consistent and partition tolerant, may sacrifice availability',\n        'AP': 'available and partition tolerant, may sacrifice consistency',\n        'CA': 'consistent and available, cannot handle partitions'\n    }[system_type]",
+        "explanation": "CAP theorem states a distributed system can only guarantee two of: Consistency (all nodes see same data), Availability (every request gets a response), Partition Tolerance (system works despite network splits). Since partitions are unavoidable, systems choose CP or AP.",
+        "timeComplexity": "N/A",
+        "spaceComplexity": "N/A"
+      },
+      "initialCode": "def solution(system_type):\n    \"\"\"\n    Return CAP trade-off description.\n    Args:\n        system_type: 'CP', 'AP', or 'CA'\n    Returns:\n        String describing the trade-off\n    \"\"\"\n    pass",
+      "timeLimit": 900,
+      "testCases": [
+        {
+          "id": 1,
+          "input": [["CP"]],
+          "expectedOutput": "consistent and partition tolerant, may sacrifice availability",
+          "description": "CP systems",
+          "isHidden": false
+        },
+        {
+          "id": 2,
+          "input": [["AP"]],
+          "expectedOutput": "available and partition tolerant, may sacrifice consistency",
+          "description": "AP systems",
+          "isHidden": false
+        },
+        {
+          "id": 3,
+          "input": [["CA"]],
+          "expectedOutput": "consistent and available, cannot handle partitions",
+          "description": "CA systems",
+          "isHidden": false
+        }
+      ]
+    }
+  ]
