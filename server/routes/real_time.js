@@ -1,8 +1,11 @@
 const express = require("express");
 const router = express.Router();
 
+const VOICES = ["alloy", "ash", "ballad", "coral", "echo", "sage", "shimmer", "verse"];
+
 router.get("/session", async (req, res) => {
   try {
+    const voice = VOICES[Math.floor(Math.random() * VOICES.length)];
     const response = await fetch("https://api.openai.com/v1/realtime/sessions", {
       method: "POST",
       headers: {
@@ -11,7 +14,7 @@ router.get("/session", async (req, res) => {
       },
       body: JSON.stringify({
         model: "gpt-4o-realtime-preview",
-        voice: "verse",
+        voice,
       }),
     });
 
