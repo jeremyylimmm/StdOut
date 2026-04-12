@@ -2,19 +2,11 @@
   {
     "id": "contains_duplicate_amazon_v1",
     "source": "leetcode",
-    "company": [
-      "Amazon"
-    ],
+    "company": ["Amazon"],
     "title": "Contains Duplicate",
     "difficulty": "Easy",
-    "tags": [
-      "array",
-      "hash-table"
-    ],
-    "patterns": [
-      "hash-set",
-      "element-lookup"
-    ],
+    "tags": ["array", "hash-table"],
+    "patterns": ["hash-set", "element-lookup"],
     "description": "Given an integer array nums, return true if any value appears at least twice in the array, and return false if every element is distinct.",
     "constraints": {
       "n": "1 <= nums.length <= 10^5",
@@ -36,219 +28,105 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            1
-          ]
-        ],
+        "input": [[1, 2, 3, 1]],
         "expectedOutput": true,
         "description": "Duplicate 1",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            4
-          ]
-        ],
+        "input": [[1, 2, 3, 4]],
         "expectedOutput": false,
         "description": "No duplicates",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          [
-            99,
-            99
-          ]
-        ],
+        "input": [[99, 99]],
         "expectedOutput": true,
         "description": "Two same",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          [
-            1
-          ]
-        ],
+        "input": [[1]],
         "expectedOutput": false,
         "description": "Single element",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6,
-            7,
-            8,
-            9,
-            1
-          ]
-        ],
+        "input": [[1, 2, 3, 4, 5, 6, 7, 8, 9, 1]],
         "expectedOutput": true,
         "description": "Duplicate at ends",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          [
-            0,
-            4,
-            4,
-            0,
-            0,
-            6,
-            5
-          ]
-        ],
+        "input": [[0, 4, 4, 0, 0, 6, 5]],
         "expectedOutput": true,
         "description": "Multiple duplicates",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        ],
+        "input": [[1, 2, 3, 4, 5]],
         "expectedOutput": false,
         "description": "All unique",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          [
-            -1,
-            -1
-          ]
-        ],
+        "input": [[-1, -1]],
         "expectedOutput": true,
         "description": "Negative duplicates",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          [
-            -1,
-            0,
-            1,
-            2,
-            -1,
-            -4
-          ]
-        ],
+        "input": [[-1, 0, 1, 2, -1, -4]],
         "expectedOutput": true,
         "description": "Mixed with negative",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          [
-            1,
-            1,
-            1,
-            1
-          ]
-        ],
+        "input": [[1, 1, 1, 1]],
         "expectedOutput": true,
         "description": "All same",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          [
-            5,
-            1,
-            2,
-            3,
-            4
-          ]
-        ],
+        "input": [[5, 1, 2, 3, 4]],
         "expectedOutput": false,
         "description": "Sorted no dup",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          [
-            9,
-            9,
-            9,
-            9,
-            9
-          ]
-        ],
+        "input": [[9, 9, 9, 9, 9]],
         "expectedOutput": true,
         "description": "All 9s",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            4,
-            3,
-            5
-          ]
-        ],
+        "input": [[1, 2, 3, 4, 3, 5]],
         "expectedOutput": true,
         "description": "Middle duplicate",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          [
-            100,
-            200,
-            300,
-            400
-          ]
-        ],
+        "input": [[100, 200, 300, 400]],
         "expectedOutput": false,
         "description": "Large numbers",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          [
-            0,
-            0,
-            0,
-            0
-          ]
-        ],
+        "input": [[0, 0, 0, 0]],
         "expectedOutput": true,
         "description": "All zeros",
         "isHidden": true
@@ -256,321 +134,19 @@
     ]
   },
   {
-    "id": "reverse_linked_list_google_v1",
-    "source": "leetcode",
-    "company": [
-      "Google"
-    ],
-    "title": "Reverse Linked List",
-    "difficulty": "Easy",
-    "tags": [
-      "linked-list",
-      "recursion"
-    ],
-    "patterns": [
-      "linked-list-reversal"
-    ],
-    "description": "Given an array representing a linked list, return the reversed array.",
-    "constraints": {
-      "nodes": "0 <= number of nodes <= 5000",
-      "val": "-5000 <= Node.val <= 5000"
-    },
-    "followUps": [
-      "Can you do it recursively?",
-      "Reverse in groups of k?"
-    ],
-    "solution": {
-      "language": "python",
-      "code": "def solution(head):\n    return head[::-1]",
-      "explanation": "Simply reverse the array using Python's slice notation.",
-      "timeComplexity": "O(n)",
-      "spaceComplexity": "O(1)"
-    },
-    "initialCode": "def solution(head):\n    \"\"\"\n    Reverse a list (array).\n    Args:\n        head: List to reverse\n    Returns:\n        Reversed list\n    \"\"\"\n    pass",
-    "timeLimit": 900,
-    "testCases": [
-      {
-        "id": 1,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        ],
-        "expectedOutput": [
-          5,
-          4,
-          3,
-          2,
-          1
-        ],
-        "description": "Basic reversal",
-        "isHidden": true
-      },
-      {
-        "id": 2,
-        "input": [
-          [
-            1,
-            2
-          ]
-        ],
-        "expectedOutput": [
-          2,
-          1
-        ],
-        "description": "Two elements",
-        "isHidden": true
-      },
-      {
-        "id": 3,
-        "input": [
-          [
-            1
-          ]
-        ],
-        "expectedOutput": [
-          1
-        ],
-        "description": "Single element",
-        "isHidden": true
-      },
-      {
-        "id": 4,
-        "input": [
-          []
-        ],
-        "expectedOutput": [],
-        "description": "Empty list",
-        "isHidden": true
-      },
-      {
-        "id": 5,
-        "input": [
-          [
-            5,
-            4,
-            3,
-            2,
-            1
-          ]
-        ],
-        "expectedOutput": [
-          1,
-          2,
-          3,
-          4,
-          5
-        ],
-        "description": "Already reversed",
-        "isHidden": true
-      },
-      {
-        "id": 6,
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
-        "expectedOutput": [
-          3,
-          2,
-          1
-        ],
-        "description": "Three elements",
-        "isHidden": true
-      },
-      {
-        "id": 7,
-        "input": [
-          [
-            10,
-            20,
-            30
-          ]
-        ],
-        "expectedOutput": [
-          30,
-          20,
-          10
-        ],
-        "description": "Larger values",
-        "isHidden": true
-      },
-      {
-        "id": 8,
-        "input": [
-          [
-            -1,
-            -2,
-            -3
-          ]
-        ],
-        "expectedOutput": [
-          -3,
-          -2,
-          -1
-        ],
-        "description": "Negative values",
-        "isHidden": true
-      },
-      {
-        "id": 9,
-        "input": [
-          [
-            0,
-            1,
-            0
-          ]
-        ],
-        "expectedOutput": [
-          0,
-          1,
-          0
-        ],
-        "description": "Palindromic",
-        "isHidden": true
-      },
-      {
-        "id": 10,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            4
-          ]
-        ],
-        "expectedOutput": [
-          4,
-          3,
-          2,
-          1
-        ],
-        "description": "Four elements",
-        "isHidden": true
-      },
-      {
-        "id": 11,
-        "input": [
-          [
-            100,
-            200
-          ]
-        ],
-        "expectedOutput": [
-          200,
-          100
-        ],
-        "description": "Large values",
-        "isHidden": true
-      },
-      {
-        "id": 12,
-        "input": [
-          [
-            1,
-            1,
-            1
-          ]
-        ],
-        "expectedOutput": [
-          1,
-          1,
-          1
-        ],
-        "description": "All same",
-        "isHidden": true
-      },
-      {
-        "id": 13,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            4,
-            5,
-            6
-          ]
-        ],
-        "expectedOutput": [
-          6,
-          5,
-          4,
-          3,
-          2,
-          1
-        ],
-        "description": "Six elements",
-        "isHidden": true
-      },
-      {
-        "id": 14,
-        "input": [
-          [
-            2
-          ]
-        ],
-        "expectedOutput": [
-          2
-        ],
-        "description": "Single non-one",
-        "isHidden": true
-      },
-      {
-        "id": 15,
-        "input": [
-          [
-            9,
-            8,
-            7,
-            6,
-            5
-          ]
-        ],
-        "expectedOutput": [
-          5,
-          6,
-          7,
-          8,
-          9
-        ],
-        "description": "Descending",
-        "isHidden": true
-      }
-    ]
-  },
-  {
     "id": "merge_sorted_array_microsoft_v1",
     "source": "leetcode",
-    "company": [
-      "Microsoft"
-    ],
+    "company": ["Microsoft"],
     "title": "Merge Sorted Array",
     "difficulty": "Easy",
-    "tags": [
-      "array",
-      "two-pointers"
-    ],
-    "patterns": [
-      "two-pointer",
-      "in-place"
-    ],
+    "tags": ["array", "two-pointers"],
+    "patterns": ["two-pointer", "in-place"],
     "description": "Merge nums2 into nums1 as one sorted array in-place.",
     "constraints": {
       "m_n": "1 <= m, n <= 200",
       "values": "0 <= nums1[i], nums2[j] <= 10^9"
     },
-    "followUps": [
-      "Can you do it in-place?",
-      "Sort both arrays?"
-    ],
+    "followUps": ["Can you do it in-place?", "Sort both arrays?"],
     "solution": {
       "language": "python",
       "code": "def solution(nums1, m, nums2, n):\n    p1, p2, p = m - 1, n - 1, m + n - 1\n    while p1 >= 0 and p2 >= 0:\n        if nums1[p1] > nums2[p2]:\n            nums1[p] = nums1[p1]\n            p1 -= 1\n        else:\n            nums1[p] = nums2[p2]\n            p2 -= 1\n        p -= 1\n    while p2 >= 0:\n        nums1[p] = nums2[p2]\n        p2 -= 1\n        p -= 1\n    return nums1",
@@ -583,386 +159,106 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            0,
-            0,
-            0
-          ],
-          3,
-          [
-            2,
-            5,
-            6
-          ],
-          3
-        ],
-        "expectedOutput": [
-          1,
-          2,
-          2,
-          3,
-          5,
-          6
-        ],
+        "input": [[1, 2, 3, 0, 0, 0], 3, [2, 5, 6], 3],
+        "expectedOutput": [1, 2, 2, 3, 5, 6],
         "description": "Basic merge",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          [
-            4,
-            5,
-            6,
-            0,
-            0,
-            0
-          ],
-          3,
-          [
-            1,
-            2,
-            3
-          ],
-          3
-        ],
-        "expectedOutput": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ],
+        "input": [[4, 5, 6, 0, 0, 0], 3, [1, 2, 3], 3],
+        "expectedOutput": [1, 2, 3, 4, 5, 6],
         "description": "All smaller",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          [
-            1
-          ],
-          1,
-          [],
-          0
-        ],
-        "expectedOutput": [
-          1
-        ],
+        "input": [[1], 1, [], 0],
+        "expectedOutput": [1],
         "description": "Empty second",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          [
-            0
-          ],
-          0,
-          [
-            1
-          ],
-          1
-        ],
-        "expectedOutput": [
-          1
-        ],
+        "input": [[0], 0, [1], 1],
+        "expectedOutput": [1],
         "description": "Empty first",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            1,
-            2,
-            3
-          ],
-          3,
-          [
-            4,
-            5,
-            6
-          ],
-          3
-        ],
-        "expectedOutput": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ],
+        "input": [[1, 2, 3], 3, [4, 5, 6], 3],
+        "expectedOutput": [1, 2, 3, 4, 5, 6],
         "description": "No overlap",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          [
-            1,
-            3,
-            5,
-            0,
-            0,
-            0
-          ],
-          3,
-          [
-            2,
-            4,
-            6
-          ],
-          3
-        ],
-        "expectedOutput": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ],
+        "input": [[1, 3, 5, 0, 0, 0], 3, [2, 4, 6], 3],
+        "expectedOutput": [1, 2, 3, 4, 5, 6],
         "description": "Alternating",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          [
-            1,
-            0,
-            0
-          ],
-          1,
-          [
-            1,
-            2
-          ],
-          2
-        ],
-        "expectedOutput": [
-          1,
-          1,
-          2
-        ],
+        "input": [[1, 0, 0], 1, [1, 2], 2],
+        "expectedOutput": [1, 1, 2],
         "description": "Duplicates",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          [
-            2,
-            5,
-            6,
-            0,
-            0,
-            0
-          ],
-          3,
-          [
-            1,
-            3,
-            4
-          ],
-          3
-        ],
-        "expectedOutput": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ],
+        "input": [[2, 5, 6, 0, 0, 0], 3, [1, 3, 4], 3],
+        "expectedOutput": [1, 2, 3, 4, 5, 6],
         "description": "Interleaved",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          [
-            4,
-            0,
-            0
-          ],
-          1,
-          [
-            1,
-            3
-          ],
-          2
-        ],
-        "expectedOutput": [
-          1,
-          3,
-          4
-        ],
+        "input": [[4, 0, 0], 1, [1, 3], 2],
+        "expectedOutput": [1, 3, 4],
         "description": "Backwards",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          [
-            1,
-            1,
-            1,
-            0,
-            0,
-            0
-          ],
-          3,
-          [
-            1,
-            1,
-            1
-          ],
-          3
-        ],
-        "expectedOutput": [
-          1,
-          1,
-          1,
-          1,
-          1,
-          1
-        ],
+        "input": [[1, 1, 1, 0, 0, 0], 3, [1, 1, 1], 3],
+        "expectedOutput": [1, 1, 1, 1, 1, 1],
         "description": "All same",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          [
-            3,
-            4,
-            5,
-            0,
-            0,
-            0
-          ],
-          3,
-          [
-            1,
-            2,
-            6
-          ],
-          3
-        ],
-        "expectedOutput": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6
-        ],
+        "input": [[3, 4, 5, 0, 0, 0], 3, [1, 2, 6], 3],
+        "expectedOutput": [1, 2, 3, 4, 5, 6],
         "description": "Mixed order",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          [
-            1,
-            2,
-            0,
-            0
-          ],
-          2,
-          [
-            3,
-            4
-          ],
-          2
-        ],
-        "expectedOutput": [
-          1,
-          2,
-          3,
-          4
-        ],
+        "input": [[1, 2, 0, 0], 2, [3, 4], 2],
+        "expectedOutput": [1, 2, 3, 4],
         "description": "Two pairs",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          [
-            5,
-            0
-          ],
-          1,
-          [
-            1
-          ],
-          1
-        ],
-        "expectedOutput": [
-          1,
-          5
-        ],
+        "input": [[5, 0], 1, [1], 1],
+        "expectedOutput": [1, 5],
         "description": "Smaller first",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          [
-            1,
-            0
-          ],
-          1,
-          [
-            5
-          ],
-          1
-        ],
-        "expectedOutput": [
-          1,
-          5
-        ],
+        "input": [[1, 0], 1, [5], 1],
+        "expectedOutput": [1, 5],
         "description": "Larger second",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          [
-            2,
-            5,
-            6,
-            0,
-            0,
-            0,
-            0
-          ],
-          3,
-          [
-            1,
-            3,
-            4,
-            8
-          ],
-          4
-        ],
-        "expectedOutput": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          6,
-          8
-        ],
+        "input": [[2, 5, 6, 0, 0, 0, 0], 3, [1, 3, 4, 8], 4],
+        "expectedOutput": [1, 2, 3, 4, 5, 6, 8],
         "description": "Longer example",
         "isHidden": true
       }
@@ -971,28 +267,17 @@
   {
     "id": "add_two_numbers_amazon_v1",
     "source": "leetcode",
-    "company": [
-      "Amazon"
-    ],
+    "company": ["Amazon"],
     "title": "Add Two Numbers",
     "difficulty": "Medium",
-    "tags": [
-      "linked-list",
-      "math"
-    ],
-    "patterns": [
-      "linked-list-traversal",
-      "carry-logic"
-    ],
+    "tags": ["linked-list", "math"],
+    "patterns": ["linked-list-traversal", "carry-logic"],
     "description": "Add two non-negative integers represented as linked lists in reverse order.",
     "constraints": {
       "nodes": "1 <= nodes <= 100",
       "digit": "0 <= digit <= 9"
     },
-    "followUps": [
-      "Numbers in forward order?",
-      "Handle leading zeros?"
-    ],
+    "followUps": ["Numbers in forward order?", "Handle leading zeros?"],
     "solution": {
       "language": "python",
       "code": "def solution(l1, l2):\n    result = []\n    carry = 0\n    while l1 or l2 or carry:\n        val1 = l1.pop(0) if l1 else 0\n        val2 = l2.pop(0) if l2 else 0\n        total = val1 + val2 + carry\n        carry = total // 10\n        result.append(total % 10)\n    return result",
@@ -1006,302 +291,129 @@
       {
         "id": 1,
         "input": [
-          [
-            2,
-            4,
-            3
-          ],
-          [
-            5,
-            6,
-            4
-          ]
+          [2, 4, 3],
+          [5, 6, 4]
         ],
-        "expectedOutput": [
-          7,
-          0,
-          8
-        ],
+        "expectedOutput": [7, 0, 8],
         "description": "342 + 465 = 807",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          [
-            0
-          ],
-          [
-            0
-          ]
-        ],
-        "expectedOutput": [
-          0
-        ],
+        "input": [[0], [0]],
+        "expectedOutput": [0],
         "description": "0 + 0 = 0",
         "isHidden": true
       },
       {
         "id": 3,
         "input": [
-          [
-            9,
-            9,
-            9,
-            9
-          ],
-          [
-            9,
-            9,
-            9
-          ]
+          [9, 9, 9, 9],
+          [9, 9, 9]
         ],
-        "expectedOutput": [
-          8,
-          9,
-          9,
-          9,
-          1
-        ],
+        "expectedOutput": [8, 9, 9, 9, 1],
         "description": "Large with carry",
         "isHidden": true
       },
       {
         "id": 4,
         "input": [
-          [
-            2,
-            4
-          ],
-          [
-            5,
-            6,
-            4
-          ]
+          [2, 4],
+          [5, 6, 4]
         ],
-        "expectedOutput": [
-          7,
-          0,
-          5
-        ],
+        "expectedOutput": [7, 0, 5],
         "description": "Different lengths",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            5
-          ],
-          [
-            5
-          ]
-        ],
-        "expectedOutput": [
-          0,
-          1
-        ],
+        "input": [[5], [5]],
+        "expectedOutput": [0, 1],
         "description": "5 + 5 = 10",
         "isHidden": true
       },
       {
         "id": 6,
         "input": [
-          [
-            1,
-            2,
-            3
-          ],
-          [
-            4,
-            5,
-            6
-          ]
+          [1, 2, 3],
+          [4, 5, 6]
         ],
-        "expectedOutput": [
-          5,
-          7,
-          9
-        ],
+        "expectedOutput": [5, 7, 9],
         "description": "321 + 654 = 975",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          [
-            9
-          ],
-          [
-            1
-          ]
-        ],
-        "expectedOutput": [
-          0,
-          1
-        ],
+        "input": [[9], [1]],
+        "expectedOutput": [0, 1],
         "description": "9 + 1 = 10",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          [
-            9,
-            9
-          ],
-          [
-            1
-          ]
-        ],
-        "expectedOutput": [
-          0,
-          0,
-          1
-        ],
+        "input": [[9, 9], [1]],
+        "expectedOutput": [0, 0, 1],
         "description": "99 + 1 = 100",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          [
-            1
-          ],
-          [
-            9,
-            9,
-            9
-          ]
-        ],
-        "expectedOutput": [
-          0,
-          0,
-          0,
-          1
-        ],
+        "input": [[1], [9, 9, 9]],
+        "expectedOutput": [0, 0, 0, 1],
         "description": "1 + 999 = 1000",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          [
-            7
-          ],
-          [
-            3
-          ]
-        ],
-        "expectedOutput": [
-          0,
-          1
-        ],
+        "input": [[7], [3]],
+        "expectedOutput": [0, 1],
         "description": "7 + 3 = 10",
         "isHidden": true
       },
       {
         "id": 11,
         "input": [
-          [
-            3,
-            4,
-            2
-          ],
-          [
-            4,
-            6,
-            5
-          ]
+          [3, 4, 2],
+          [4, 6, 5]
         ],
-        "expectedOutput": [
-          7,
-          0,
-          8
-        ],
+        "expectedOutput": [7, 0, 8],
         "description": "243 + 564 = 807",
         "isHidden": true
       },
       {
         "id": 12,
         "input": [
-          [
-            5,
-            0,
-            0
-          ],
-          [
-            5,
-            0,
-            0,
-            0
-          ]
+          [5, 0, 0],
+          [5, 0, 0, 0]
         ],
-        "expectedOutput": [
-          0,
-          0,
-          1,
-          0
-        ],
+        "expectedOutput": [0, 0, 1, 0],
         "description": "005 + 5000 = 5005",
         "isHidden": true
       },
       {
         "id": 13,
         "input": [
-          [
-            1,
-            2
-          ],
-          [
-            1,
-            2
-          ]
+          [1, 2],
+          [1, 2]
         ],
-        "expectedOutput": [
-          2,
-          4
-        ],
+        "expectedOutput": [2, 4],
         "description": "21 + 21 = 42",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          [
-            9,
-            9,
-            9
-          ],
-          [
-            1
-          ]
-        ],
-        "expectedOutput": [
-          0,
-          0,
-          0,
-          1
-        ],
+        "input": [[9, 9, 9], [1]],
+        "expectedOutput": [0, 0, 0, 1],
         "description": "999 + 1 = 1000",
         "isHidden": true
       },
       {
         "id": 15,
         "input": [
-          [
-            4,
-            5
-          ],
-          [
-            3,
-            4
-          ]
+          [4, 5],
+          [3, 4]
         ],
-        "expectedOutput": [
-          7,
-          9
-        ],
+        "expectedOutput": [7, 9],
         "description": "54 + 43 = 97",
         "isHidden": true
       }
@@ -1310,28 +422,17 @@
   {
     "id": "longest_substring_google_v1",
     "source": "leetcode",
-    "company": [
-      "Google"
-    ],
+    "company": ["Google"],
     "title": "Longest Substring Without Repeating Characters",
     "difficulty": "Medium",
-    "tags": [
-      "string",
-      "sliding-window",
-      "hash-table"
-    ],
-    "patterns": [
-      "sliding-window"
-    ],
+    "tags": ["string", "sliding-window", "hash-table"],
+    "patterns": ["sliding-window"],
     "description": "Given a string s, find the length of the longest substring without repeating characters.",
     "constraints": {
       "length": "0 <= s.length <= 5 * 10^4",
       "charset": "English letters, digits, symbols"
     },
-    "followUps": [
-      "Optimize for Unicode?",
-      "Return the substring?"
-    ],
+    "followUps": ["Optimize for Unicode?", "Return the substring?"],
     "solution": {
       "language": "python",
       "code": "def solution(s):\n    char_index = {}\n    max_length = 0\n    start = 0\n    for i, ch in enumerate(s):\n        if ch in char_index and char_index[ch] >= start:\n            start = char_index[ch] + 1\n        char_index[ch] = i\n        max_length = max(max_length, i - start + 1)\n    return max_length",
@@ -1344,135 +445,105 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          "abcabcbb"
-        ],
+        "input": ["abcabcbb"],
         "expectedOutput": 3,
         "description": "abc",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          "bbbbb"
-        ],
+        "input": ["bbbbb"],
         "expectedOutput": 1,
         "description": "b",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          "pwwkew"
-        ],
+        "input": ["pwwkew"],
         "expectedOutput": 3,
         "description": "wke",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          ""
-        ],
+        "input": [""],
         "expectedOutput": 0,
         "description": "Empty string",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          "a"
-        ],
+        "input": ["a"],
         "expectedOutput": 1,
         "description": "Single character",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          "au"
-        ],
+        "input": ["au"],
         "expectedOutput": 2,
         "description": "Two unique",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          "dvdf"
-        ],
+        "input": ["dvdf"],
         "expectedOutput": 3,
         "description": "vdf",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          "abcdefg"
-        ],
+        "input": ["abcdefg"],
         "expectedOutput": 7,
         "description": "All unique",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          "aab"
-        ],
+        "input": ["aab"],
         "expectedOutput": 2,
         "description": "ab",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          "au de"
-        ],
+        "input": ["au de"],
         "expectedOutput": 4,
         "description": "With space",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          "a1@2"
-        ],
+        "input": ["a1@2"],
         "expectedOutput": 4,
         "description": "Mixed chars",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          "tmmzuxt"
-        ],
+        "input": ["tmmzuxt"],
         "expectedOutput": 5,
         "description": "mzuxt",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          "abcabcbb"
-        ],
+        "input": ["abcabcbb"],
         "expectedOutput": 3,
         "description": "Repeating",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          "aabaab!ab"
-        ],
+        "input": ["aabaab!ab"],
         "expectedOutput": 3,
         "description": "aab!",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          "jbpnbwwd"
-        ],
+        "input": ["jbpnbwwd"],
         "expectedOutput": 3,
         "description": "nbd",
         "isHidden": true
@@ -1482,29 +553,17 @@
   {
     "id": "three_sum_microsoft_v1",
     "source": "leetcode",
-    "company": [
-      "Microsoft"
-    ],
+    "company": ["Microsoft"],
     "title": "3Sum",
     "difficulty": "Medium",
-    "tags": [
-      "array",
-      "two-pointers",
-      "sorting"
-    ],
-    "patterns": [
-      "two-pointer",
-      "sorting"
-    ],
+    "tags": ["array", "two-pointers", "sorting"],
+    "patterns": ["two-pointer", "sorting"],
     "description": "Find all unique triplets that sum to 0. Return without duplicates.",
     "constraints": {
       "n": "1 <= n <= 3000",
       "value": "-10^5 <= nums[i] <= 10^5"
     },
-    "followUps": [
-      "Handle duplicates?",
-      "Optimize to O(n^2)?"
-    ],
+    "followUps": ["Handle duplicates?", "Optimize to O(n^2)?"],
     "solution": {
       "language": "python",
       "code": "def solution(nums):\n    nums.sort()\n    result = []\n    for i in range(len(nums) - 2):\n        if i > 0 and nums[i] == nums[i-1]:\n            continue\n        if nums[i] > 0:\n            break\n        left, right = i + 1, len(nums) - 1\n        while left < right:\n            total = nums[i] + nums[left] + nums[right]\n            if total < 0:\n                left += 1\n            elif total > 0:\n                right -= 1\n            else:\n                result.append([nums[i], nums[left], nums[right]])\n                while left < right and nums[left] == nums[left+1]:\n                    left += 1\n                while left < right and nums[right] == nums[right-1]:\n                    right -= 1\n                left += 1\n                right -= 1\n    return result",
@@ -1517,378 +576,134 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          [
-            -1,
-            0,
-            1,
-            2,
-            -1,
-            -4
-          ]
-        ],
+        "input": [[-1, 0, 1, 2, -1, -4]],
         "expectedOutput": [
-          [
-            -1,
-            -1,
-            2
-          ],
-          [
-            -1,
-            0,
-            1
-          ]
+          [-1, -1, 2],
+          [-1, 0, 1]
         ],
         "description": "Example 1",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          [
-            0
-          ]
-        ],
+        "input": [[0]],
         "expectedOutput": [],
         "description": "Single zero",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          [
-            -2,
-            0,
-            1,
-            1,
-            2
-          ]
-        ],
+        "input": [[-2, 0, 1, 1, 2]],
         "expectedOutput": [
-          [
-            -2,
-            0,
-            2
-          ],
-          [
-            -2,
-            1,
-            1
-          ]
+          [-2, 0, 2],
+          [-2, 1, 1]
         ],
         "description": "Multiple triplets",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          [
-            -1,
-            -1,
-            0,
-            1,
-            2
-          ]
-        ],
+        "input": [[-1, -1, 0, 1, 2]],
         "expectedOutput": [
-          [
-            -1,
-            -1,
-            2
-          ],
-          [
-            -1,
-            0,
-            1
-          ]
+          [-1, -1, 2],
+          [-1, 0, 1]
         ],
         "description": "With duplicates",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            0,
-            0,
-            0,
-            0
-          ]
-        ],
-        "expectedOutput": [
-          [
-            0,
-            0,
-            0
-          ]
-        ],
+        "input": [[0, 0, 0, 0]],
+        "expectedOutput": [[0, 0, 0]],
         "description": "All zeros",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          [
-            -4,
-            -2,
-            -2,
-            -2,
-            0,
-            1,
-            2,
-            2,
-            2,
-            3,
-            3,
-            4,
-            4,
-            6,
-            6
-          ]
-        ],
+        "input": [[-4, -2, -2, -2, 0, 1, 2, 2, 2, 3, 3, 4, 4, 6, 6]],
         "expectedOutput": [
-          [
-            -4,
-            -2,
-            6
-          ],
-          [
-            -4,
-            0,
-            4
-          ],
-          [
-            -4,
-            1,
-            3
-          ],
-          [
-            -4,
-            2,
-            2
-          ],
-          [
-            -2,
-            -2,
-            4
-          ],
-          [
-            -2,
-            0,
-            2
-          ],
-          [
-            0,
-            0,
-            0
-          ]
+          [-4, -2, 6],
+          [-4, 0, 4],
+          [-4, 1, 3],
+          [-4, 2, 2],
+          [-2, -2, 4],
+          [-2, 0, 2],
+          [0, 0, 0]
         ],
         "description": "Complex",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          [
-            -1,
-            0,
-            1
-          ]
-        ],
-        "expectedOutput": [
-          [
-            -1,
-            0,
-            1
-          ]
-        ],
+        "input": [[-1, 0, 1]],
+        "expectedOutput": [[-1, 0, 1]],
         "description": "Three elements",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          [
-            1,
-            2,
-            -2,
-            -1
-          ]
-        ],
+        "input": [[1, 2, -2, -1]],
         "expectedOutput": [],
         "description": "No triplet",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          [
-            -2,
-            0,
-            0,
-            2,
-            2
-          ]
-        ],
-        "expectedOutput": [
-          [
-            -2,
-            0,
-            2
-          ]
-        ],
+        "input": [[-2, 0, 0, 2, 2]],
+        "expectedOutput": [[-2, 0, 2]],
         "description": "Boundary",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          [
-            -3,
-            -1,
-            0,
-            2,
-            4,
-            5
-          ]
-        ],
+        "input": [[-3, -1, 0, 2, 4, 5]],
         "expectedOutput": [
-          [
-            -3,
-            -1,
-            4
-          ],
-          [
-            -3,
-            0,
-            3
-          ]
+          [-3, -1, 4],
+          [-3, 0, 3]
         ],
         "description": "No zeros",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          [
-            -1,
-            -1,
-            -1,
-            0,
-            1,
-            1,
-            1
-          ]
-        ],
-        "expectedOutput": [
-          [
-            -1,
-            0,
-            1
-          ]
-        ],
+        "input": [[-1, -1, -1, 0, 1, 1, 1]],
+        "expectedOutput": [[-1, 0, 1]],
         "description": "Symmetric",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          [
-            0,
-            0,
-            0
-          ]
-        ],
-        "expectedOutput": [
-          [
-            0,
-            0,
-            0
-          ]
-        ],
+        "input": [[0, 0, 0]],
+        "expectedOutput": [[0, 0, 0]],
         "description": "Three zeros",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          [
-            -5,
-            -2,
-            0,
-            1,
-            3,
-            4
-          ]
-        ],
+        "input": [[-5, -2, 0, 1, 3, 4]],
         "expectedOutput": [
-          [
-            -5,
-            1,
-            4
-          ],
-          [
-            -5,
-            2,
-            3
-          ],
-          [
-            -2,
-            -2,
-            4
-          ],
-          [
-            -2,
-            0,
-            2
-          ]
+          [-5, 1, 4],
+          [-5, 2, 3],
+          [-2, -2, 4],
+          [-2, 0, 2]
         ],
         "description": "Spread",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          [
-            -2,
-            -1,
-            0,
-            1,
-            2
-          ]
-        ],
+        "input": [[-2, -1, 0, 1, 2]],
         "expectedOutput": [
-          [
-            -2,
-            0,
-            2
-          ],
-          [
-            -1,
-            0,
-            1
-          ]
+          [-2, 0, 2],
+          [-1, 0, 1]
         ],
         "description": "Consecutive",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          [
-            1,
-            -1,
-            -1,
-            0
-          ]
-        ],
-        "expectedOutput": [
-          [
-            -1,
-            0,
-            1
-          ]
-        ],
+        "input": [[1, -1, -1, 0]],
+        "expectedOutput": [[-1, 0, 1]],
         "description": "Mixed",
         "isHidden": true
       }
@@ -1897,20 +712,11 @@
   {
     "id": "trapping_rain_water_amazon_v1",
     "source": "leetcode",
-    "company": [
-      "Amazon"
-    ],
+    "company": ["Amazon"],
     "title": "Trapping Rain Water",
     "difficulty": "Hard",
-    "tags": [
-      "array",
-      "dynamic-programming",
-      "two-pointers"
-    ],
-    "patterns": [
-      "two-pointer",
-      "monotonic-stack"
-    ],
+    "tags": ["array", "dynamic-programming", "two-pointers"],
+    "patterns": ["two-pointer", "monotonic-stack"],
     "description": "Compute how much water can be trapped after raining given elevation map.",
     "constraints": {
       "n": "1 <= n <= 2 * 10^4",
@@ -1932,228 +738,105 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          [
-            0,
-            1,
-            0,
-            2,
-            1,
-            0,
-            1,
-            3,
-            2,
-            1,
-            2,
-            1
-          ]
-        ],
+        "input": [[0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]],
         "expectedOutput": 6,
         "description": "Classic valley",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          [
-            4,
-            2,
-            0,
-            3,
-            2,
-            5
-          ]
-        ],
+        "input": [[4, 2, 0, 3, 2, 5]],
         "expectedOutput": 9,
         "description": "Multiple valleys",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          [
-            0
-          ]
-        ],
+        "input": [[0]],
         "expectedOutput": 0,
         "description": "Single element",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          [
-            0,
-            1
-          ]
-        ],
+        "input": [[0, 1]],
         "expectedOutput": 0,
         "description": "Two ascending",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            1,
-            0
-          ]
-        ],
+        "input": [[1, 0]],
         "expectedOutput": 0,
         "description": "Two descending",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          [
-            3,
-            0,
-            2,
-            0,
-            4
-          ]
-        ],
+        "input": [[3, 0, 2, 0, 4]],
         "expectedOutput": 7,
         "description": "Two valleys",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          [
-            5,
-            4,
-            3,
-            2,
-            1,
-            0
-          ]
-        ],
+        "input": [[5, 4, 3, 2, 1, 0]],
         "expectedOutput": 0,
         "description": "Descending",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          [
-            0,
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        ],
+        "input": [[0, 1, 2, 3, 4, 5]],
         "expectedOutput": 0,
         "description": "Ascending",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          [
-            2,
-            1,
-            2
-          ]
-        ],
+        "input": [[2, 1, 2]],
         "expectedOutput": 1,
         "description": "Simple triangle",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          [
-            3,
-            0,
-            0,
-            2,
-            0,
-            4
-          ]
-        ],
+        "input": [[3, 0, 0, 2, 0, 4]],
         "expectedOutput": 10,
         "description": "Multiple zeros",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        ],
+        "input": [[1, 2, 3, 4, 5]],
         "expectedOutput": 0,
         "description": "Strictly increasing",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          [
-            5,
-            4,
-            3,
-            2,
-            1
-          ]
-        ],
+        "input": [[5, 4, 3, 2, 1]],
         "expectedOutput": 0,
         "description": "Strictly decreasing",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          [
-            3,
-            0,
-            3
-          ]
-        ],
+        "input": [[3, 0, 3]],
         "expectedOutput": 3,
         "description": "Equal ends",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          [
-            0,
-            1,
-            0,
-            2,
-            1,
-            0,
-            1,
-            3,
-            2,
-            1,
-            2,
-            1,
-            0
-          ]
-        ],
+        "input": [[0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1, 0]],
         "expectedOutput": 6,
         "description": "Extended",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          [
-            4,
-            2,
-            3
-          ]
-        ],
+        "input": [[4, 2, 3]],
         "expectedOutput": 1,
         "description": "Three elements",
         "isHidden": true
@@ -2163,28 +846,17 @@
   {
     "id": "median_sorted_arrays_google_v1",
     "source": "leetcode",
-    "company": [
-      "Google"
-    ],
+    "company": ["Google"],
     "title": "Median of Two Sorted Arrays",
     "difficulty": "Hard",
-    "tags": [
-      "array",
-      "binary-search"
-    ],
-    "patterns": [
-      "binary-search",
-      "partition"
-    ],
+    "tags": ["array", "binary-search"],
+    "patterns": ["binary-search", "partition"],
     "description": "Find the median of two sorted arrays nums1 and nums2.",
     "constraints": {
       "nums1": "0 <= nums1.length <= 1000",
       "nums2": "0 <= nums2.length <= 1000"
     },
-    "followUps": [
-      "Optimize for very large?",
-      "Arrays not sorted?"
-    ],
+    "followUps": ["Optimize for very large?", "Arrays not sorted?"],
     "solution": {
       "language": "python",
       "code": "def solution(nums1, nums2):\n    if len(nums1) > len(nums2):\n        return solution(nums2, nums1)\n    if not nums1:\n        if len(nums2) % 2 == 1:\n            return float(nums2[len(nums2) // 2])\n        return (nums2[len(nums2) // 2 - 1] + nums2[len(nums2) // 2]) / 2.0\n    low, high = 0, len(nums1)\n    while low <= high:\n        cut1 = (low + high) // 2\n        cut2 = (len(nums1) + len(nums2) + 1) // 2 - cut1\n        left1 = float('-inf') if cut1 == 0 else nums1[cut1 - 1]\n        left2 = float('-inf') if cut2 == 0 else nums2[cut2 - 1]\n        right1 = float('inf') if cut1 == len(nums1) else nums1[cut1]\n        right2 = float('inf') if cut2 == len(nums2) else nums2[cut2]\n        if left1 <= right2 and left2 <= right1:\n            if (len(nums1) + len(nums2)) % 2 == 0:\n                return (max(left1, left2) + min(right1, right2)) / 2.0\n            return float(max(left1, left2))\n        elif left1 > right2:\n            high = cut1 - 1\n        else:\n            low = cut1 + 1",
@@ -2197,15 +869,7 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          [
-            1,
-            3
-          ],
-          [
-            2
-          ]
-        ],
+        "input": [[1, 3], [2]],
         "expectedOutput": 2.0,
         "description": "Median 2",
         "isHidden": true
@@ -2213,14 +877,8 @@
       {
         "id": 2,
         "input": [
-          [
-            1,
-            2
-          ],
-          [
-            3,
-            4
-          ]
+          [1, 2],
+          [3, 4]
         ],
         "expectedOutput": 2.5,
         "description": "Even: (2+3)/2",
@@ -2229,14 +887,8 @@
       {
         "id": 3,
         "input": [
-          [
-            0,
-            0
-          ],
-          [
-            0,
-            0
-          ]
+          [0, 0],
+          [0, 0]
         ],
         "expectedOutput": 0.0,
         "description": "All zeros",
@@ -2244,24 +896,14 @@
       },
       {
         "id": 4,
-        "input": [
-          [],
-          [
-            1
-          ]
-        ],
+        "input": [[], [1]],
         "expectedOutput": 1.0,
         "description": "One empty",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            2
-          ],
-          []
-        ],
+        "input": [[2], []],
         "expectedOutput": 2.0,
         "description": "Other empty",
         "isHidden": true
@@ -2269,16 +911,8 @@
       {
         "id": 6,
         "input": [
-          [
-            1,
-            3,
-            5
-          ],
-          [
-            2,
-            4,
-            6
-          ]
+          [1, 3, 5],
+          [2, 4, 6]
         ],
         "expectedOutput": 3.5,
         "description": "Six elements",
@@ -2287,14 +921,8 @@
       {
         "id": 7,
         "input": [
-          [
-            1,
-            3
-          ],
-          [
-            2,
-            4
-          ]
+          [1, 3],
+          [2, 4]
         ],
         "expectedOutput": 2.5,
         "description": "Four elements",
@@ -2302,61 +930,28 @@
       },
       {
         "id": 8,
-        "input": [
-          [
-            1
-          ],
-          [
-            2,
-            3
-          ]
-        ],
+        "input": [[1], [2, 3]],
         "expectedOutput": 2.0,
         "description": "Different sizes",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          [
-            -2,
-            0
-          ],
-          [
-            -1
-          ]
-        ],
+        "input": [[-2, 0], [-1]],
         "expectedOutput": -1.0,
         "description": "Negatives",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          [
-            1,
-            3,
-            8,
-            9
-          ],
-          [
-            2
-          ]
-        ],
+        "input": [[1, 3, 8, 9], [2]],
         "expectedOutput": 2.5,
         "description": "One in second",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          [
-            1
-          ],
-          [
-            2
-          ]
-        ],
+        "input": [[1], [2]],
         "expectedOutput": 1.5,
         "description": "Two elements",
         "isHidden": true
@@ -2364,16 +959,8 @@
       {
         "id": 12,
         "input": [
-          [
-            1,
-            2,
-            3
-          ],
-          [
-            4,
-            5,
-            6
-          ]
+          [1, 2, 3],
+          [4, 5, 6]
         ],
         "expectedOutput": 3.5,
         "description": "Six sorted",
@@ -2382,14 +969,8 @@
       {
         "id": 13,
         "input": [
-          [
-            1,
-            4
-          ],
-          [
-            2,
-            3
-          ]
+          [1, 4],
+          [2, 3]
         ],
         "expectedOutput": 2.5,
         "description": "Interleaved",
@@ -2398,16 +979,8 @@
       {
         "id": 14,
         "input": [
-          [
-            0,
-            1,
-            2
-          ],
-          [
-            3,
-            4,
-            5
-          ]
+          [0, 1, 2],
+          [3, 4, 5]
         ],
         "expectedOutput": 2.5,
         "description": "Sequential",
@@ -2416,14 +989,8 @@
       {
         "id": 15,
         "input": [
-          [
-            5,
-            10
-          ],
-          [
-            1,
-            2
-          ]
+          [5, 10],
+          [1, 2]
         ],
         "expectedOutput": 3.5,
         "description": "Mixed order",
@@ -2434,19 +1001,11 @@
   {
     "id": "valid_parentheses_leetcode_v1",
     "source": "leetcode",
-    "company": [
-      "LeetCode"
-    ],
+    "company": ["LeetCode"],
     "title": "Valid Parentheses",
     "difficulty": "Easy",
-    "tags": [
-      "string",
-      "stack"
-    ],
-    "patterns": [
-      "stack",
-      "parentheses-matching"
-    ],
+    "tags": ["string", "stack"],
+    "patterns": ["stack", "parentheses-matching"],
     "description": "Given a string s containing just characters '(', ')', '{', '}', '[' and ']', determine if input string is valid.",
     "constraints": {
       "length": "1 <= s.length <= 10^4",
@@ -2468,135 +1027,105 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          "()"
-        ],
+        "input": ["()"],
         "expectedOutput": true,
         "description": "Simple valid",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          "()[]{}"
-        ],
+        "input": ["()[]{}"],
         "expectedOutput": true,
         "description": "Multiple types",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          "(]"
-        ],
+        "input": ["(]"],
         "expectedOutput": false,
         "description": "Mismatched",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          "([)]"
-        ],
+        "input": ["([)]"],
         "expectedOutput": false,
         "description": "Interleaved",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          "{[]}"
-        ],
+        "input": ["{[]}"],
         "expectedOutput": true,
         "description": "Nested",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          ""
-        ],
+        "input": [""],
         "expectedOutput": true,
         "description": "Empty",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          "("
-        ],
+        "input": ["("],
         "expectedOutput": false,
         "description": "Single open",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          ")"
-        ],
+        "input": [")"],
         "expectedOutput": false,
         "description": "Single close",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          "(())"
-        ],
+        "input": ["(())"],
         "expectedOutput": true,
         "description": "Double nested",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          "([{}])"
-        ],
+        "input": ["([{}])"],
         "expectedOutput": true,
         "description": "All types nested",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          "[({})]"
-        ],
+        "input": ["[({})]"],
         "expectedOutput": true,
         "description": "Complex nesting",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          "))"
-        ],
+        "input": ["))"],
         "expectedOutput": false,
         "description": "Double close",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          "([)]{}"
-        ],
+        "input": ["([)]{}"],
         "expectedOutput": false,
         "description": "Mixed invalid",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          "((()))"
-        ],
+        "input": ["((()))"],
         "expectedOutput": true,
         "description": "Triple nested",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          "{[()]}"
-        ],
+        "input": ["{[()]}"],
         "expectedOutput": true,
         "description": "Symmetric nesting",
         "isHidden": true
@@ -2606,18 +1135,11 @@
   {
     "id": "palindrome_number_leetcode_v1",
     "source": "leetcode",
-    "company": [
-      "LeetCode"
-    ],
+    "company": ["LeetCode"],
     "title": "Palindrome Number",
     "difficulty": "Easy",
-    "tags": [
-      "math"
-    ],
-    "patterns": [
-      "digit-reversal",
-      "math"
-    ],
+    "tags": ["math"],
+    "patterns": ["digit-reversal", "math"],
     "description": "Given an integer x, return true if x is a palindrome, and false otherwise.",
     "constraints": {
       "range": "-2^31 <= x <= 2^31 - 1"
@@ -2638,165 +1160,105 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          [
-            121
-          ]
-        ],
+        "input": [[121]],
         "expectedOutput": true,
         "description": "121 is palindrome",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          [
-            -121
-          ]
-        ],
+        "input": [[-121]],
         "expectedOutput": false,
         "description": "Negative",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          [
-            10
-          ]
-        ],
+        "input": [[10]],
         "expectedOutput": false,
         "description": "Ends with 0",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          [
-            0
-          ]
-        ],
+        "input": [[0]],
         "expectedOutput": true,
         "description": "Zero",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            1
-          ]
-        ],
+        "input": [[1]],
         "expectedOutput": true,
         "description": "Single digit",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          [
-            12321
-          ]
-        ],
+        "input": [[12321]],
         "expectedOutput": true,
         "description": "Five digits",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          [
-            1221
-          ]
-        ],
+        "input": [[1221]],
         "expectedOutput": true,
         "description": "Four digits",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          [
-            12345
-          ]
-        ],
+        "input": [[12345]],
         "expectedOutput": false,
         "description": "Not palindrome",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          [
-            9
-          ]
-        ],
+        "input": [[9]],
         "expectedOutput": true,
         "description": "Single 9",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          [
-            101
-          ]
-        ],
+        "input": [[101]],
         "expectedOutput": true,
         "description": "101",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          [
-            100
-          ]
-        ],
+        "input": [[100]],
         "expectedOutput": false,
         "description": "100",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          [
-            1001
-          ]
-        ],
+        "input": [[1001]],
         "expectedOutput": true,
         "description": "1001",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          [
-            123321
-          ]
-        ],
+        "input": [[123321]],
         "expectedOutput": true,
         "description": "Six digits",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          [
-            9999999
-          ]
-        ],
+        "input": [[9999999]],
         "expectedOutput": true,
         "description": "All 9s",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          [
-            1234567
-          ]
-        ],
+        "input": [[1234567]],
         "expectedOutput": false,
         "description": "Large non-palindrome",
         "isHidden": true
@@ -2806,18 +1268,11 @@
   {
     "id": "majority_element_leetcode_v1",
     "source": "leetcode",
-    "company": [
-      "LeetCode"
-    ],
+    "company": ["LeetCode"],
     "title": "Majority Element",
     "difficulty": "Easy",
-    "tags": [
-      "array",
-      "voting"
-    ],
-    "patterns": [
-      "boyer-moore-voting"
-    ],
+    "tags": ["array", "voting"],
+    "patterns": ["boyer-moore-voting"],
     "description": "Given array of size n, find majority element appearing more than n/2 times.",
     "constraints": {
       "length": "1 <= nums.length <= 5 * 10^4",
@@ -2839,229 +1294,105 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          [
-            3,
-            2,
-            3
-          ]
-        ],
+        "input": [[3, 2, 3]],
         "expectedOutput": 3,
         "description": "3 appears twice",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          [
-            2,
-            2,
-            1,
-            1,
-            1,
-            2,
-            2
-          ]
-        ],
+        "input": [[2, 2, 1, 1, 1, 2, 2]],
         "expectedOutput": 2,
         "description": "2 appears 4 times",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          [
-            1
-          ]
-        ],
+        "input": [[1]],
         "expectedOutput": 1,
         "description": "Single element",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          [
-            5,
-            5,
-            5,
-            1,
-            1
-          ]
-        ],
+        "input": [[5, 5, 5, 1, 1]],
         "expectedOutput": 5,
         "description": "5 appears 3 times",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            6,
-            5,
-            5
-          ]
-        ],
+        "input": [[6, 5, 5]],
         "expectedOutput": 5,
         "description": "5 appears twice",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          [
-            3,
-            3,
-            4,
-            2,
-            4,
-            4,
-            2,
-            4,
-            4
-          ]
-        ],
+        "input": [[3, 3, 4, 2, 4, 4, 2, 4, 4]],
         "expectedOutput": 4,
         "description": "4 appears 5 times",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          [
-            1,
-            1,
-            1,
-            1
-          ]
-        ],
+        "input": [[1, 1, 1, 1]],
         "expectedOutput": 1,
         "description": "All same",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          [
-            7,
-            7,
-            7,
-            1,
-            2,
-            3
-          ]
-        ],
+        "input": [[7, 7, 7, 1, 2, 3]],
         "expectedOutput": 7,
         "description": "7 appears 3 times",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          [
-            2,
-            2,
-            2,
-            2,
-            3
-          ]
-        ],
+        "input": [[2, 2, 2, 2, 3]],
         "expectedOutput": 2,
         "description": "2 appears 4 times",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            3,
-            2,
-            3
-          ]
-        ],
+        "input": [[1, 2, 3, 3, 2, 3]],
         "expectedOutput": 3,
         "description": "3 appears 3 times",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          [
-            8,
-            8,
-            8,
-            5,
-            4
-          ]
-        ],
+        "input": [[8, 8, 8, 5, 4]],
         "expectedOutput": 8,
         "description": "8 appears 3 times",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          [
-            9,
-            9,
-            8,
-            8,
-            8,
-            9,
-            9
-          ]
-        ],
+        "input": [[9, 9, 8, 8, 8, 9, 9]],
         "expectedOutput": 9,
         "description": "9 appears 4 times",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          [
-            4,
-            4,
-            4,
-            4,
-            1,
-            1
-          ]
-        ],
+        "input": [[4, 4, 4, 4, 1, 1]],
         "expectedOutput": 4,
         "description": "4 appears 4 times",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          [
-            10,
-            10,
-            10,
-            3,
-            3
-          ]
-        ],
+        "input": [[10, 10, 10, 3, 3]],
         "expectedOutput": 10,
         "description": "10 appears 3 times",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          [
-            1,
-            1,
-            1,
-            2,
-            2,
-            2,
-            2
-          ]
-        ],
+        "input": [[1, 1, 1, 2, 2, 2, 2]],
         "expectedOutput": 2,
         "description": "2 appears 4 times",
         "isHidden": true
@@ -3071,19 +1402,11 @@
   {
     "id": "container_with_most_water_leetcode_v1",
     "source": "leetcode",
-    "company": [
-      "LeetCode"
-    ],
+    "company": ["LeetCode"],
     "title": "Container With Most Water",
     "difficulty": "Medium",
-    "tags": [
-      "array",
-      "two-pointers"
-    ],
-    "patterns": [
-      "two-pointer",
-      "greedy"
-    ],
+    "tags": ["array", "two-pointers"],
+    "patterns": ["two-pointer", "greedy"],
     "description": "Given array height where height[i] is column height, find two lines that form container with max area.",
     "constraints": {
       "length": "2 <= height.length <= 10^5",
@@ -3105,230 +1428,105 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          [
-            1,
-            8,
-            6,
-            2,
-            5,
-            4,
-            8,
-            3,
-            7
-          ]
-        ],
+        "input": [[1, 8, 6, 2, 5, 4, 8, 3, 7]],
         "expectedOutput": 49,
         "description": "8*7 area",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          [
-            1,
-            1
-          ]
-        ],
+        "input": [[1, 1]],
         "expectedOutput": 1,
         "description": "Two elements",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          [
-            4,
-            3,
-            2,
-            1,
-            4
-          ]
-        ],
+        "input": [[4, 3, 2, 1, 4]],
         "expectedOutput": 16,
         "description": "4*4 area",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          [
-            2,
-            3,
-            4,
-            5,
-            18,
-            17,
-            6
-          ]
-        ],
+        "input": [[2, 3, 4, 5, 18, 17, 6]],
         "expectedOutput": 17,
         "description": "17*2 area",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            1,
-            2,
-            4,
-            3
-          ]
-        ],
+        "input": [[1, 2, 4, 3]],
         "expectedOutput": 4,
         "description": "2*2 area",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          [
-            10,
-            9,
-            8,
-            7,
-            6,
-            5,
-            4,
-            3,
-            2,
-            1
-          ]
-        ],
+        "input": [[10, 9, 8, 7, 6, 5, 4, 3, 2, 1]],
         "expectedOutput": 25,
         "description": "5*5 area",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          [
-            1,
-            2,
-            3,
-            4,
-            5
-          ]
-        ],
+        "input": [[1, 2, 3, 4, 5]],
         "expectedOutput": 8,
         "description": "4*2 area",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          [
-            5,
-            4,
-            3,
-            2,
-            1
-          ]
-        ],
+        "input": [[5, 4, 3, 2, 1]],
         "expectedOutput": 8,
         "description": "4*2 area",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          [
-            2,
-            2
-          ]
-        ],
+        "input": [[2, 2]],
         "expectedOutput": 2,
         "description": "Equal heights",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          [
-            3,
-            9,
-            3,
-            4,
-            7,
-            2,
-            12,
-            6
-          ]
-        ],
+        "input": [[3, 9, 3, 4, 7, 2, 12, 6]],
         "expectedOutput": 45,
         "description": "9*5 area",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          [
-            1,
-            2,
-            4,
-            3,
-            1
-          ]
-        ],
+        "input": [[1, 2, 4, 3, 1]],
         "expectedOutput": 4,
         "description": "2*2 area",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          [
-            100,
-            1
-          ]
-        ],
+        "input": [[100, 1]],
         "expectedOutput": 1,
         "description": "1*1 area",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          [
-            8,
-            7,
-            2,
-            1
-          ]
-        ],
+        "input": [[8, 7, 2, 1]],
         "expectedOutput": 7,
         "description": "7*3 area",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          [
-            5,
-            5,
-            5,
-            5
-          ]
-        ],
+        "input": [[5, 5, 5, 5]],
         "expectedOutput": 15,
         "description": "5*3 area",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          [
-            6,
-            9,
-            3,
-            4,
-            7,
-            2,
-            12,
-            6
-          ]
-        ],
+        "input": [[6, 9, 3, 4, 7, 2, 12, 6]],
         "expectedOutput": 72,
         "description": "12*6 area",
         "isHidden": true
@@ -3338,29 +1536,18 @@
   {
     "id": "coin_change_leetcode_v1",
     "source": "leetcode",
-    "company": [
-      "LeetCode"
-    ],
+    "company": ["LeetCode"],
     "title": "Coin Change",
     "difficulty": "Medium",
-    "tags": [
-      "dynamic-programming",
-      "array"
-    ],
-    "patterns": [
-      "dynamic-programming",
-      "unbounded-knapsack"
-    ],
+    "tags": ["dynamic-programming", "array"],
+    "patterns": ["dynamic-programming", "unbounded-knapsack"],
     "description": "Given coins and amount, return fewest number of coins needed to make that amount.",
     "constraints": {
       "coins": "1 <= coins.length <= 12",
       "amount": "0 <= amount <= 10^4",
       "value": "1 <= coins[i] <= 10^5"
     },
-    "followUps": [
-      "What if coins are unlimited?",
-      "Return which coins to use?"
-    ],
+    "followUps": ["What if coins are unlimited?", "Return which coins to use?"],
     "solution": {
       "language": "python",
       "code": "def solution(coins, amount):\n    dp = [float('inf')] * (amount + 1)\n    dp[0] = 0\n    for i in range(1, amount + 1):\n        for coin in coins:\n            if coin <= i:\n                dp[i] = min(dp[i], dp[i - coin] + 1)\n    return dp[amount] if dp[amount] != float('inf') else -1",
@@ -3373,198 +1560,105 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          [
-            1,
-            2,
-            5
-          ],
-          5
-        ],
+        "input": [[1, 2, 5], 5],
         "expectedOutput": 1,
         "description": "One 5 coin",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          [
-            2
-          ],
-          3
-        ],
+        "input": [[2], 3],
         "expectedOutput": -1,
         "description": "Impossible",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          [
-            10
-          ],
-          10
-        ],
+        "input": [[10], 10],
         "expectedOutput": 1,
         "description": "One 10 coin",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          [
-            1,
-            2,
-            5
-          ],
-          7
-        ],
+        "input": [[1, 2, 5], 7],
         "expectedOutput": 2,
         "description": "2+5",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            1
-          ],
-          0
-        ],
+        "input": [[1], 0],
         "expectedOutput": 0,
         "description": "Zero amount",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          [
-            1
-          ],
-          1
-        ],
+        "input": [[1], 1],
         "expectedOutput": 1,
         "description": "One 1 coin",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          [
-            2,
-            5,
-            10
-          ],
-          12
-        ],
+        "input": [[2, 5, 10], 12],
         "expectedOutput": 2,
         "description": "10+2",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          [
-            3,
-            7
-          ],
-          14
-        ],
+        "input": [[3, 7], 14],
         "expectedOutput": 2,
         "description": "7+7",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          [
-            1,
-            3,
-            4
-          ],
-          6
-        ],
+        "input": [[1, 3, 4], 6],
         "expectedOutput": 2,
         "description": "3+3",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          [
-            2,
-            5,
-            10
-          ],
-          27
-        ],
+        "input": [[2, 5, 10], 27],
         "expectedOutput": 4,
         "description": "10+10+5+2",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          [
-            5
-          ],
-          5
-        ],
+        "input": [[5], 5],
         "expectedOutput": 1,
         "description": "One 5 coin",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          [
-            1,
-            5,
-            10
-          ],
-          20
-        ],
+        "input": [[1, 5, 10], 20],
         "expectedOutput": 2,
         "description": "10+10",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          [
-            3,
-            4
-          ],
-          11
-        ],
+        "input": [[3, 4], 11],
         "expectedOutput": 3,
         "description": "4+4+3",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          [
-            1,
-            2,
-            5
-          ],
-          3
-        ],
+        "input": [[1, 2, 5], 3],
         "expectedOutput": 1,
         "description": "One 2, two 1s -> 2",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          [
-            2,
-            5,
-            10
-          ],
-          19
-        ],
+        "input": [[2, 5, 10], 19],
         "expectedOutput": 3,
         "description": "10+5+2+2 -> 3",
         "isHidden": true
@@ -3574,29 +1668,17 @@
   {
     "id": "number_of_islands_leetcode_v1",
     "source": "leetcode",
-    "company": [
-      "LeetCode"
-    ],
+    "company": ["LeetCode"],
     "title": "Number of Islands",
     "difficulty": "Medium",
-    "tags": [
-      "grid",
-      "dfs",
-      "bfs"
-    ],
-    "patterns": [
-      "graph-traversal",
-      "union-find"
-    ],
+    "tags": ["grid", "dfs", "bfs"],
+    "patterns": ["graph-traversal", "union-find"],
     "description": "Given 2D grid of 1s (land) and 0s (water), count number of islands.",
     "constraints": {
       "m_n": "1 <= m, n <= 300",
       "values": "grid[i][j] is 0 or 1"
     },
-    "followUps": [
-      "Solve with DFS and BFS?",
-      "Use Union-Find?"
-    ],
+    "followUps": ["Solve with DFS and BFS?", "Use Union-Find?"],
     "solution": {
       "language": "python",
       "code": "def solution(grid):\n    if not grid:\n        return 0\n    count = 0\n    def dfs(i, j):\n        if i < 0 or i >= len(grid) or j < 0 or j >= len(grid[0]) or grid[i][j] == '0':\n            return\n        grid[i][j] = '0'\n        dfs(i + 1, j)\n        dfs(i - 1, j)\n        dfs(i, j + 1)\n        dfs(i, j - 1)\n    for i in range(len(grid)):\n        for j in range(len(grid[0])):\n            if grid[i][j] == '1':\n                dfs(i, j)\n                count += 1\n    return count",
@@ -3610,34 +1692,10 @@
       {
         "id": 1,
         "input": [
-          [
-            "1",
-            "1",
-            "1",
-            "1",
-            "0"
-          ],
-          [
-            "1",
-            "1",
-            "0",
-            "1",
-            "0"
-          ],
-          [
-            "1",
-            "1",
-            "0",
-            "0",
-            "0"
-          ],
-          [
-            "0",
-            "0",
-            "0",
-            "0",
-            "0"
-          ]
+          ["1", "1", "1", "1", "0"],
+          ["1", "1", "0", "1", "0"],
+          ["1", "1", "0", "0", "0"],
+          ["0", "0", "0", "0", "0"]
         ],
         "expectedOutput": 1,
         "description": "One island",
@@ -3646,34 +1704,10 @@
       {
         "id": 2,
         "input": [
-          [
-            "1",
-            "1",
-            "0",
-            "0",
-            "0"
-          ],
-          [
-            "1",
-            "1",
-            "0",
-            "0",
-            "0"
-          ],
-          [
-            "0",
-            "0",
-            "1",
-            "0",
-            "0"
-          ],
-          [
-            "0",
-            "0",
-            "0",
-            "1",
-            "1"
-          ]
+          ["1", "1", "0", "0", "0"],
+          ["1", "1", "0", "0", "0"],
+          ["0", "0", "1", "0", "0"],
+          ["0", "0", "0", "1", "1"]
         ],
         "expectedOutput": 3,
         "description": "Three islands",
@@ -3681,65 +1715,35 @@
       },
       {
         "id": 3,
-        "input": [
-          [
-            "1"
-          ]
-        ],
+        "input": [["1"]],
         "expectedOutput": 1,
         "description": "Single land",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          [
-            "0"
-          ]
-        ],
+        "input": [["0"]],
         "expectedOutput": 0,
         "description": "Single water",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            "1",
-            "0",
-            "1"
-          ]
-        ],
+        "input": [["1", "0", "1"]],
         "expectedOutput": 2,
         "description": "Two separate",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          [
-            "1"
-          ],
-          [
-            "1"
-          ],
-          [
-            "1"
-          ]
-        ],
+        "input": [["1"], ["1"], ["1"]],
         "expectedOutput": 1,
         "description": "Vertical line",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          [
-            "0",
-            "0",
-            "0"
-          ]
-        ],
+        "input": [["0", "0", "0"]],
         "expectedOutput": 0,
         "description": "All water",
         "isHidden": true
@@ -3747,14 +1751,8 @@
       {
         "id": 8,
         "input": [
-          [
-            "1",
-            "1"
-          ],
-          [
-            "1",
-            "1"
-          ]
+          ["1", "1"],
+          ["1", "1"]
         ],
         "expectedOutput": 1,
         "description": "All land",
@@ -3763,14 +1761,8 @@
       {
         "id": 9,
         "input": [
-          [
-            "1",
-            "0"
-          ],
-          [
-            "0",
-            "1"
-          ]
+          ["1", "0"],
+          ["0", "1"]
         ],
         "expectedOutput": 2,
         "description": "Diagonal",
@@ -3779,21 +1771,9 @@
       {
         "id": 10,
         "input": [
-          [
-            "1",
-            "1",
-            "1"
-          ],
-          [
-            "0",
-            "0",
-            "0"
-          ],
-          [
-            "1",
-            "1",
-            "1"
-          ]
+          ["1", "1", "1"],
+          ["0", "0", "0"],
+          ["1", "1", "1"]
         ],
         "expectedOutput": 2,
         "description": "Top and bottom",
@@ -3802,18 +1782,8 @@
       {
         "id": 11,
         "input": [
-          [
-            "1",
-            "0",
-            "1",
-            "0"
-          ],
-          [
-            "1",
-            "0",
-            "1",
-            "0"
-          ]
+          ["1", "0", "1", "0"],
+          ["1", "0", "1", "0"]
         ],
         "expectedOutput": 4,
         "description": "Four islands",
@@ -3821,15 +1791,7 @@
       },
       {
         "id": 12,
-        "input": [
-          [
-            "1",
-            "1",
-            "0",
-            "1",
-            "1"
-          ]
-        ],
+        "input": [["1", "1", "0", "1", "1"]],
         "expectedOutput": 2,
         "description": "Two groups",
         "isHidden": true
@@ -3837,30 +1799,10 @@
       {
         "id": 13,
         "input": [
-          [
-            "1",
-            "1",
-            "1",
-            "1"
-          ],
-          [
-            "1",
-            "0",
-            "0",
-            "1"
-          ],
-          [
-            "1",
-            "0",
-            "0",
-            "1"
-          ],
-          [
-            "1",
-            "1",
-            "1",
-            "1"
-          ]
+          ["1", "1", "1", "1"],
+          ["1", "0", "0", "1"],
+          ["1", "0", "0", "1"],
+          ["1", "1", "1", "1"]
         ],
         "expectedOutput": 1,
         "description": "Ring",
@@ -3869,21 +1811,9 @@
       {
         "id": 14,
         "input": [
-          [
-            "0",
-            "1",
-            "0"
-          ],
-          [
-            "1",
-            "1",
-            "1"
-          ],
-          [
-            "0",
-            "1",
-            "0"
-          ]
+          ["0", "1", "0"],
+          ["1", "1", "1"],
+          ["0", "1", "0"]
         ],
         "expectedOutput": 1,
         "description": "Plus sign",
@@ -3891,15 +1821,7 @@
       },
       {
         "id": 15,
-        "input": [
-          [
-            "1",
-            "0",
-            "1",
-            "0",
-            "1"
-          ]
-        ],
+        "input": [["1", "0", "1", "0", "1"]],
         "expectedOutput": 3,
         "description": "Checkerboard",
         "isHidden": true
@@ -3909,30 +1831,17 @@
   {
     "id": "word_ladder_ii_leetcode_v1",
     "source": "leetcode",
-    "company": [
-      "LeetCode"
-    ],
+    "company": ["LeetCode"],
     "title": "Word Ladder II",
     "difficulty": "Hard",
-    "tags": [
-      "breadth-first-search",
-      "backtracking",
-      "graph"
-    ],
-    "patterns": [
-      "bfs",
-      "backtracking",
-      "graph"
-    ],
+    "tags": ["breadth-first-search", "backtracking", "graph"],
+    "patterns": ["bfs", "backtracking", "graph"],
     "description": "Find all shortest transformation sequences from beginWord to endWord in word list.",
     "constraints": {
       "words": "1 <= wordList.length <= 5000",
       "length": "All words same length, 1 <= length <= 5"
     },
-    "followUps": [
-      "Find only one path?",
-      "Optimize for large word list?"
-    ],
+    "followUps": ["Find only one path?", "Optimize for large word list?"],
     "solution": {
       "language": "python",
       "code": "def solution(beginWord, endWord, wordList):\n    def neighbors(word):\n        result = []\n        for w in wordList:\n            if len(w) == len(word) and sum(1 for i in range(len(w)) if w[i] != word[i]) == 1:\n                result.append(w)\n        return result\n    \n    from collections import defaultdict, deque\n    neighbors_map = defaultdict(list)\n    for word in wordList:\n        neighbors_map[word] = neighbors(word)\n    \n    parents = defaultdict(list)\n    visited = {beginWord}\n    queue = deque([beginWord])\n    found = False\n    \n    while queue and not found:\n        for _ in range(len(queue)):\n            word = queue.popleft()\n            for neighbor in neighbors_map[word]:\n                if neighbor == endWord:\n                    found = True\n                    parents[neighbor].append(word)\n                elif neighbor not in visited:\n                    parents[neighbor].append(word)\n                    visited.add(neighbor)\n                    queue.append(neighbor)\n    \n    def backtrack(word, path):\n        if word == beginWord:\n            return [[beginWord] + path]\n        result = []\n        for parent in parents[word]:\n            result.extend(backtrack(parent, [word] + path))\n        return result\n    \n    return backtrack(endWord, []) if found else []",
@@ -3945,47 +1854,17 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          "hit",
-          "cog",
-          [
-            "hot",
-            "dot",
-            "dog",
-            "lot",
-            "log",
-            "cog"
-          ]
-        ],
+        "input": ["hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"]],
         "expectedOutput": [
-          [
-            "hit",
-            "hot",
-            "dot",
-            "dog",
-            "cog"
-          ],
-          [
-            "hit",
-            "hot",
-            "lot",
-            "log",
-            "cog"
-          ]
+          ["hit", "hot", "dot", "dog", "cog"],
+          ["hit", "hot", "lot", "log", "cog"]
         ],
         "description": "Two paths",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          "hit",
-          "cog",
-          [
-            "hot",
-            "dot"
-          ]
-        ],
+        "input": ["hit", "cog", ["hot", "dot"]],
         "expectedOutput": [],
         "description": "No path",
         "isHidden": true
@@ -3995,85 +1874,36 @@
         "input": [
           "cat",
           "dog",
-          [
-            "cat",
-            "bat",
-            "rat",
-            "bat",
-            "cat",
-            "rat",
-            "dog"
-          ]
+          ["cat", "bat", "rat", "bat", "cat", "rat", "dog"]
         ],
-        "expectedOutput": [
-          [
-            "cat",
-            "bat",
-            "rat",
-            "dog"
-          ]
-        ],
+        "expectedOutput": [["cat", "bat", "rat", "dog"]],
         "description": "One path",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          "a",
-          "c",
-          [
-            "a",
-            "b",
-            "c"
-          ]
-        ],
-        "expectedOutput": [
-          [
-            "a",
-            "c"
-          ]
-        ],
+        "input": ["a", "c", ["a", "b", "c"]],
+        "expectedOutput": [["a", "c"]],
         "description": "Direct path",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          "a",
-          "d",
-          [
-            "b",
-            "c"
-          ]
-        ],
+        "input": ["a", "d", ["b", "c"]],
         "expectedOutput": [],
         "description": "Isolated",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          "hot",
-          "dog",
-          [
-            "hot",
-            "dog"
-          ]
-        ],
+        "input": ["hot", "dog", ["hot", "dog"]],
         "expectedOutput": [],
         "description": "Not neighbors",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          "cat",
-          "dog",
-          [
-            "cat",
-            "dog"
-          ]
-        ],
+        "input": ["cat", "dog", ["cat", "dog"]],
         "expectedOutput": [],
         "description": "No intermediate",
         "isHidden": true
@@ -4108,57 +1938,22 @@
       },
       {
         "id": 9,
-        "input": [
-          "a",
-          "b",
-          [
-            "a",
-            "b"
-          ]
-        ],
-        "expectedOutput": [
-          [
-            "a",
-            "b"
-          ]
-        ],
+        "input": ["a", "b", ["a", "b"]],
+        "expectedOutput": [["a", "b"]],
         "description": "Single neighbor",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          "cat",
-          "rat",
-          [
-            "cat",
-            "rat"
-          ]
-        ],
-        "expectedOutput": [
-          [
-            "cat",
-            "rat"
-          ]
-        ],
+        "input": ["cat", "rat", ["cat", "rat"]],
+        "expectedOutput": [["cat", "rat"]],
         "description": "Cvcv change",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          "hit",
-          "hot",
-          [
-            "hot"
-          ]
-        ],
-        "expectedOutput": [
-          [
-            "hit",
-            "hot"
-          ]
-        ],
+        "input": ["hit", "hot", ["hot"]],
+        "expectedOutput": [["hit", "hot"]],
         "description": "Two letter change",
         "isHidden": true
       },
@@ -4231,71 +2026,24 @@
       },
       {
         "id": 13,
-        "input": [
-          "mag",
-          "tag",
-          [
-            "bag",
-            "mag",
-            "tag"
-          ]
-        ],
-        "expectedOutput": [
-          [
-            "mag",
-            "bag",
-            "tag"
-          ]
-        ],
+        "input": ["mag", "tag", ["bag", "mag", "tag"]],
+        "expectedOutput": [["mag", "bag", "tag"]],
         "description": "Three word",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          "bat",
-          "cat",
-          [
-            "bat",
-            "cat"
-          ]
-        ],
-        "expectedOutput": [
-          [
-            "bat",
-            "cat"
-          ]
-        ],
+        "input": ["bat", "cat", ["bat", "cat"]],
+        "expectedOutput": [["bat", "cat"]],
         "description": "One change",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          "red",
-          "tax",
-          [
-            "ted",
-            "tex",
-            "red",
-            "tax",
-            "tad",
-            "den"
-          ]
-        ],
+        "input": ["red", "tax", ["ted", "tex", "red", "tax", "tad", "den"]],
         "expectedOutput": [
-          [
-            "red",
-            "ted",
-            "tex",
-            "tax"
-          ],
-          [
-            "red",
-            "ted",
-            "tad",
-            "tax"
-          ]
+          ["red", "ted", "tex", "tax"],
+          ["red", "ted", "tad", "tax"]
         ],
         "description": "Multiple paths",
         "isHidden": true
@@ -4305,28 +2053,17 @@
   {
     "id": "largest_rectangle_histogram_leetcode_v1",
     "source": "leetcode",
-    "company": [
-      "LeetCode"
-    ],
+    "company": ["LeetCode"],
     "title": "Largest Rectangle in Histogram",
     "difficulty": "Hard",
-    "tags": [
-      "array",
-      "stack",
-      "monotonic-stack"
-    ],
-    "patterns": [
-      "monotonic-stack"
-    ],
+    "tags": ["array", "stack", "monotonic-stack"],
+    "patterns": ["monotonic-stack"],
     "description": "Given array of heights, find largest rectangle in histogram.",
     "constraints": {
       "length": "1 <= heights.length <= 10^5",
       "values": "0 <= heights[i] <= 10^4"
     },
-    "followUps": [
-      "Can you solve in O(n)?",
-      "Monotonic stack approach?"
-    ],
+    "followUps": ["Can you solve in O(n)?", "Monotonic stack approach?"],
     "solution": {
       "language": "python",
       "code": "def solution(heights):\n    stack = []\n    max_area = 0\n    idx = 0\n    while idx < len(heights):\n        if not stack or heights[idx] >= heights[stack[-1]]:\n            stack.append(idx)\n            idx += 1\n        else:\n            h_idx = stack.pop()\n            width = idx if not stack else idx - stack[-1] - 1\n            area = heights[h_idx] * width\n            max_area = max(max_area, area)\n    while stack:\n        h_idx = stack.pop()\n        width = idx if not stack else idx - stack[-1] - 1\n        area = heights[h_idx] * width\n        max_area = max(max_area, area)\n    return max_area",
@@ -4339,206 +2076,105 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          [
-            2,
-            1,
-            5,
-            6,
-            2,
-            3
-          ]
-        ],
+        "input": [[2, 1, 5, 6, 2, 3]],
         "expectedOutput": 10,
         "description": "5*2",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          [
-            2,
-            4
-          ]
-        ],
+        "input": [[2, 4]],
         "expectedOutput": 4,
         "description": "2*2",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          [
-            1
-          ]
-        ],
+        "input": [[1]],
         "expectedOutput": 1,
         "description": "Single",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          [
-            1,
-            1
-          ]
-        ],
+        "input": [[1, 1]],
         "expectedOutput": 2,
         "description": "Equal",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          [
-            0,
-            0
-          ]
-        ],
+        "input": [[0, 0]],
         "expectedOutput": 0,
         "description": "Zeros",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          [
-            3,
-            2,
-            1
-          ]
-        ],
+        "input": [[3, 2, 1]],
         "expectedOutput": 3,
         "description": "Decreasing",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          [
-            1,
-            2,
-            3
-          ]
-        ],
+        "input": [[1, 2, 3]],
         "expectedOutput": 3,
         "description": "Increasing",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          [
-            4,
-            2,
-            0,
-            3,
-            2,
-            5
-          ]
-        ],
+        "input": [[4, 2, 0, 3, 2, 5]],
         "expectedOutput": 10,
         "description": "5*2",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          [
-            5,
-            5,
-            5,
-            5
-          ]
-        ],
+        "input": [[5, 5, 5, 5]],
         "expectedOutput": 20,
         "description": "5*4",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          [
-            2,
-            1,
-            2
-          ]
-        ],
+        "input": [[2, 1, 2]],
         "expectedOutput": 3,
         "description": "2*1.5",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          [
-            1,
-            2,
-            2,
-            3,
-            1
-          ]
-        ],
+        "input": [[1, 2, 2, 3, 1]],
         "expectedOutput": 6,
         "description": "2*3",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          [
-            3,
-            1,
-            3
-          ]
-        ],
+        "input": [[3, 1, 3]],
         "expectedOutput": 3,
         "description": "3*1",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          [
-            6,
-            2,
-            5,
-            4,
-            5,
-            1,
-            6
-          ]
-        ],
+        "input": [[6, 2, 5, 4, 5, 1, 6]],
         "expectedOutput": 12,
         "description": "5*2 center",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          [
-            1,
-            1,
-            1,
-            1
-          ]
-        ],
+        "input": [[1, 1, 1, 1]],
         "expectedOutput": 4,
         "description": "1*4",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          [
-            4,
-            1,
-            0,
-            3,
-            2
-          ]
-        ],
+        "input": [[4, 1, 0, 3, 2]],
         "expectedOutput": 4,
         "description": "4*1",
         "isHidden": true
@@ -4548,29 +2184,17 @@
   {
     "id": "regular_expression_matching_leetcode_v1",
     "source": "leetcode",
-    "company": [
-      "LeetCode"
-    ],
+    "company": ["LeetCode"],
     "title": "Regular Expression Matching",
     "difficulty": "Hard",
-    "tags": [
-      "string",
-      "dynamic-programming",
-      "recursion"
-    ],
-    "patterns": [
-      "dynamic-programming",
-      "regex"
-    ],
+    "tags": ["string", "dynamic-programming", "recursion"],
+    "patterns": ["dynamic-programming", "regex"],
     "description": "Match regex pattern with . (any char) and * (zero or more).",
     "constraints": {
       "s": "0 <= s.length <= 20",
       "p": "0 <= p.length <= 30"
     },
-    "followUps": [
-      "Support other regex patterns?",
-      "Optimize space?"
-    ],
+    "followUps": ["Support other regex patterns?", "Optimize space?"],
     "solution": {
       "language": "python",
       "code": "def solution(s, p):\n    memo = {}\n    def dp(i, j):\n        if (i, j) in memo:\n            return memo[(i, j)]\n        if j == len(p):\n            return i == len(s)\n        first_match = i < len(s) and p[j] in {s[i], '.'}\n        if j + 1 < len(p) and p[j + 1] == '*':\n            ans = dp(i, j + 2) or (first_match and dp(i + 1, j))\n        else:\n            ans = first_match and dp(i + 1, j + 1)\n        memo[(i, j)] = ans\n        return ans\n    return dp(0, 0)",
@@ -4583,152 +2207,480 @@
     "testCases": [
       {
         "id": 1,
-        "input": [
-          "aa",
-          "a"
-        ],
+        "input": ["aa", "a"],
         "expectedOutput": false,
         "description": "No match",
         "isHidden": true
       },
       {
         "id": 2,
-        "input": [
-          "aa",
-          "a*"
-        ],
+        "input": ["aa", "a*"],
         "expectedOutput": true,
         "description": "Star match",
         "isHidden": true
       },
       {
         "id": 3,
-        "input": [
-          "ab",
-          ".*"
-        ],
+        "input": ["ab", ".*"],
         "expectedOutput": true,
         "description": "Dot star",
         "isHidden": true
       },
       {
         "id": 4,
-        "input": [
-          "aab",
-          "c*a*b"
-        ],
+        "input": ["aab", "c*a*b"],
         "expectedOutput": true,
         "description": "Multiple stars",
         "isHidden": true
       },
       {
         "id": 5,
-        "input": [
-          "a",
-          "a"
-        ],
+        "input": ["a", "a"],
         "expectedOutput": true,
         "description": "Exact match",
         "isHidden": true
       },
       {
         "id": 6,
-        "input": [
-          "",
-          ".*"
-        ],
+        "input": ["", ".*"],
         "expectedOutput": true,
         "description": "Empty dot star",
         "isHidden": true
       },
       {
         "id": 7,
-        "input": [
-          "",
-          "a*"
-        ],
+        "input": ["", "a*"],
         "expectedOutput": true,
         "description": "Empty a star",
         "isHidden": true
       },
       {
         "id": 8,
-        "input": [
-          "abc",
-          "a*b*c"
-        ],
+        "input": ["abc", "a*b*c"],
         "expectedOutput": true,
         "description": "Sequential",
         "isHidden": true
       },
       {
         "id": 9,
-        "input": [
-          "a",
-          "."
-        ],
+        "input": ["a", "."],
         "expectedOutput": true,
         "description": "Single dot",
         "isHidden": true
       },
       {
         "id": 10,
-        "input": [
-          "ab",
-          ".*."
-        ],
+        "input": ["ab", ".*."],
         "expectedOutput": true,
         "description": "Complex",
         "isHidden": true
       },
       {
         "id": 11,
-        "input": [
-          "mississippi",
-          "mis*is*p*."
-        ],
+        "input": ["mississippi", "mis*is*p*."],
         "expectedOutput": false,
         "description": "No match false",
         "isHidden": true
       },
       {
         "id": 12,
-        "input": [
-          "b",
-          "a*b"
-        ],
+        "input": ["b", "a*b"],
         "expectedOutput": true,
         "description": "Zero a",
         "isHidden": true
       },
       {
         "id": 13,
-        "input": [
-          "aaaa",
-          "a*"
-        ],
+        "input": ["aaaa", "a*"],
         "expectedOutput": true,
         "description": "Multiple a",
         "isHidden": true
       },
       {
         "id": 14,
-        "input": [
-          "",
-          ""
-        ],
+        "input": ["", ""],
         "expectedOutput": true,
         "description": "Both empty",
         "isHidden": true
       },
       {
         "id": 15,
-        "input": [
-          "x",
-          "x*"
-        ],
+        "input": ["x", "x*"],
         "expectedOutput": true,
         "description": "One x star",
+        "isHidden": true
+      }
+    ]
+  },
+  {
+    "id": "two_sum_google_amazon_v1",
+    "source": "leetcode",
+    "company": ["Google", "Amazon", "Microsoft"],
+    "title": "Two Sum",
+    "difficulty": "Easy",
+    "tags": ["array", "hash-table"],
+    "patterns": ["hash-map", "two-pointer"],
+    "description": "Given an array of integers nums and an integer target, return the indices of the two numbers that add up to the target.",
+    "constraints": {
+      "nums": "2 <= nums.length <= 10^4",
+      "target": "-10^9 <= target <= 10^9"
+    },
+    "followUps": [
+      "Can you do it in one pass?",
+      "What if we need to return the values instead of indices?"
+    ],
+    "solution": {
+      "language": "python",
+      "code": "def solution(nums, target):\n    seen = {}\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in seen:\n            return [seen[complement], i]\n        seen[num] = i\n    return []",
+      "explanation": "Use a hash map to track seen numbers. For each number, check if its complement exists in the map.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(n)"
+    },
+    "initialCode": "def solution(nums, target):\n    \"\"\"\n    Find two numbers that add up to target.\n    Args:\n        nums: List of integers\n        target: Target sum\n    Returns:\n        Indices [i, j] where nums[i] + nums[j] == target\n    \"\"\"\n    pass",
+    "timeLimit": 900,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [[2, 7, 11, 15], 9],
+        "expectedOutput": [0, 1],
+        "description": "2 + 7 = 9",
+        "isHidden": true
+      },
+      {
+        "id": 2,
+        "input": [[3, 2, 4], 6],
+        "expectedOutput": [1, 2],
+        "description": "2 + 4 = 6",
+        "isHidden": true
+      },
+      {
+        "id": 3,
+        "input": [[3, 3], 6],
+        "expectedOutput": [0, 1],
+        "description": "Duplicate values",
+        "isHidden": true
+      }
+    ]
+  },
+  {
+    "id": "best_time_buy_sell_stock_amazon_v1",
+    "source": "leetcode",
+    "company": ["Amazon"],
+    "title": "Best Time to Buy and Sell Stock",
+    "difficulty": "Easy",
+    "tags": ["array", "dynamic-programming"],
+    "patterns": ["one-pass", "greedy"],
+    "description": "Given an array prices where prices[i] is the price on day i, find the maximum profit. You may complete at most one transaction.",
+    "constraints": {
+      "prices": "1 <= prices.length <= 10^5"
+    },
+    "followUps": [
+      "What if you can make multiple transactions?",
+      "What if transaction costs a fee?"
+    ],
+    "solution": {
+      "language": "python",
+      "code": "def solution(prices):\n    min_price = float('inf')\n    max_profit = 0\n    for price in prices:\n        max_profit = max(max_profit, price - min_price)\n        min_price = min(min_price, price)\n    return max_profit",
+      "explanation": "Track the minimum price seen so far and the maximum profit at each step.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)"
+    },
+    "initialCode": "def solution(prices):\n    \"\"\"\n    Find max profit from buying and selling stock once.\n    Args:\n        prices: List of integers representing prices\n    Returns:\n        Maximum profit (0 if no profit possible)\n    \"\"\"\n    pass",
+    "timeLimit": 900,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [[7, 1, 5, 3, 6, 4]],
+        "expectedOutput": 5,
+        "description": "Buy at 1, sell at 6",
+        "isHidden": true
+      },
+      {
+        "id": 2,
+        "input": [[7, 6, 4, 3, 1]],
+        "expectedOutput": 0,
+        "description": "Decreasing prices",
+        "isHidden": true
+      },
+      {
+        "id": 3,
+        "input": [[2, 4, 1]],
+        "expectedOutput": 2,
+        "description": "Buy at 2, sell at 4",
+        "isHidden": true
+      }
+    ]
+  },
+  {
+    "id": "reverse_string_microsoft_v1",
+    "source": "leetcode",
+    "company": ["Microsoft"],
+    "title": "Reverse String",
+    "difficulty": "Easy",
+    "tags": ["string", "two-pointer"],
+    "patterns": ["two-pointer", "string-manipulation"],
+    "description": "Write a function that reverses a string. The input string is given as an array of characters s.",
+    "constraints": {
+      "s": "1 <= s.length <= 10^5"
+    },
+    "followUps": [
+      "Can you do it in-place with O(1) space?",
+      "How would you reverse a Unicode string?"
+    ],
+    "solution": {
+      "language": "python",
+      "code": "def solution(s):\n    s.reverse()\n    return s",
+      "explanation": "Use two pointers from both ends and swap characters moving towards the middle.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)"
+    },
+    "initialCode": "def solution(s):\n    \"\"\"\n    Reverse a string in-place.\n    Args:\n        s: List of characters\n    Returns:\n        The reversed list\n    \"\"\"\n    pass",
+    "timeLimit": 900,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [["h", "e", "l", "l", "o"]],
+        "expectedOutput": ["o", "l", "l", "e", "h"],
+        "description": "Basic reverse",
+        "isHidden": true
+      },
+      {
+        "id": 2,
+        "input": [["H", "a", "n", "n", "a", "h"]],
+        "expectedOutput": ["h", "a", "n", "n", "a", "H"],
+        "description": "Palindrome reverse",
+        "isHidden": true
+      }
+    ]
+  },
+  {
+    "id": "word_ladder_amazon_v1",
+    "source": "leetcode",
+    "company": ["Amazon"],
+    "title": "Word Ladder",
+    "difficulty": "Medium",
+    "tags": ["graph", "bfs", "graph-traversal"],
+    "patterns": ["bfs", "level-order-traversal"],
+    "description": "Given two words, beginWord and endWord, and a dictionary wordList, find the length of the shortest transformation sequence from beginWord to endWord.",
+    "constraints": {
+      "beginWord": "1 <= beginWord.length <= 10",
+      "endWord": "1 <= endWord.length <= 10"
+    },
+    "followUps": [
+      "How would you print the actual path?",
+      "How would you optimize for large word lists?"
+    ],
+    "solution": {
+      "language": "python",
+      "code": "def solution(beginWord, endWord, wordList):\n    if endWord not in wordList:\n        return 0\n    word_set = set(wordList)\n    queue = [(beginWord, 1)]\n    while queue:\n        word, level = queue.pop(0)\n        if word == endWord:\n            return level\n        for i in range(len(word)):\n            for c in 'abcdefghijklmnopqrstuvwxyz':\n                new_word = word[:i] + c + word[i+1:]\n                if new_word in word_set:\n                    word_set.remove(new_word)\n                    queue.append((new_word, level + 1))\n    return 0",
+      "explanation": "BFS to find shortest path. Change one letter at a time.",
+      "timeComplexity": "O(n * l^2 * 26) where n is wordList length, l is word length",
+      "spaceComplexity": "O(n)"
+    },
+    "initialCode": "def solution(beginWord, endWord, wordList):\n    \"\"\"\n    Find shortest word transformation sequence.\n    Args:\n        beginWord: Starting word\n        endWord: Target word\n        wordList: List of valid words\n    Returns:\n        Length of shortest path (0 if impossible)\n    \"\"\"\n    pass",
+    "timeLimit": 1200,
+    "testCases": [
+      {
+        "id": 1,
+        "input": ["hit", "cog", ["hot", "dot", "dog", "lot", "log", "cog"]],
+        "expectedOutput": 5,
+        "description": "hit -> hot -> dot -> dog -> cog",
+        "isHidden": true
+      },
+      {
+        "id": 2,
+        "input": ["hit", "cog", ["hot", "dot", "dog", "lot", "log"]],
+        "expectedOutput": 0,
+        "description": "No path to cog",
+        "isHidden": true
+      }
+    ]
+  },
+  {
+    "id": "lru_cache_google_v1",
+    "source": "leetcode",
+    "company": ["Google"],
+    "title": "LRU Cache",
+    "difficulty": "Medium",
+    "tags": ["design", "hash-table", "linked-list"],
+    "patterns": ["design", "data-structure"],
+    "description": "Design an LRU (Least Recently Used) cache with get and put operations.",
+    "constraints": {
+      "capacity": "1 <= capacity <= 3000"
+    },
+    "followUps": [
+      "How would you implement LFU cache?",
+      "How would you make it thread-safe?"
+    ],
+    "solution": {
+      "language": "python",
+      "code": "from collections import OrderedDict\nclass LRUCache:\n    def __init__(self, capacity):\n        self.cache = OrderedDict()\n        self.capacity = capacity\n    def get(self, key):\n        if key not in self.cache:\n            return -1\n        self.cache.move_to_end(key)\n        return self.cache[key]\n    def put(self, key, value):\n        self.cache[key] = value\n        self.cache.move_to_end(key)\n        if len(self.cache) > self.capacity:\n            self.cache.popitem(last=False)",
+      "explanation": "Use OrderedDict to maintain insertion/access order. Move accessed items to end, evict first item when capacity exceeded.",
+      "timeComplexity": "O(1) for get and put",
+      "spaceComplexity": "O(capacity)"
+    },
+    "initialCode": "class LRUCache:\n    def __init__(self, capacity):\n        pass\n    def get(self, key):\n        pass\n    def put(self, key, value):\n        pass",
+    "timeLimit": 1200,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [
+          [
+            "LRUCache",
+            "put",
+            "put",
+            "get",
+            "put",
+            "get",
+            "put",
+            "get",
+            "get",
+            "get"
+          ],
+          [[2], [1, 1], [2, 2], [1], [3, 3], [2], [4, 4], [1], [3], [4]]
+        ],
+        "expectedOutput": [null, null, null, 1, null, -1, null, -1, 3, 4],
+        "description": "LRU operations",
+        "isHidden": true
+      }
+    ]
+  },
+  {
+    "id": "maximum_subarray_leetcode_v1",
+    "source": "leetcode",
+    "company": ["LeetCode"],
+    "title": "Maximum Subarray",
+    "difficulty": "Easy",
+    "tags": ["array", "dynamic-programming", "divide-and-conquer"],
+    "patterns": ["kadane-algorithm"],
+    "description": "Find the subarray with the largest sum. Return the sum.",
+    "constraints": {
+      "nums": "1 <= nums.length <= 10^5"
+    },
+    "followUps": [
+      "Can you find the actual subarray indices?",
+      "What about maximum product subarray?"
+    ],
+    "solution": {
+      "language": "python",
+      "code": "def solution(nums):\n    max_sum = current_sum = nums[0]\n    for num in nums[1:]:\n        current_sum = max(num, current_sum + num)\n        max_sum = max(max_sum, current_sum)\n    return max_sum",
+      "explanation": "Kadane's algorithm. At each position, decide whether to extend or start fresh.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)"
+    },
+    "initialCode": "def solution(nums):\n    \"\"\"\n    Find maximum sum subarray.\n    Args:\n        nums: List of integers\n    Returns:\n        Maximum subarray sum\n    \"\"\"\n    pass",
+    "timeLimit": 900,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [[-2, 1, -3, 4, -1, 2, 1, -5, 4]],
+        "expectedOutput": 6,
+        "description": "[4, -1, 2, 1]",
+        "isHidden": true
+      },
+      {
+        "id": 2,
+        "input": [[5]],
+        "expectedOutput": 5,
+        "description": "Single element",
+        "isHidden": true
+      },
+      {
+        "id": 3,
+        "input": [[-1]],
+        "expectedOutput": -1,
+        "description": "Single negative",
+        "isHidden": true
+      }
+    ]
+  },
+  {
+    "id": "jump_game_leetcode_v1",
+    "source": "leetcode",
+    "company": ["LeetCode"],
+    "title": "Jump Game",
+    "difficulty": "Medium",
+    "tags": ["array", "greedy"],
+    "patterns": ["greedy"],
+    "description": "You are given an array nums where each element represents max jump length from that position. Determine if you can reach the last index.",
+    "constraints": {
+      "nums": "1 <= nums.length <= 10^4"
+    },
+    "followUps": [
+      "What's the minimum number of jumps needed?",
+      "What if you can only jump forward?"
+    ],
+    "solution": {
+      "language": "python",
+      "code": "def solution(nums):\n    max_reach = 0\n    for i in range(len(nums)):\n        if i > max_reach:\n            return False\n        max_reach = max(max_reach, i + nums[i])\n        if max_reach >= len(nums) - 1:\n            return True\n    return False",
+      "explanation": "Greedy approach. Track furthest reachable index. If we can reach it, return True.",
+      "timeComplexity": "O(n)",
+      "spaceComplexity": "O(1)"
+    },
+    "initialCode": "def solution(nums):\n    \"\"\"\n    Determine if you can reach the last index.\n    Args:\n        nums: List where each element is max jump length\n    Returns:\n        True if reachable, False otherwise\n    \"\"\"\n    pass",
+    "timeLimit": 900,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [[2, 3, 1, 1, 4]],
+        "expectedOutput": true,
+        "description": "Can jump to last",
+        "isHidden": true
+      },
+      {
+        "id": 2,
+        "input": [[3, 2, 1, 0, 4]],
+        "expectedOutput": false,
+        "description": "Will always arrive at index 3, max_reach stays 3",
+        "isHidden": true
+      },
+      {
+        "id": 3,
+        "input": [[0]],
+        "expectedOutput": true,
+        "description": "Already at last",
+        "isHidden": true
+      }
+    ]
+  },
+  {
+    "id": "merge_k_sorted_lists_google_v1",
+    "source": "leetcode",
+    "company": ["Google", "Amazon"],
+    "title": "Merge K Sorted Lists",
+    "difficulty": "Hard",
+    "tags": ["linked-list", "divide-and-conquer", "heap"],
+    "patterns": ["merge-sort", "heap", "priority-queue"],
+    "description": "Given an array of k linked lists, merge them into one sorted linked list.",
+    "constraints": {
+      "k": "0 <= k <= 10^4"
+    },
+    "followUps": [
+      "What's the time complexity if you use each list's length separately?",
+      "Can you do it with divide and conquer?"
+    ],
+    "solution": {
+      "language": "python",
+      "code": "import heapq\ndef solution(lists):\n    heap = []\n    for i, lst in enumerate(lists):\n        if lst:\n            heapq.heappush(heap, (lst.val, i, lst))\n    dummy = ListNode(0)\n    curr = dummy\n    list_index = 0\n    while heap:\n        val, _, node = heapq.heappop(heap)\n        curr.next = node\n        curr = curr.next\n        if node.next:\n            heapq.heappush(heap, (node.next.val, list_index, node.next))\n            list_index += 1\n    return dummy.next",
+      "explanation": "Use min heap to always get smallest value from k lists. Merge iteratively.",
+      "timeComplexity": "O(n * log k) where n is total nodes",
+      "spaceComplexity": "O(k)"
+    },
+    "initialCode": "def solution(lists):\n    \"\"\"\n    Merge k sorted linked lists.\n    Args:\n        lists: List of linked list heads\n    Returns:\n        Head of merged sorted linked list\n    \"\"\"\n    pass",
+    "timeLimit": 1200,
+    "testCases": [
+      {
+        "id": 1,
+        "input": ["[[1,4,5],[1,3,4],[2,6]]"],
+        "expectedOutput": "[1,1,2,1,3,4,4,5,6]",
+        "description": "Merge 3 lists",
+        "isHidden": true
+      },
+      {
+        "id": 2,
+        "input": ["[]"],
+        "expectedOutput": "[]",
+        "description": "Empty input",
         "isHidden": true
       }
     ]

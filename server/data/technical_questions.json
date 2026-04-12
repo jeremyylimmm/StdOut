@@ -908,5 +908,333 @@
         "isHidden": false
       }
     ]
+  },
+  {
+    "id": "design_url_shortener_system_v1",
+    "source": "system-design",
+    "title": "Design a URL Shortening Service",
+    "difficulty": "Hard",
+    "tags": [
+      "system-design",
+      "databases",
+      "scalability"
+    ],
+    "patterns": [
+      "system-design"
+    ],
+    "description": "Design a URL shortening service like bit.ly. How would you handle billions of URLs? Discuss hashing, database schema, scalability, and potential failure modes.",
+    "followUps": [
+      "How would you achieve O(1) lookup for retrieving original URLs?",
+      "What happens if the same URL is shortened multiple times?",
+      "How would you design analytics tracking?"
+    ],
+    "solution": {
+      "language": "python",
+      "explanation": "Use a hash function or base62 encoding to generate short codes. Store mappings in a distributed NoSQL database (key=short_code, value=original_url). Use consistent hashing for sharding across multiple database nodes. Implement caching with Redis for hot URLs. Use bloom filters to handle non-existent codes efficiently."
+    },
+    "timeLimit": 1200,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [
+          [
+            "https://www.example.com/very/long/url"
+          ]
+        ],
+        "expectedOutput": "Short code generated with 6-8 characters",
+        "description": "Shorten a URL",
+        "isHidden": false
+      },
+      {
+        "id": 2,
+        "input": [
+          [
+            "abc123"
+          ]
+        ],
+        "expectedOutput": "https://www.example.com/very/long/url",
+        "description": "Retrieve original URL",
+        "isHidden": false
+      }
+    ]
+  },
+  {
+    "id": "design_distributed_cache_system_v1",
+    "source": "system-design",
+    "title": "Design a Distributed Cache System",
+    "difficulty": "Hard",
+    "tags": [
+      "system-design",
+      "caching",
+      "distributed-systems"
+    ],
+    "patterns": [
+      "system-design"
+    ],
+    "description": "Design a distributed cache like Redis Cluster. How would you handle cache invalidation, eviction policies, and replication?",
+    "followUps": [
+      "How would you implement consistent hashing for cache nodes?",
+      "What happens when a cache node fails?",
+      "How would you implement write-through vs write-back caching?"
+    ],
+    "solution": {
+      "language": "python",
+      "explanation": "Use consistent hashing to map keys to cache nodes, minimizing redistribution on node changes. Implement LRU eviction policy. Use master-slave replication for high availability. Cache invalidation can use TTL or event-based invalidation. Handle node failures with replica failover and rebalancing."
+    },
+    "timeLimit": 1200,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [
+          [
+            "user:123",
+            "John Doe"
+          ]
+        ],
+        "expectedOutput": "Cached successfully",
+        "description": "Cache a key-value pair",
+        "isHidden": false
+      },
+      {
+        "id": 2,
+        "input": [
+          [
+            "user:123"
+          ]
+        ],
+        "expectedOutput": "John Doe",
+        "description": "Retrieve cached value",
+        "isHidden": false
+      }
+    ]
+  },
+  {
+    "id": "design_recommendation_system_v1",
+    "source": "system-design",
+    "title": "Design a Large-Scale Recommendation System",
+    "difficulty": "Hard",
+    "tags": [
+      "system-design",
+      "machine-learning",
+      "scalability"
+    ],
+    "patterns": [
+      "system-design"
+    ],
+    "description": "Design a recommendation engine for an e-commerce platform serving millions of users. How would you handle model training, serving, and real-time updates?",
+    "followUps": [
+      "How would you handle the cold start problem for new users?",
+      "What are the differences between batch and real-time recommendations?",
+      "How would you measure recommendation quality?"
+    ],
+    "solution": {
+      "language": "python",
+      "explanation": "Use collaborative filtering, content-based, or hybrid approaches. Implement offline batch processing for model training on historical data. Use feature stores to manage ML features. Serve predictions via low-latency API with caching. Handle cold start with item popularity or content similarity. Monitor recommendation quality with NDCG and coverage metrics."
+    },
+    "timeLimit": 1200,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [
+          [
+            "user_id",
+            "electronics"
+          ]
+        ],
+        "expectedOutput": "List of recommended products",
+        "description": "Get recommendations for a user",
+        "isHidden": false
+      }
+    ]
+  },
+  {
+    "id": "design_rate_limiter_system_v1",
+    "source": "system-design",
+    "title": "Design a Rate Limiter",
+    "difficulty": "Medium",
+    "tags": [
+      "system-design",
+      "algorithms"
+    ],
+    "patterns": [
+      "system-design"
+    ],
+    "description": "Design a rate limiter to prevent API abuse. Explain token bucket, sliding window, and fixed window algorithms.",
+    "followUps": [
+      "How would you handle distributed rate limiting across multiple servers?",
+      "What's the difference between client-side and server-side rate limiting?",
+      "How would you implement different rate limits for different user tiers?"
+    ],
+    "solution": {
+      "language": "python",
+      "explanation": "Token bucket: tokens accumulate at a fixed rate, each request consumes a token. Sliding window: track request timestamps and count requests in the last N seconds. Fixed window: count requests per fixed time period. For distributed systems, use Redis to maintain shared state. Different tiers can have different token bucket rates."
+    },
+    "timeLimit": 1200,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [
+          [
+            "user_1",
+            "100",
+            "60"
+          ]
+        ],
+        "expectedOutput": "User limited to 100 requests per 60 seconds",
+        "description": "Create rate limit rule",
+        "isHidden": false
+      },
+      {
+        "id": 2,
+        "input": [
+          [
+            "user_1"
+          ]
+        ],
+        "expectedOutput": "Request allowed",
+        "description": "Allow request within limit",
+        "isHidden": false
+      }
+    ]
+  },
+  {
+    "id": "design_notification_system_v1",
+    "source": "system-design",
+    "title": "Design a Real-Time Notification System",
+    "difficulty": "Medium",
+    "tags": [
+      "system-design",
+      "real-time",
+      "messaging"
+    ],
+    "patterns": [
+      "system-design"
+    ],
+    "description": "Design a real-time notification system for a social network. How would you handle delivery at scale, multi-channel notifications, and user preferences?",
+    "followUps": [
+      "How would you ensure notifications are delivered in order?",
+      "What's the difference between push and pull notifications?",
+      "How would you handle offline users?"
+    ],
+    "solution": {
+      "language": "python",
+      "explanation": "Use a message queue (Kafka, RabbitMQ) for decoupling. Store notifications in a database indexed by user. Use WebSockets for real-time delivery to online users. Support multiple channels (email, SMS, push). Implement batch processing for offline users. Use notification templates to scale to millions of users."
+    },
+    "timeLimit": 1200,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [
+          [
+            "user_123",
+            "message"
+          ]
+        ],
+        "expectedOutput": "Notification queued for delivery",
+        "description": "Send notification",
+        "isHidden": false
+      }
+    ]
+  },
+  {
+    "id": "design_simple_blog_platform_v1",
+    "source": "system-design",
+    "title": "Design a Simple Blog Platform",
+    "difficulty": "Easy",
+    "tags": [
+      "system-design",
+      "web"
+    ],
+    "patterns": [
+      "system-design"
+    ],
+    "description": "Design a basic blog platform with posts and comments. What would be your database schema and API endpoints?",
+    "followUps": [
+      "How would you handle pagination for posts?",
+      "How would you implement search functionality?",
+      "How would you structure comments hierarchically?"
+    ],
+    "solution": {
+      "language": "python",
+      "explanation": "Database schema: Users table (id, name, email), Posts table (id, user_id, title, content, created_at), Comments table (id, post_id, user_id, content, created_at). API endpoints: POST/GET /posts for CRUD operations, POST/GET /posts/{id}/comments for comments. Use pagination with limit and offset."
+    },
+    "timeLimit": 900,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [
+          [
+            "blog_post",
+            "My First Post"
+          ]
+        ],
+        "expectedOutput": "Post created with ID",
+        "description": "Create a blog post",
+        "isHidden": false
+      },
+      {
+        "id": 2,
+        "input": [
+          [
+            "post_id"
+          ]
+        ],
+        "expectedOutput": "Post content retrieved",
+        "description": "Retrieve blog post",
+        "isHidden": false
+      }
+    ]
+  },
+  {
+    "id": "design_movie_ticket_booking_system_v1",
+    "source": "system-design",
+    "title": "Design a Movie Ticket Booking System",
+    "difficulty": "Easy",
+    "tags": [
+      "system-design",
+      "databases"
+    ],
+    "patterns": [
+      "system-design"
+    ],
+    "description": "Design an online movie ticket booking system. How would you handle seat selection, prevent overbooking, and process payments?",
+    "followUps": [
+      "How would you ensure seat consistency in a distributed system?",
+      "What happens to reserved seats if payment fails?",
+      "How would you handle peak traffic during movie releases?"
+    ],
+    "solution": {
+      "language": "python",
+      "explanation": "Database schema: Movies, Theaters, Shows (movie + theater + time), Seats (show_id, row, number, status), Bookings (show_id, user_id, seats, status). Use pessimistic locking or optimistic concurrency control to prevent overbooking. Reserve seats temporarily during checkout, confirm on payment. Use caching for seat availability."
+    },
+    "timeLimit": 900,
+    "testCases": [
+      {
+        "id": 1,
+        "input": [
+          [
+            "show_123",
+            [
+              "A1",
+              "A2"
+            ]
+          ]
+        ],
+        "expectedOutput": "Seats reserved temporarily",
+        "description": "Reserve seats for booking",
+        "isHidden": false
+      },
+      {
+        "id": 2,
+        "input": [
+          [
+            "show_123"
+          ]
+        ],
+        "expectedOutput": "Available seats count",
+        "description": "Check seat availability",
+        "isHidden": false
+      }
+    ]
   }
 ]
