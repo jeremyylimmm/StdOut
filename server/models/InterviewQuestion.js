@@ -34,7 +34,6 @@ const solutionSchema = new mongoose.Schema(
     },
     code: {
       type: String,
-      required: true,
     },
     explanation: {
       type: String,
@@ -110,7 +109,6 @@ const interviewQuestionSchema = new mongoose.Schema(
     },
     initialCode: {
       type: String,
-      required: true,
     },
     timeLimit: {
       type: Number,

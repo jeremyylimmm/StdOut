@@ -5,18 +5,62 @@ const OpenAI = require("openai");
 const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
 
 router.post("/", async (req, res) => {
-  const { transcript, code, question, testResults } = req.body;
+  const { transcript, code, question, testResults, questionType } = req.body;
 
-  // Calculate test performance summary
-  let testPerformance = "";
-  if (testResults) {
-    const { passedCount, totalTests, passPercentage } = testResults;
-    testPerformance = `\n\nTEST RESULTS:\nPassed: ${passedCount}/${totalTests} tests (${passPercentage}%)`;
-  }
+  let prompt;
 
-  const hasTranscript = transcript && transcript.trim().length > 30;
+  if (questionType === "Theory") {
+    // THEORY QUESTION PROMPT
+    const hasTranscript = transcript && transcript.trim().length > 30;
+    const codeNotes =
+      code && code.trim().length > 0
+        ? `\n\nNOTES/CODE FROM EDITOR:\n${code}`
+        : "";
 
-  const prompt = `You are a technical interview evaluator providing personalized feedback.
+    prompt = `You are a technical interview evaluator assessing a theory/conceptual question response.
+
+QUESTION: ${question ?? "Unknown"}
+
+TRANSCRIPT (timestamped responses):
+${transcript && transcript.trim().length > 0 ? transcript : "(No transcript - candidate did not speak)"}${codeNotes}
+
+Evaluate the candidate on these areas, out of 10 each:
+1. **Conceptual Understanding** - Did they demonstrate solid grasp of the concepts? Do they understand the fundamentals?
+2. **Clarity of Explanation** - How well did they explain their understanding? Was it clear and organized?
+3. **Depth of Knowledge** - Did they go beyond surface level? Did they discuss trade-offs, edge cases, or related concepts?
+
+${!hasTranscript ? "If there is no transcript, all scores should reflect that the candidate did not provide meaningful explanation." : ""}
+
+Address feedback directly to the person (use "you" and "your").
+
+Return JSON:
+{
+  "conceptualUnderstanding": {
+    "score": <number 0-10>,
+    "feedback": "<2-3 sentences>"
+  },
+  "clarityOfExplanation": {
+    "score": <number 0-10>,
+    "feedback": "<2-3 sentences>"
+  },
+  "depthOfKnowledge": {
+    "score": <number 0-10>,
+    "feedback": "<2-3 sentences>"
+  },
+  "overallScore": <number 0-10>,
+  "summary": "<brief overall summary>"
+}`;
+  } else {
+    // CODING QUESTION PROMPT (existing logic)
+    let testPerformance = "";
+    if (testResults) {
+      const { passedCount, totalTests, passPercentage } = testResults;
+      testPerformance = `\n\nTEST RESULTS:\nPassed: ${passedCount}/${totalTests} tests (${passPercentage}%)`;
+    }
+
+    const hasTranscript = transcript && transcript.trim().length > 30;
+
+    prompt = `You are a technical interview evaluator providing personalized feedback.
 
 CONTEXT:
 - The candidate was given starter code with a function definition and docstring
@@ -60,6 +104,7 @@ Return your response in the following JSON format:
   "overallScore": <number 0-10>,
   "summary": "<brief overall summary paragraph directed at you>"
 }`;
+  }
 
   try {
     const completion = await openai.chat.completions.create({

@@ -532,6 +532,7 @@ ${buildSessionInstructions(currentCode)}`;
           transcript,
           code,
           question: currentQuestion?.title,
+          questionType: settings.questionType,
         }),
       });
       const data = await res.json();

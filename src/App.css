@@ -1828,6 +1828,10 @@ button:disabled {
   align-items: stretch;
 }
 
+.rp-scores-card--full {
+  grid-column: 1 / -1;
+}
+
 .rp-section-title {
   font-size: 0.75rem;
   font-weight: 700;

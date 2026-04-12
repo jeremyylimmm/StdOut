@@ -3,7 +3,7 @@ import { createContext, useContext, useEffect, useMemo, useState } from "react";
 const AppStateContext = createContext(null);
 
 const defaultSettings = {
-  interviewName: "Frontend Interview",
+  interviewName: "",
   questionType: "Coding",
   company: "Google",
   difficulty: "Easy",
@@ -146,6 +146,7 @@ export function AppStateProvider({ children }) {
             userId: user.id,
             interview: {
               title: settings.interviewName,
+              questionTitle: questions[questionIndex]?.title,
               questionType: settings.questionType,
               company: settings.company,
               difficulty: settings.difficulty,

@@ -18,12 +18,16 @@ function formatTime(seconds) {
   return `${mins}:${secs}`;
 }
 
-
 function extractGot(value) {
   if (typeof value === "string") {
-    const lines = value.split("\n").map((l) => l.trim()).filter(Boolean);
+    const lines = value
+      .split("\n")
+      .map((l) => l.trim())
+      .filter(Boolean);
     // Detect runtime error (traceback or exception)
-    if (lines.some((l) => l.startsWith("Traceback") || /^[\w.]*Error:/.test(l))) {
+    if (
+      lines.some((l) => l.startsWith("Traceback") || /^[\w.]*Error:/.test(l))
+    ) {
       return "__runtime_error__";
     }
     for (const line of lines) {
@@ -37,36 +41,73 @@ function extractGot(value) {
 function formatCompact(value) {
   let data = value;
   if (typeof value === "string") {
-    try { data = JSON.parse(value); } catch { return value; }
+    try {
+      data = JSON.parse(value);
+    } catch {
+      return value;
+    }
   }
-  try { return JSON.stringify(data); } catch { return String(data); }
+  try {
+    return JSON.stringify(data);
+  } catch {
+    return String(data);
+  }
 }
 
 function formatOutput(value) {
   let data = value;
   if (typeof value === "string") {
-    try { data = JSON.parse(value); } catch { return value; }
+    try {
+      data = JSON.parse(value);
+    } catch {
+      return value;
+    }
   }
   if (Array.isArray(data)) {
-    const isSimple = data.every((item) => typeof item !== "object" || item === null || Object.keys(item).length === 0);
+    const isSimple = data.every(
+      (item) =>
+        typeof item !== "object" ||
+        item === null ||
+        Object.keys(item).length === 0,
+    );
     if (isSimple && data.length <= 10) return JSON.stringify(data);
-    const isSimpleNested = data.every((item) => Array.isArray(item) && item.every((el) => typeof el === "number" || typeof el === "string"));
-    if (isSimpleNested) return data.map((arr) => `[${arr.join(", ")}]`).join("\n");
+    const isSimpleNested = data.every(
+      (item) =>
+        Array.isArray(item) &&
+        item.every((el) => typeof el === "number" || typeof el === "string"),
+    );
+    if (isSimpleNested)
+      return data.map((arr) => `[${arr.join(", ")}]`).join("\n");
   }
-  try { return JSON.stringify(data, null, 2); } catch { return String(data); }
+  try {
+    return JSON.stringify(data, null, 2);
+  } catch {
+    return String(data);
+  }
 }
 
 function ScoreBar({ label, score, feedback }) {
   const pct = (score / 10) * 100;
-  const color = score >= 7 ? "var(--success)" : score >= 4 ? "var(--warning)" : "var(--error)";
+  const color =
+    score >= 7
+      ? "var(--success)"
+      : score >= 4
+        ? "var(--warning)"
+        : "var(--error)";
   return (
     <div className="rp-score-row">
       <div className="rp-score-meta">
         <span className="rp-score-label">{label}</span>
-        <span className="rp-score-value" style={{ color }}>{score}<span className="rp-score-denom">/10</span></span>
+        <span className="rp-score-value" style={{ color }}>
+          {score}
+          <span className="rp-score-denom">/10</span>
+        </span>
       </div>
       <div className="rp-score-track">
-        <div className="rp-score-fill" style={{ width: `${pct}%`, background: color }} />
+        <div
+          className="rp-score-fill"
+          style={{ width: `${pct}%`, background: color }}
+        />
       </div>
       {feedback && <p className="rp-score-feedback">{feedback}</p>}
     </div>
@@ -77,7 +118,11 @@ function Collapsible({ title, defaultOpen = false, children }) {
   const [open, setOpen] = useState(defaultOpen);
   return (
     <div className="rp-collapsible">
-      <button type="button" className="rp-collapsible-header" onClick={() => setOpen(!open)}>
+      <button
+        type="button"
+        className="rp-collapsible-header"
+        onClick={() => setOpen(!open)}
+      >
         <span className="rp-collapsible-arrow">{open ? "▼" : "▶"}</span>
         <span>{title}</span>
       </button>
@@ -96,6 +141,7 @@ function ReportPage() {
   const [selectedTestCase, setSelectedTestCase] = useState(null);
   const [solution, setSolution] = useState(null);
   const [solutionLoading, setSolutionLoading] = useState(false);
+  const [question, setQuestion] = useState(null);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const sessionData = location.state?.sessionData;
@@ -106,9 +152,15 @@ function ReportPage() {
   useEffect(() => {
     const loadInterview = async () => {
       try {
-        if (sessionData) { setInterview(sessionData); setLoading(false); return; }
+        if (sessionData) {
+          setInterview(sessionData);
+          setLoading(false);
+          return;
+        }
         if (sessionId) {
-          const response = await fetch(`http://localhost:3001/api/interviews/${sessionId}`);
+          const response = await fetch(
+            `http://localhost:3001/api/interviews/${sessionId}`,
+          );
           if (!response.ok) throw new Error("Failed to fetch interview");
           const data = await response.json();
           if (stateTestResults) data.testResults = stateTestResults;
@@ -127,22 +179,18 @@ function ReportPage() {
   // Fetch solution when interview is loaded
   useEffect(() => {
     const loadSolution = async () => {
-      console.log("Interview data:", interview);
-      console.log("Question ID:", interview?.interview?.questionId);
-
       if (!interview?.interview?.questionId) {
-        console.log("No questionId found");
         return;
       }
       try {
         setSolutionLoading(true);
-        const response = await fetch(`http://localhost:3001/api/questions/${interview.interview.questionId}`);
-        console.log("Solution fetch response:", response.ok, response.status);
+        const response = await fetch(
+          `http://localhost:3001/api/questions/${interview.interview.questionId}`,
+        );
 
         if (response.ok) {
           const data = await response.json();
-          console.log("Question data:", data);
-          console.log("Solution:", data.solution);
+          setQuestion(data);
           setSolution(data.solution);
         }
       } catch (err) {
@@ -159,7 +207,10 @@ function ReportPage() {
   const confirmDelete = async () => {
     setShowDeleteConfirm(false);
     try {
-      const response = await fetch(`http://localhost:3001/api/interviews/${interview._id}`, { method: "DELETE" });
+      const response = await fetch(
+        `http://localhost:3001/api/interviews/${interview._id}`,
+        { method: "DELETE" },
+      );
       if (!response.ok) throw new Error("Failed to delete interview");
       navigate("/interviews/old");
     } catch (err) {
@@ -167,15 +218,39 @@ function ReportPage() {
     }
   };
 
-  if (loading) return <section className="page"><div className="card">Loading report...</div></section>;
-  if (error) return <section className="page"><div className="card" style={{ color: "var(--error)" }}>{error}</div></section>;
-  if (!interview) return <section className="page"><div className="card">Interview not found</div></section>;
+  if (loading)
+    return (
+      <section className="page">
+        <div className="card">Loading report...</div>
+      </section>
+    );
+  if (error)
+    return (
+      <section className="page">
+        <div className="card" style={{ color: "var(--error)" }}>
+          {error}
+        </div>
+      </section>
+    );
+  if (!interview)
+    return (
+      <section className="page">
+        <div className="card">Interview not found</div>
+      </section>
+    );
 
-  const timeSpent = interview.interview?.durationMinutes * 60 - interview.timeLeftSeconds;
+  const timeSpent =
+    interview.interview?.durationMinutes * 60 - interview.timeLeftSeconds;
   const tr = interview.testResults;
   const review = interview.review;
   const passed = tr?.passed;
-  const hasStructuredReview = review && typeof review === "object" && review.logic;
+  const questionType = interview.interview?.questionType;
+
+  // Check for structured review (both Coding and Theory)
+  const hasStructuredReview =
+    review &&
+    typeof review === "object" &&
+    (review.logic || review.conceptualUnderstanding);
 
   return (
     <section className="page rp-page">
@@ -184,12 +259,45 @@ function ReportPage() {
         <div className="rp-header-main">
           <h1 className="rp-title">{interview.interview?.title}</h1>
           <div className="rp-chips">
-            {interview.interview?.company && <span className="rp-chip">{interview.interview.company}</span>}
-            {interview.interview?.difficulty && <span className={`rp-chip rp-chip--${interview.interview.difficulty.toLowerCase()}`}>{interview.interview.difficulty}</span>}
+            {questionType === "Theory" ? (
+              <>
+                <span className="rp-chip">Theory</span>
+                {interview.interview?.questionTitle && (
+                  <span className="rp-chip">
+                    {interview.interview.questionTitle}
+                  </span>
+                )}
+              </>
+            ) : (
+              <>
+                {interview.interview?.company && (
+                  <span className="rp-chip">{interview.interview.company}</span>
+                )}
+                {interview.interview?.questionTitle && (
+                  <span className="rp-chip">
+                    {interview.interview.questionTitle}
+                  </span>
+                )}
+              </>
+            )}
+            {interview.interview?.difficulty && (
+              <span
+                className={`rp-chip rp-chip--${interview.interview.difficulty.toLowerCase()}`}
+              >
+                {interview.interview.difficulty}
+              </span>
+            )}
             <span className="rp-chip">{formatDate(interview.completedAt)}</span>
             {tr && (
-              <span className="rp-chip" style={{ color: passed ? "var(--success)" : "var(--error)", borderColor: passed ? "var(--success)" : "var(--error)" }}>
-                {passed ? "✓" : "✗"} {passed ? "Passed" : "Failed"} {tr.passedCount}/{tr.totalTests}
+              <span
+                className="rp-chip"
+                style={{
+                  color: passed ? "var(--success)" : "var(--error)",
+                  borderColor: passed ? "var(--success)" : "var(--error)",
+                }}
+              >
+                {passed ? "✓" : "✗"} {passed ? "Passed tests" : "Failed tests"}{" "}
+                {tr.passedCount}/{tr.totalTests}
               </span>
             )}
           </div>
@@ -223,15 +331,51 @@ function ReportPage() {
       </div>
 
       {/* Two-column: scores + test cases */}
-      {(hasStructuredReview || (tr?.testCases?.length > 0)) && (
+      {(hasStructuredReview || tr?.testCases?.length > 0) && (
         <div className="rp-two-col">
           {hasStructuredReview && (
-            <div className="card rp-scores-card">
+            <div
+              className={`card rp-scores-card ${!tr?.testCases?.length ? "rp-scores-card--full" : ""}`}
+            >
               <h2 className="rp-section-title">Performance</h2>
               <div className="rp-scores">
-                <ScoreBar label="Logic" score={review.logic.score} feedback={review.logic.feedback} />
-                <ScoreBar label="Code Quality" score={review.codeQuality.score} feedback={review.codeQuality.feedback} />
-                <ScoreBar label="Reasoning" score={review.reasoning.score} feedback={review.reasoning.feedback} />
+                {questionType === "Theory" ? (
+                  <>
+                    <ScoreBar
+                      label="Conceptual Understanding"
+                      score={review.conceptualUnderstanding?.score}
+                      feedback={review.conceptualUnderstanding?.feedback}
+                    />
+                    <ScoreBar
+                      label="Clarity of Explanation"
+                      score={review.clarityOfExplanation?.score}
+                      feedback={review.clarityOfExplanation?.feedback}
+                    />
+                    <ScoreBar
+                      label="Depth of Knowledge"
+                      score={review.depthOfKnowledge?.score}
+                      feedback={review.depthOfKnowledge?.feedback}
+                    />
+                  </>
+                ) : (
+                  <>
+                    <ScoreBar
+                      label="Logic"
+                      score={review.logic?.score}
+                      feedback={review.logic?.feedback}
+                    />
+                    <ScoreBar
+                      label="Code Quality"
+                      score={review.codeQuality?.score}
+                      feedback={review.codeQuality?.feedback}
+                    />
+                    <ScoreBar
+                      label="Reasoning"
+                      score={review.reasoning?.score}
+                      feedback={review.reasoning?.feedback}
+                    />
+                  </>
+                )}
               </div>
               {review.summary && (
                 <div className="rp-summary">
@@ -252,9 +396,15 @@ function ReportPage() {
                     className={`rp-test-row ${tc.passed ? "rp-test-row--pass" : "rp-test-row--fail"}`}
                     onClick={() => setSelectedTestCase(tc)}
                   >
-                    <span className="rp-test-row-icon">{tc.passed ? "✓" : "✗"}</span>
-                    <span className="rp-test-row-label">Test {tc.testCaseId}</span>
-                    <span className="rp-test-row-status">{tc.passed ? "passed" : "failed"}</span>
+                    <span className="rp-test-row-icon">
+                      {tc.passed ? "✓" : "✗"}
+                    </span>
+                    <span className="rp-test-row-label">
+                      Test {tc.testCaseId}
+                    </span>
+                    <span className="rp-test-row-status">
+                      {tc.passed ? "passed" : "failed"}
+                    </span>
                   </button>
                 ))}
               </div>
@@ -269,17 +419,52 @@ function ReportPage() {
           <h2 className="rp-section-title">AI Review</h2>
           {review.split("\n").map((line, i) => {
             const heading = line.match(/^\*\*(.+?)\*\*(.*)$/);
-            if (heading) return <p key={i}><strong>{heading[1]}</strong>{heading[2]}</p>;
+            if (heading)
+              return (
+                <p key={i}>
+                  <strong>{heading[1]}</strong>
+                  {heading[2]}
+                </p>
+              );
             if (line.trim() === "") return <br key={i} />;
             return <p key={i}>{line}</p>;
           })}
         </div>
       )}
 
+      {/* Question */}
+      {question && (
+        <Collapsible title="Question">
+          <div className="rp-solution">
+            <div className="rp-solution-section">
+              <h3 style={{ marginTop: 0 }}>{question.title}</h3>
+              <p>{question.description}</p>
+              {question.constraints &&
+                Object.keys(question.constraints).length > 0 && (
+                  <div>
+                    <h4>Constraints:</h4>
+                    <ul>
+                      {Object.entries(question.constraints).map(
+                        ([key, value]) => (
+                          <li key={key}>
+                            <strong>{key}:</strong> {value}
+                          </li>
+                        ),
+                      )}
+                    </ul>
+                  </div>
+                )}
+            </div>
+          </div>
+        </Collapsible>
+      )}
+
       {/* Transcript */}
       {interview.transcript && (
-        <Collapsible title="Transcript" defaultOpen>
-          <pre className="rp-preblock">{interview.transcript.replace(/\n\s*$/, "")}</pre>
+        <Collapsible title="Transcript">
+          <pre className="rp-preblock">
+            {interview.transcript.replace(/\n\s*$/, "")}
+          </pre>
         </Collapsible>
       )}
 
@@ -298,26 +483,45 @@ function ReportPage() {
       {solution && (
         <Collapsible title="Solution">
           <div className="rp-solution">
-            <div className="rp-solution-section">
-              <CodeViewer code={solution.code} />
-            </div>
-            {solution.explanation && (
-              <div className="rp-solution-section">
-                <h3>Explanation</h3>
-                <p>{solution.explanation}</p>
-              </div>
-            )}
-            {solution.timeComplexity && (
-              <div className="rp-solution-section">
-                <h3>Time Complexity</h3>
-                <p><strong>{solution.timeComplexity}</strong></p>
-              </div>
-            )}
-            {solution.spaceComplexity && (
-              <div className="rp-solution-section">
-                <h3>Space Complexity</h3>
-                <p><strong>{solution.spaceComplexity}</strong></p>
-              </div>
+            {questionType === "Theory" ? (
+              <>
+                {solution.explanation && (
+                  <div className="rp-solution-section">
+                    <h3>Explanation</h3>
+                    <p>{solution.explanation}</p>
+                  </div>
+                )}
+              </>
+            ) : (
+              <>
+                {solution.code && (
+                  <div className="rp-solution-section">
+                    <CodeViewer code={solution.code} />
+                  </div>
+                )}
+                {solution.explanation && (
+                  <div className="rp-solution-section">
+                    <h3>Explanation</h3>
+                    <p>{solution.explanation}</p>
+                  </div>
+                )}
+                {solution.timeComplexity && (
+                  <div className="rp-solution-section">
+                    <h3>Time Complexity</h3>
+                    <p>
+                      <strong>{solution.timeComplexity}</strong>
+                    </p>
+                  </div>
+                )}
+                {solution.spaceComplexity && (
+                  <div className="rp-solution-section">
+                    <h3>Space Complexity</h3>
+                    <p>
+                      <strong>{solution.spaceComplexity}</strong>
+                    </p>
+                  </div>
+                )}
+              </>
             )}
           </div>
         </Collapsible>
@@ -325,74 +529,153 @@ function ReportPage() {
 
       {/* Actions */}
       <div className="rp-actions">
-        <button type="button" className="ci-btn ci-btn--delete" onClick={handleDelete}>Delete</button>
-        <button type="button" className="ci-btn" onClick={() => navigate("/interviews/old")}>Back</button>
+        <button
+          type="button"
+          className="ci-btn ci-btn--delete"
+          onClick={handleDelete}
+        >
+          Delete
+        </button>
+        <button
+          type="button"
+          className="ci-btn"
+          onClick={() => navigate("/interviews/old")}
+        >
+          Back
+        </button>
       </div>
 
       {/* Delete confirm dialog */}
-      {showDeleteConfirm && createPortal(
-        <div className="modal-backdrop" onClick={() => setShowDeleteConfirm(false)}>
-          <div className="modal-box" onClick={(e) => e.stopPropagation()}>
-            <h2 className="modal-title">Delete Interview</h2>
-            <p className="modal-body">
-              Are you sure you want to delete this interview? This cannot be undone.
-            </p>
-            <div className="modal-actions">
-              <button type="button" className="ci-btn" onClick={() => setShowDeleteConfirm(false)}>Cancel</button>
-              <button type="button" className="ci-btn ci-btn--delete-active" onClick={confirmDelete}>Delete</button>
+      {showDeleteConfirm &&
+        createPortal(
+          <div
+            className="modal-backdrop"
+            onClick={() => setShowDeleteConfirm(false)}
+          >
+            <div className="modal-box" onClick={(e) => e.stopPropagation()}>
+              <h2 className="modal-title">Delete Interview</h2>
+              <p className="modal-body">
+                Are you sure you want to delete this interview? This cannot be
+                undone.
+              </p>
+              <div className="modal-actions">
+                <button
+                  type="button"
+                  className="ci-btn"
+                  onClick={() => setShowDeleteConfirm(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="ci-btn ci-btn--delete-active"
+                  onClick={confirmDelete}
+                >
+                  Delete
+                </button>
+              </div>
             </div>
-          </div>
-        </div>,
-        document.body
-      )}
+          </div>,
+          document.body,
+        )}
 
       {/* Test case modal */}
-      {selectedTestCase && createPortal(
-        <div className="modal-backdrop" onClick={() => setSelectedTestCase(null)}>
-          <div className="modal-box modal-box--wide" onClick={(e) => e.stopPropagation()}>
-            <div className="modal-header">
-              <h2 className="modal-title">
-                Test Case {selectedTestCase.testCaseId}
-                {selectedTestCase.description && `: ${selectedTestCase.description}`}
-              </h2>
-              <button type="button" className="modal-close" onClick={() => setSelectedTestCase(null)}>✕</button>
-            </div>
-            <div style={{ padding: "1.25rem 1.5rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <div>
-                <span className={`rp-modal-badge ${selectedTestCase.passed ? "pass" : "fail"}`}>
-                  {selectedTestCase.passed ? "✓ PASSED" : "✗ FAILED"}
-                </span>
+      {selectedTestCase &&
+        createPortal(
+          <div
+            className="modal-backdrop"
+            onClick={() => setSelectedTestCase(null)}
+          >
+            <div
+              className="modal-box modal-box--wide"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="modal-header">
+                <h2 className="modal-title">
+                  Test Case {selectedTestCase.testCaseId}
+                  {selectedTestCase.description &&
+                    `: ${selectedTestCase.description}`}
+                </h2>
+                <button
+                  type="button"
+                  className="modal-close"
+                  onClick={() => setSelectedTestCase(null)}
+                >
+                  ✕
+                </button>
               </div>
-              <div>
-                <p className="rp-modal-label">Input</p>
-                <pre className="rp-modal-code">{formatCompact(selectedTestCase.input)}</pre>
+              <div
+                style={{
+                  padding: "1.25rem 1.5rem",
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "1rem",
+                }}
+              >
+                <div>
+                  <span
+                    className={`rp-modal-badge ${selectedTestCase.passed ? "pass" : "fail"}`}
+                  >
+                    {selectedTestCase.passed ? "✓ PASSED" : "✗ FAILED"}
+                  </span>
+                </div>
+                <div>
+                  <p className="rp-modal-label">Input</p>
+                  <pre className="rp-modal-code">
+                    {formatCompact(selectedTestCase.input)}
+                  </pre>
+                </div>
+                {(() => {
+                  const got = selectedTestCase.actualOutput
+                    ? extractGot(selectedTestCase.actualOutput)
+                    : null;
+                  const isRuntimeError = got === "__runtime_error__";
+                  return (
+                    <div className="rp-modal-comparison">
+                      <div>
+                        <p className="rp-modal-label">Expected</p>
+                        <pre className="rp-modal-code">
+                          {formatCompact(selectedTestCase.expectedOutput)}
+                        </pre>
+                      </div>
+                      <div>
+                        <p
+                          className="rp-modal-label"
+                          style={{
+                            color: !selectedTestCase.passed
+                              ? "var(--error)"
+                              : undefined,
+                          }}
+                        >
+                          Got
+                        </p>
+                        <pre
+                          className={`rp-modal-code ${!selectedTestCase.passed ? "rp-modal-code--error" : ""}`}
+                        >
+                          {isRuntimeError
+                            ? "Runtime error"
+                            : got
+                              ? formatCompact(got)
+                              : formatCompact(selectedTestCase.expectedOutput)}
+                        </pre>
+                      </div>
+                    </div>
+                  );
+                })()}
               </div>
-              {(() => {
-                const got = selectedTestCase.actualOutput ? extractGot(selectedTestCase.actualOutput) : null;
-                const isRuntimeError = got === "__runtime_error__";
-                return (
-                  <div className="rp-modal-comparison">
-                    <div>
-                      <p className="rp-modal-label">Expected</p>
-                      <pre className="rp-modal-code">{formatCompact(selectedTestCase.expectedOutput)}</pre>
-                    </div>
-                    <div>
-                      <p className="rp-modal-label" style={{ color: !selectedTestCase.passed ? "var(--error)" : undefined }}>Got</p>
-                      <pre className={`rp-modal-code ${!selectedTestCase.passed ? "rp-modal-code--error" : ""}`}>
-                        {isRuntimeError ? "Runtime error" : got ? formatCompact(got) : formatCompact(selectedTestCase.expectedOutput)}
-                      </pre>
-                    </div>
-                  </div>
-                );
-              })()}
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="ci-btn ci-btn--primary"
+                  onClick={() => setSelectedTestCase(null)}
+                >
+                  Close
+                </button>
+              </div>
             </div>
-            <div className="modal-footer">
-              <button type="button" className="ci-btn ci-btn--primary" onClick={() => setSelectedTestCase(null)}>Close</button>
-            </div>
-          </div>
-        </div>,
-        document.body
-      )}
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }

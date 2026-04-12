@@ -12,9 +12,16 @@ const interviewSessionSchema = new mongoose.Schema(
         type: String,
         required: true,
       },
+      questionTitle: {
+        type: String,
+      },
+      questionType: {
+        type: String,
+        enum: ["Coding", "Theory"],
+        default: "Coding",
+      },
       company: {
         type: String,
-        required: true,
       },
       difficulty: {
         type: String,

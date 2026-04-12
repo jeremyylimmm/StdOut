@@ -90,7 +90,6 @@ function OldInterviewsPage() {
 
   return (
     <section className="page">
-
       <div>
         <h1>Completed Interviews</h1>
         <p>Review your past interview sessions and code.</p>
@@ -118,46 +117,48 @@ function OldInterviewsPage() {
             <div className="ci-info">
               <span className="ci-title">{interview.interview.title}</span>
               <span className="ci-meta">
-                {interview.interview.company}
+                {interview.interview.questionType === "Theory"
+                  ? `Theory · ${interview.interview.questionTitle}`
+                  : `${interview.interview.company} · ${interview.interview.questionTitle}`}
                 {interview.interview.difficulty
                   ? ` · ${interview.interview.difficulty}`
                   : ""}
-                {interview.timeLeftSeconds !== undefined &&
-                  ` · ${formatTime(interview.interview.durationMinutes * 60 - interview.timeLeftSeconds)} spent`}
               </span>
               <span className="ci-date">
                 {formatDate(interview.completedAt)}
+                {interview.timeLeftSeconds !== undefined &&
+                  ` · ${formatTime(interview.interview.durationMinutes * 60 - interview.timeLeftSeconds)} spent`}
               </span>
             </div>
-            {interview.testResults && (
-              <span
-                className={`ci-score ${
-                  interview.testResults.passed
-                    ? "ci-score--pass"
-                    : interview.testResults.passedCount >= 8
-                      ? "ci-score--partial"
-                      : "ci-score--fail"
-                }`}
-              >
-                {interview.testResults.passedCount}/
-                {interview.testResults.totalTests} passing
-              </span>
-            )}
             {interview.review?.overallScore !== undefined && (
-              <span className="ci-score ci-score--review">
+              <span
+                className="ci-score ci-score--review"
+                style={{
+                  color:
+                    interview.review.overallScore >= 8
+                      ? "var(--success)"
+                      : interview.review.overallScore >= 5
+                        ? "var(--warning)"
+                        : "var(--error)",
+                  borderColor:
+                    interview.review.overallScore >= 8
+                      ? "var(--success)"
+                      : interview.review.overallScore >= 5
+                        ? "var(--warning)"
+                        : "var(--error)",
+                }}
+              >
                 Score: {interview.review.overallScore}/10
               </span>
             )}
             <div className="ci-actions">
-              {interview.code && (
-                <button
-                  type="button"
-                  className="ci-btn"
-                  onClick={() => handleViewReport(interview)}
-                >
-                  View Report
-                </button>
-              )}
+              <button
+                type="button"
+                className="ci-btn"
+                onClick={() => handleViewReport(interview)}
+              >
+                View Report
+              </button>
               <button
                 type="button"
                 className="ci-btn ci-btn--delete"

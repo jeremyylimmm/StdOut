@@ -13,11 +13,22 @@ function InterviewSetupPage() {
 
   const [form, setForm] = useState(settings);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  const update = (key, value) => setForm((prev) => ({ ...prev, [key]: value }));
+  const update = (key, value) => {
+    setForm((prev) => ({ ...prev, [key]: value }));
+    setError("");
+  };
 
   const handleStart = async (event) => {
     event.preventDefault();
+    setError("");
+
+    if (!form.interviewName.trim()) {
+      setError("Please enter a session name");
+      return;
+    }
+
     setLoading(true);
     saveSettings(form);
     await startInterview(form);
@@ -72,8 +83,20 @@ function InterviewSetupPage() {
             className="dashboard-name-input"
             value={form.interviewName}
             onChange={(e) => update("interviewName", e.target.value)}
-            placeholder="e.g. Frontend Interview Prep"
+            placeholder="e.g. Google Interview Prep"
           />
+          {error && (
+            <p
+              style={{
+                color: "var(--error)",
+                fontSize: "0.875rem",
+                marginTop: "0.5rem",
+                margin: "0.5rem 0 0 0",
+              }}
+            >
+              {error}
+            </p>
+          )}
         </div>
 
         <div className="dashboard-section">
