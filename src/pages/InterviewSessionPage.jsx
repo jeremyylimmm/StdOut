@@ -5,6 +5,13 @@ import { diffLines } from "diff";
 import CodeEditor from "../components/CodeEditor";
 import QuestionPanel from "../components/QuestionPanel";
 import { useAppState } from "../lib/AppStateContext";
+import {
+  makeTranscribeUrl,
+  makeRealTimeUrl,
+  makeQuestionUrl,
+  makeReviewUrl,
+  makeRunUrl,
+} from "../lib/apiClient";
 
 function InterviewSessionPage() {
   const navigate = useNavigate();
@@ -197,7 +204,7 @@ ${buildSessionInstructions(currentCode)}`;
           formData.append("audio", blob, "audio.webm");
 
           try {
-            const res = await fetch("http://localhost:3001/api/transcribe", {
+            const res = await fetch(makeTranscribeUrl(""), {
               method: "POST",
               body: formData,
             });
@@ -287,7 +294,7 @@ ${buildSessionInstructions(currentCode)}`;
   async function startRealtime() {
     try {
       const tokenResponse = await fetch(
-        "http://localhost:3001/api/realTime/session",
+        makeRealTimeUrl("/session"),
       );
       const sessionData = await tokenResponse.json();
 
@@ -443,7 +450,7 @@ ${buildSessionInstructions(currentCode)}`;
     setRunError("");
 
     try {
-      const res = await fetch("http://localhost:3001/run", {
+      const res = await fetch(makeRunUrl(), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code }),
@@ -505,7 +512,7 @@ ${buildSessionInstructions(currentCode)}`;
       setSubmitStep("Running test cases...");
       try {
         const response = await fetch(
-          `http://localhost:3001/api/questions/${currentQuestion._id}/submit`,
+          makeQuestionUrl(`/${currentQuestion._id}/submit`),
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
@@ -525,7 +532,7 @@ ${buildSessionInstructions(currentCode)}`;
     setSubmitStep("Generating AI review...");
     let review = null;
     try {
-      const res = await fetch("http://localhost:3001/api/review", {
+      const res = await fetch(makeReviewUrl(""), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
+import { makeInterviewUrl, makeQuestionUrl } from "../lib/apiClient";
 import CodeViewer from "../components/CodeViewer";
 
 function formatDate(isoDate) {
@@ -159,7 +160,7 @@ function ReportPage() {
         }
         if (sessionId) {
           const response = await fetch(
-            `http://localhost:3001/api/interviews/${sessionId}`,
+            makeInterviewUrl(`/${sessionId}`),
           );
           if (!response.ok) throw new Error("Failed to fetch interview");
           const data = await response.json();
@@ -185,7 +186,7 @@ function ReportPage() {
       try {
         setSolutionLoading(true);
         const response = await fetch(
-          `http://localhost:3001/api/questions/${interview.interview.questionId}`,
+          makeQuestionUrl(`/${interview.interview.questionId}`),
         );
 
         if (response.ok) {
@@ -208,7 +209,7 @@ function ReportPage() {
     setShowDeleteConfirm(false);
     try {
       const response = await fetch(
-        `http://localhost:3001/api/interviews/${interview._id}`,
+        makeInterviewUrl(`/${interview._id}`),
         { method: "DELETE" },
       );
       if (!response.ok) throw new Error("Failed to delete interview");

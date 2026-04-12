@@ -1,4 +1,5 @@
 import { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { getApiBaseUrl, makeQuestionUrl, makeInterviewUrl } from "./apiClient";
 
 const AppStateContext = createContext(null);
 
@@ -81,7 +82,7 @@ export function AppStateProvider({ children }) {
     const settingsToUse = newSettings || settings;
 
     try {
-      let url = `http://localhost:3001/api/questions/random?type=${settingsToUse.questionType}`;
+      let url = `${makeQuestionUrl("/random")}?type=${settingsToUse.questionType}`;
 
       // Only add company for Coding questions
       if (settingsToUse.questionType === "Coding") {
@@ -138,7 +139,7 @@ export function AppStateProvider({ children }) {
 
     try {
       const response = await fetch(
-        "http://localhost:3001/api/interviews/save",
+        makeInterviewUrl("/save"),
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

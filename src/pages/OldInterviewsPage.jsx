@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { useAppState } from "../lib/AppStateContext";
+import { makeInterviewUrl } from "../lib/apiClient";
 
 function formatDate(isoDate) {
   return new Date(isoDate).toLocaleDateString(undefined, {
@@ -35,7 +36,7 @@ function OldInterviewsPage() {
     const fetchInterviews = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3001/api/interviews/user/${user.id}`,
+          makeInterviewUrl(`/user/${user.id}`),
         );
 
         if (!response.ok) {
@@ -66,7 +67,7 @@ function OldInterviewsPage() {
 
     try {
       const response = await fetch(
-        `http://localhost:3001/api/interviews/${sessionId}`,
+        makeInterviewUrl(`/${sessionId}`),
         {
           method: "DELETE",
         },
