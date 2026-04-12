@@ -46,14 +46,7 @@ const startServer = async () => {
     // Enable CORS for frontend
     // In production, FRONTEND_URL should be set in environment variables
     // In development, allow local dev ports
-    const allowedOrigins = process.env.FRONTEND_URL
-      ? [process.env.FRONTEND_URL]
-      : [
-          "http://localhost:5173",
-          "http://localhost:5174",
-          "http://localhost:5175",
-          "https://std-out.vercel.app", // Add your Vercel domain
-        ];
+    const allowedOrigins = [process.env.FRONTEND_URL].filter(Boolean);
 
     app.use(
       cors({
