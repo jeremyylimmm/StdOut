@@ -2541,7 +2541,6 @@ button:disabled {
   overflow-y: auto;
   max-height: calc(90vh - 200px);
 }
-}
 
 .test-case-modal-section {
   display: flex;
