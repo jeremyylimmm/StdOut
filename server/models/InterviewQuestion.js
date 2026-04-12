@@ -23,7 +23,7 @@ const testCaseSchema = new mongoose.Schema(
       default: false,
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const solutionSchema = new mongoose.Schema(
@@ -49,7 +49,7 @@ const solutionSchema = new mongoose.Schema(
       default: "",
     },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const interviewQuestionSchema = new mongoose.Schema(
@@ -60,14 +60,14 @@ const interviewQuestionSchema = new mongoose.Schema(
       unique: true,
       index: true,
     },
-    source: {
+    type: {
       type: String,
-      enum: ["leetcode", "interview", "custom"],
-      default: "custom",
+      enum: ["Coding", "Theory"],
+      required: true,
+      index: true,
     },
     company: {
       type: [String],
-      required: true,
       index: true,
     },
     title: {
@@ -107,12 +107,6 @@ const interviewQuestionSchema = new mongoose.Schema(
     testCases: {
       type: [testCaseSchema],
       required: true,
-      validate: {
-        validator: function (v) {
-          return v.length >= 10 && v.length <= 20;
-        },
-        message: "Test cases must have between 10 and 20 cases",
-      },
     },
     initialCode: {
       type: String,
@@ -127,7 +121,7 @@ const interviewQuestionSchema = new mongoose.Schema(
       default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 module.exports = mongoose.model("InterviewQuestion", interviewQuestionSchema);

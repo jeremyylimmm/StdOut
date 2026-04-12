@@ -52,12 +52,24 @@ function InterviewSessionPage() {
       if (tsToSeconds(list[i].timestamp) <= incoming) break;
       insertAt = i;
     }
-    const updated = [...list.slice(0, insertAt), event, ...list.slice(insertAt)];
+    const updated = [
+      ...list.slice(0, insertAt),
+      event,
+      ...list.slice(insertAt),
+    ];
     timelineRef.current = updated;
     setTimeline(updated);
   }
 
   function buildSessionInstructions(currentCode) {
+    if (settings.questionType === "Theory") {
+      return `QUESTION:
+Title: ${currentQuestion?.title ?? "Unknown"}
+Description: ${currentQuestion?.description ?? "No description provided"}
+Difficulty: ${currentQuestion?.difficulty ?? "Unknown"}
+
+NOTES: This is a theory/discussion question. The candidate should explain verbally.`;
+    }
     return `QUESTION:
 Title: ${currentQuestion?.title ?? "Unknown"}
 Description: ${currentQuestion?.description ?? "No description provided"}
@@ -103,7 +115,7 @@ ${buildSessionInstructions(currentCode)}`;
       pcRef.current = null;
     }
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
 
@@ -115,7 +127,7 @@ ${buildSessionInstructions(currentCode)}`;
         pcRef.current = null;
       }
       if (streamRef.current) {
-        streamRef.current.getTracks().forEach(track => track.stop());
+        streamRef.current.getTracks().forEach((track) => track.stop());
         streamRef.current = null;
       }
     };
@@ -127,7 +139,7 @@ ${buildSessionInstructions(currentCode)}`;
     async function startRecording() {
       let attempts = 0;
       while (!streamRef.current && attempts < 20) {
-        await new Promise(r => setTimeout(r, 100));
+        await new Promise((r) => setTimeout(r, 100));
         attempts++;
       }
 
@@ -171,9 +183,15 @@ ${buildSessionInstructions(currentCode)}`;
         };
 
         recorder.onstop = async () => {
-          if (chunks.length === 0) { if (!stopped) recordChunk(); return; }
+          if (chunks.length === 0) {
+            if (!stopped) recordChunk();
+            return;
+          }
           const blob = new Blob(chunks, { type: recorder.mimeType });
-          if ((recorder._speechMs?.() ?? 0) < 400) { if (!stopped) recordChunk(); return; }
+          if ((recorder._speechMs?.() ?? 0) < 400) {
+            if (!stopped) recordChunk();
+            return;
+          }
 
           const formData = new FormData();
           formData.append("audio", blob, "audio.webm");
@@ -186,7 +204,11 @@ ${buildSessionInstructions(currentCode)}`;
             const data = await res.json();
             const text = data.text?.trim();
             if (text) {
-              pushEvent({ type: "speech", content: text, timestamp: chunkStartTimestamp });
+              pushEvent({
+                type: "speech",
+                content: text,
+                timestamp: chunkStartTimestamp,
+              });
             }
           } catch (err) {
             // silently ignore transcription errors
@@ -208,7 +230,10 @@ ${buildSessionInstructions(currentCode)}`;
         const startedAt = Date.now();
 
         const vadInterval = setInterval(() => {
-          if (recorder.state !== "recording") { clearInterval(vadInterval); return; }
+          if (recorder.state !== "recording") {
+            clearInterval(vadInterval);
+            return;
+          }
 
           const now = Date.now();
           const dt = now - lastTick;
@@ -243,7 +268,9 @@ ${buildSessionInstructions(currentCode)}`;
     }
 
     let cleanup = () => {};
-    startRecording().then((fn) => { if (fn) cleanup = fn; });
+    startRecording().then((fn) => {
+      if (fn) cleanup = fn;
+    });
 
     return () => {
       stopped = true;
@@ -259,7 +286,9 @@ ${buildSessionInstructions(currentCode)}`;
 
   async function startRealtime() {
     try {
-      const tokenResponse = await fetch("http://localhost:3001/api/realTime/session");
+      const tokenResponse = await fetch(
+        "http://localhost:3001/api/realTime/session",
+      );
       const sessionData = await tokenResponse.json();
 
       const pc = new RTCPeerConnection();
@@ -283,12 +312,16 @@ ${buildSessionInstructions(currentCode)}`;
             }
           }
           if (msg.type === "input_audio_buffer.speech_stopped") {
-            channel.send(JSON.stringify({
-              type: "input_audio_buffer.commit",
-            }));
-            channel.send(JSON.stringify({
-              type: "response.create",
-            }));
+            channel.send(
+              JSON.stringify({
+                type: "input_audio_buffer.commit",
+              }),
+            );
+            channel.send(
+              JSON.stringify({
+                type: "response.create",
+              }),
+            );
           }
         } catch (err) {
           // ignore parse errors
@@ -299,29 +332,33 @@ ${buildSessionInstructions(currentCode)}`;
       streamRef.current = stream;
 
       channel.onopen = () => {
-        channel.send(JSON.stringify({
-          type: "session.update",
-          session: {
-            instructions: buildSystemInstructions(codeRef.current),
-            turn_detection: {
-              type: "server_vad",
-              threshold: 0.7,
-              silence_duration_ms: 1500,
-              create_response: false,
+        channel.send(
+          JSON.stringify({
+            type: "session.update",
+            session: {
+              instructions: buildSystemInstructions(codeRef.current),
+              turn_detection: {
+                type: "server_vad",
+                threshold: 0.7,
+                silence_duration_ms: 1500,
+                create_response: false,
+              },
             },
-          },
-        }));
+          }),
+        );
 
-        channel.send(JSON.stringify({
-          type: "response.create",
-          response: {
-            modalities: ["audio", "text"],
-            instructions: `Greet the candidate with exactly: "Hi, start when you're ready." Say nothing else.`,
-          },
-        }));
+        channel.send(
+          JSON.stringify({
+            type: "response.create",
+            response: {
+              modalities: ["audio", "text"],
+              instructions: `Greet the candidate with exactly: "Hi, start when you're ready." Say nothing else.`,
+            },
+          }),
+        );
       };
 
-      stream.getTracks().forEach(track => pc.addTrack(track, stream));
+      stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
       const audio = document.createElement("audio");
       audio.autoplay = true;
@@ -342,7 +379,7 @@ ${buildSessionInstructions(currentCode)}`;
             Authorization: `Bearer ${sessionData.client_secret.value}`,
             "Content-Type": "application/sdp",
           },
-        }
+        },
       );
 
       const answer = {
@@ -389,12 +426,14 @@ ${buildSessionInstructions(currentCode)}`;
       prevCodeRef.current = newCode;
 
       if (channelRef.current?.readyState === "open") {
-        channelRef.current.send(JSON.stringify({
-          type: "session.update",
-          session: {
-            instructions: buildSystemInstructions(newCode),
-          },
-        }));
+        channelRef.current.send(
+          JSON.stringify({
+            type: "session.update",
+            session: {
+              instructions: buildSystemInstructions(newCode),
+            },
+          }),
+        );
       }
     }, 1500);
   }
@@ -450,7 +489,7 @@ ${buildSessionInstructions(currentCode)}`;
       pcRef.current = null;
     }
     if (streamRef.current) {
-      streamRef.current.getTracks().forEach(track => track.stop());
+      streamRef.current.getTracks().forEach((track) => track.stop());
       streamRef.current = null;
     }
 
@@ -461,7 +500,8 @@ ${buildSessionInstructions(currentCode)}`;
     const timeLeft = timerRef.current?.getTimeLeft() || 0;
 
     let testResults = null;
-    if (currentQuestion?._id) {
+    // Only run test cases for Coding questions
+    if (currentQuestion?._id && settings.questionType === "Coding") {
       setSubmitStep("Running test cases...");
       try {
         const response = await fetch(
@@ -470,7 +510,7 @@ ${buildSessionInstructions(currentCode)}`;
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ code }),
-          }
+          },
         );
         if (response.ok) {
           testResults = await response.json();
@@ -488,7 +528,11 @@ ${buildSessionInstructions(currentCode)}`;
       const res = await fetch("http://localhost:3001/api/review", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ transcript, code, question: currentQuestion?.title }),
+        body: JSON.stringify({
+          transcript,
+          code,
+          question: currentQuestion?.title,
+        }),
       });
       const data = await res.json();
       review = data.review;
@@ -497,7 +541,13 @@ ${buildSessionInstructions(currentCode)}`;
     }
 
     setSubmitStep("Saving session...");
-    const sessionId = await saveInterview(transcript, code, timeLeft, testResults, review);
+    const sessionId = await saveInterview(
+      transcript,
+      code,
+      timeLeft,
+      testResults,
+      review,
+    );
 
     navigate("/report", {
       state: { sessionId },
@@ -507,7 +557,11 @@ ${buildSessionInstructions(currentCode)}`;
   return (
     <section className="page leetcode-layout">
       <div className="question-panel-wrap">
-        <QuestionPanel question={currentQuestion} timerRef={timerRef} initialSeconds={settings.durationMinutes * 60} />
+        <QuestionPanel
+          question={currentQuestion}
+          timerRef={timerRef}
+          initialSeconds={settings.durationMinutes * 60}
+        />
         <div className="card timeline-widget">
           <div className="timeline-header">
             <span>Timeline</span>
@@ -539,7 +593,9 @@ ${buildSessionInstructions(currentCode)}`;
                     <div className="timeline-label">
                       {event.error ? "error" : "output"}
                     </div>
-                    <pre className={`timeline-diff ${event.error ? "timeline-output-error" : "timeline-output-ok"}`}>
+                    <pre
+                      className={`timeline-diff ${event.error ? "timeline-output-error" : "timeline-output-ok"}`}
+                    >
                       {event.content}
                     </pre>
                   </div>
@@ -557,22 +613,30 @@ ${buildSessionInstructions(currentCode)}`;
       </div>
 
       <div className="editor-panel-wrap">
-        <CodeEditor value={code} onChange={handleCodeChange} onRun={handleRunCode} onSubmit={handleFinish} />
+        <CodeEditor
+          value={code}
+          onChange={handleCodeChange}
+          onRun={handleRunCode}
+          onSubmit={handleFinish}
+        />
         <div className="card terminal-card">
-          <pre className={`run-output terminal-output ${runError ? "error" : ""}`}>
+          <pre
+            className={`run-output terminal-output ${runError ? "error" : ""}`}
+          >
             {runError || runOutput || "Run your code to see output here..."}
           </pre>
         </div>
       </div>
-      {submitting && createPortal(
-        <div className="submit-overlay">
-          <div className="submit-overlay-box">
-            <div className="submit-spinner" />
-            <p className="submit-overlay-step">{submitStep}</p>
-          </div>
-        </div>,
-        document.body,
-      )}
+      {submitting &&
+        createPortal(
+          <div className="submit-overlay">
+            <div className="submit-overlay-box">
+              <div className="submit-spinner" />
+              <p className="submit-overlay-step">{submitStep}</p>
+            </div>
+          </div>,
+          document.body,
+        )}
     </section>
   );
 }

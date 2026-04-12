@@ -6,16 +6,37 @@ const router = express.Router();
 // Get random question by company and optionally difficulty
 router.get("/random", async (req, res) => {
   try {
-    const { company, difficulty } = req.query;
+    const { company, difficulty, type } = req.query;
 
-    if (!company) {
-      return res.status(400).json({ error: "Company is required" });
+    let query = {};
+
+    // For Coding questions, company is required
+    if (type === "Coding") {
+      if (!company) {
+        return res
+          .status(400)
+          .json({ error: "Company is required for Coding questions" });
+      }
+      // Filter by company (company is an array field, use $in to match)
+      query.company = company;
+
+      // For LeetCode, also filter by difficulty
+      if (company === "LeetCode" && difficulty) {
+        query.difficulty = difficulty;
+      }
+    } else if (type === "Theory") {
+      // For Theory questions, company is not used
+    } else {
+      return res
+        .status(400)
+        .json({ error: "Question type (Coding or Theory) is required" });
     }
 
-    let query = { company: { $in: [company] } };
+    // Add type filter
+    query.type = type;
 
-    // Add difficulty filter if company is LeetCode
-    if (company === "LeetCode" && difficulty) {
+    // Add difficulty filter for Theory questions
+    if (type === "Theory" && difficulty) {
       query.difficulty = difficulty;
     }
 
@@ -23,7 +44,7 @@ router.get("/random", async (req, res) => {
 
     if (questions.length === 0) {
       return res.status(404).json({
-        error: `No questions found for company: ${company}${difficulty ? ` and difficulty: ${difficulty}` : ""}`,
+        error: `No ${type} questions found${company ? ` for company: ${company}` : ""}${difficulty ? ` with difficulty: ${difficulty}` : ""}`,
       });
     }
 
@@ -88,7 +109,10 @@ router.get("/:questionId", async (req, res) => {
       return res.status(404).json({ error: "Question not found" });
     }
 
-    console.log("Returning question with solution:", question.solution ? "YES" : "NO");
+    console.log(
+      "Returning question with solution:",
+      question.solution ? "YES" : "NO",
+    );
     res.json(question);
   } catch (error) {
     console.error("Error fetching question:", error);

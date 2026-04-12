@@ -10,25 +10,39 @@ const seedDatabase = async () => {
   try {
     await connectDB();
 
-    // Read questions from JSON file
+    // Read questions from both JSON files
     const questionsPath = path.join(__dirname, "data", "questions.json");
-    const questionData = JSON.parse(fs.readFileSync(questionsPath, "utf-8"));
+    const technicalQuestionsPath = path.join(
+      __dirname,
+      "data",
+      "technical_questions.json",
+    );
 
-    // Handle both single question and array of questions
-    const questionsToInsert = Array.isArray(questionData)
-      ? questionData
-      : [questionData];
+    const codingQuestions = JSON.parse(fs.readFileSync(questionsPath, "utf-8"));
+    const theoryQuestions = JSON.parse(
+      fs.readFileSync(technicalQuestionsPath, "utf-8"),
+    );
+
+    // Handle both single question and array of questions, and set type
+    const codingToInsert = Array.isArray(codingQuestions)
+      ? codingQuestions.map((q) => ({ ...q, type: "Coding" }))
+      : [{ ...codingQuestions, type: "Coding" }];
+
+    const theoryToInsert = Array.isArray(theoryQuestions)
+      ? theoryQuestions.map((q) => ({ ...q, type: "Theory" }))
+      : [{ ...theoryQuestions, type: "Theory" }];
+
+    const questionsToInsert = [...codingToInsert, ...theoryToInsert];
 
     console.log(
       `\n📝 Attempting to insert ${questionsToInsert.length} question(s)...`,
     );
+    console.log(`   - ${codingToInsert.length} Coding questions`);
+    console.log(`   - ${theoryToInsert.length} Theory questions`);
 
-    // Get unique companies and clear existing questions for those companies
-    const companies = [...new Set(questionsToInsert.flatMap((q) => q.company))];
-    await InterviewQuestion.deleteMany({ company: { $in: companies } });
-    console.log(
-      `🗑️  Cleared existing questions for companies: ${companies.join(", ")}`,
-    );
+    // Clear all existing questions
+    await InterviewQuestion.deleteMany({});
+    console.log(`🗑️  Cleared all existing questions`);
 
     // Insert new questions
     const result = await InterviewQuestion.insertMany(questionsToInsert);
@@ -37,15 +51,13 @@ const seedDatabase = async () => {
 
     result.forEach((question, index) => {
       console.log(
-        `   ${index + 1}. ${question.company} - "${question.title}" (${question.difficulty})`,
+        `   ${index + 1}. [${question.type}] ${question.company || "N/A"} - "${question.title}" (${question.difficulty})`,
       );
-      console.log(
-        `      Test cases: ${question.testCases.length} (all hidden)`,
-      );
+      console.log(`      Test cases: ${question.testCases.length}`);
     });
 
     console.log(
-      "\n💡 Tip: To add more questions, add them to server/data/questions.json",
+      "\n💡 Tip: To add more questions, add them to server/data/questions.json or server/data/technical_questions.json",
     );
     console.log("   Format can be a single object or an array of objects.\n");
 

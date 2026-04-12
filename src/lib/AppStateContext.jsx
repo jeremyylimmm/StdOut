@@ -4,6 +4,7 @@ const AppStateContext = createContext(null);
 
 const defaultSettings = {
   interviewName: "Frontend Interview",
+  questionType: "Coding",
   company: "Google",
   difficulty: "Easy",
   durationMinutes: 15,
@@ -73,13 +74,26 @@ export function AppStateProvider({ children }) {
     setSettings((prev) => ({ ...prev, ...newSettings }));
   };
 
-  const startInterview = async () => {
+  const startInterview = async (newSettings = null) => {
     setQuestionIndex(0);
     setLoading(true);
+    // Use passed settings or fall back to context settings
+    const settingsToUse = newSettings || settings;
+
     try {
-      let url = `http://localhost:3001/api/questions/random?company=${settings.company}`;
-      if (settings.company === "LeetCode") {
-        url += `&difficulty=${settings.difficulty}`;
+      let url = `http://localhost:3001/api/questions/random?type=${settingsToUse.questionType}`;
+
+      // Only add company for Coding questions
+      if (settingsToUse.questionType === "Coding") {
+        url += `&company=${settingsToUse.company}`;
+        if (settingsToUse.company === "LeetCode" && settingsToUse.difficulty) {
+          url += `&difficulty=${settingsToUse.difficulty}`;
+        }
+      } else if (settingsToUse.questionType === "Theory") {
+        // For Theory questions, just add difficulty
+        if (settingsToUse.difficulty) {
+          url += `&difficulty=${settingsToUse.difficulty}`;
+        }
       }
 
       const response = await fetch(url);
@@ -132,6 +146,7 @@ export function AppStateProvider({ children }) {
             userId: user.id,
             interview: {
               title: settings.interviewName,
+              questionType: settings.questionType,
               company: settings.company,
               difficulty: settings.difficulty,
               durationMinutes: settings.durationMinutes,
